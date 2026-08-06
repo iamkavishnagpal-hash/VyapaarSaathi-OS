@@ -12,7 +12,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   Info,
-  Menu,
   X,
   LayoutDashboard,
   Package,
@@ -101,20 +100,9 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
     <header className="glass-panel main-navbar" style={{ borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "12px 20px", zIndex: 100 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
         
-        {/* Left: Menu Trigger & App Brand */}
+        {/* Left: App Brand & Store Switcher */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           
-          {/* Mobile Full-Screen Menu Overlay Trigger Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            className="btn btn-secondary mobile-hamburger-btn"
-            style={{ padding: "8px 12px", gap: "8px" }}
-            aria-label="Open Fullscreen Navigation"
-          >
-            <Menu size={20} />
-            <span style={{ fontSize: "0.82rem", fontWeight: "700" }}>Menu</span>
-          </button>
-
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div style={{
               width: "36px",
