@@ -11,10 +11,23 @@ import {
   ChevronDown,
   CheckCircle2,
   AlertTriangle,
-  Info
+  Info,
+  Menu,
+  X,
+  LayoutDashboard,
+  Package,
+  Receipt,
+  ShoppingBag,
+  Store,
+  Bot,
+  MessageSquare,
+  BarChart3,
+  Upload,
+  Settings,
+  ShieldCheck
 } from "lucide-react";
 
-export const Navbar = () => {
+export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   const {
     stores,
     currentStore,
@@ -25,6 +38,7 @@ export const Navbar = () => {
     lang,
     setLang,
     t,
+    activeView,
     setActiveView,
     isListening,
     toggleVoiceListening,
@@ -53,12 +67,36 @@ export const Navbar = () => {
     { key: "hinglish", label: "Hinglish" }
   ];
 
+  const navItems = [
+    { id: "dashboard", label: t("dashboard"), icon: LayoutDashboard },
+    { id: "inventory", label: t("inventory"), icon: Package, badge: lowStockCount > 0 ? lowStockCount : null },
+    { id: "pos", label: t("posBilling"), icon: Receipt },
+    { id: "orders", label: t("orders"), icon: ShoppingBag },
+    { id: "storefront", label: t("storeBuilder"), icon: Store },
+    { id: "ai", label: t("aiCenter"), icon: Bot, isNew: true },
+    { id: "comms", label: t("commsHub"), icon: MessageSquare },
+    { id: "analytics", label: t("analytics"), icon: BarChart3 },
+    { id: "migration", label: t("migration"), icon: Upload },
+    { id: "settings", label: t("settings"), icon: Settings },
+  ];
+
   return (
-    <header className="glass-panel" style={{ borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "12px 24px", zIndex: 100 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
+    <header className="glass-panel main-navbar" style={{ borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "12px 20px", zIndex: 100 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
         
-        {/* Left: Brand logo & Store Switcher */}
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+        {/* Left: Hamburger & Brand logo & Store Switcher */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          
+          {/* Hamburger Mobile Toggle Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="btn btn-secondary mobile-hamburger-btn"
+            style={{ padding: "8px 10px" }}
+            aria-label="Toggle Navigation Menu"
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div style={{
               width: "36px",
@@ -68,20 +106,21 @@ export const Navbar = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 0 15px rgba(99, 102, 241, 0.5)"
+              boxShadow: "0 0 15px rgba(99, 102, 241, 0.5)",
+              flexShrink: 0
             }}>
               <Sparkles size={20} color="#fff" />
             </div>
             <div>
-              <h1 style={{ fontSize: "1.15rem", fontWeight: "800", letterSpacing: "-0.5px", margin: 0, color: "#fff" }}>
+              <h1 style={{ fontSize: "1.1rem", fontWeight: "800", letterSpacing: "-0.5px", margin: 0, color: "#fff" }}>
                 {t("appTitle")}
               </h1>
-              <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>v0.1 TRD Edition</span>
+              <span className="hide-on-mobile" style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>v0.1 TRD Edition</span>
             </div>
           </div>
 
-          {/* Store Branch Switcher */}
-          <div style={{ position: "relative" }}>
+          {/* Store Branch Switcher (Desktop) */}
+          <div className="hide-on-mobile" style={{ position: "relative" }}>
             <button
               onClick={() => setShowStoreDropdown(!showStoreDropdown)}
               className="btn btn-secondary"
@@ -133,10 +172,10 @@ export const Navbar = () => {
         </div>
 
         {/* Right Controls: Role, Mic, Language, POS shortcut, Notifications */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           
           {/* Role Switcher */}
-          <div style={{ position: "relative" }}>
+          <div className="hide-on-mobile" style={{ position: "relative" }}>
             <button
               onClick={() => setShowRoleDropdown(!showRoleDropdown)}
               className="btn btn-secondary"
@@ -187,10 +226,10 @@ export const Navbar = () => {
             onClick={toggleVoiceListening}
             className={`btn ${isListening ? "mic-active" : "btn-secondary"}`}
             title="Voice OS Command"
-            style={{ padding: "8px 14px" }}
+            style={{ padding: "6px 10px", fontSize: "0.8rem" }}
           >
             <Mic size={16} />
-            <span style={{ fontSize: "0.8rem" }}>{isListening ? "Listening..." : "Voice OS"}</span>
+            <span className="hide-on-mobile">{isListening ? "Listening..." : "Voice OS"}</span>
           </button>
 
           {/* Language Switcher */}
@@ -198,7 +237,7 @@ export const Navbar = () => {
             <button
               onClick={() => setShowLangDropdown(!showLangDropdown)}
               className="btn btn-secondary"
-              style={{ fontSize: "0.8rem", padding: "6px 12px" }}
+              style={{ fontSize: "0.8rem", padding: "6px 10px" }}
             >
               <Globe size={15} color="#f59e0b" />
               <span style={{ textTransform: "uppercase" }}>{lang}</span>
@@ -240,7 +279,7 @@ export const Navbar = () => {
           {/* POS Quick Button */}
           <button
             onClick={() => setActiveView("pos")}
-            className="btn btn-primary"
+            className="btn btn-primary hide-on-mobile"
             style={{ fontSize: "0.82rem", padding: "8px 14px" }}
           >
             <ShoppingCart size={16} />
@@ -281,7 +320,7 @@ export const Navbar = () => {
                 position: "absolute",
                 top: "110%",
                 right: 0,
-                width: "300px",
+                width: "290px",
                 padding: "12px",
                 zIndex: 200
               }}>
@@ -310,6 +349,149 @@ export const Navbar = () => {
         </div>
 
       </div>
+
+      {/* Responsive Mobile Drawer Overlay */}
+      {isMobileMenuOpen && (
+        <div className="mobile-drawer-backdrop" onClick={() => setIsMobileMenuOpen(false)}>
+          <div className="mobile-drawer-content" onClick={(e) => e.stopPropagation()}>
+            
+            {/* Mobile Drawer Header */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border-color)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "8px",
+                  background: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}>
+                  <Sparkles size={18} color="#fff" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: "1rem", fontWeight: "800", color: "#fff", margin: 0 }}>Retail OS</h3>
+                  <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Mobile Quick Nav</div>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="btn btn-secondary"
+                style={{ padding: "6px 10px" }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Store & Role Picker inside Mobile Drawer */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "18px" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", textTransform: "uppercase", fontWeight: "700" }}>
+                Store & Role Config
+              </div>
+              
+              {/* Mobile Store Selector */}
+              <div style={{ display: "flex", gap: "8px" }}>
+                <select
+                  value={currentStoreId}
+                  onChange={(e) => setCurrentStoreId(e.target.value)}
+                  className="input-field"
+                  style={{ fontSize: "0.82rem", padding: "8px" }}
+                >
+                  {stores.map((s) => (
+                    <option key={s.id} value={s.id}>{s.name} ({s.city})</option>
+                  ))}
+                </select>
+
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="input-field"
+                  style={{ fontSize: "0.82rem", padding: "8px" }}
+                >
+                  {rolesList.map((r) => (
+                    <option key={r.key} value={r.key}>{r.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Mobile Navigation List */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "20px" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", textTransform: "uppercase", fontWeight: "700", marginBottom: "4px" }}>
+                Navigation Modules
+              </div>
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeView === item.id;
+
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveView(item.id);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "12px 14px",
+                      borderRadius: "var(--radius-sm)",
+                      border: "none",
+                      background: isActive
+                        ? "linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(79, 70, 229, 0.15) 100%)"
+                        : "rgba(255, 255, 255, 0.03)",
+                      color: isActive ? "#ffffff" : "var(--text-muted)",
+                      fontWeight: isActive ? "700" : "500",
+                      fontSize: "0.9rem",
+                      cursor: "pointer",
+                      textAlign: "left"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <Icon size={18} color={isActive ? "var(--primary)" : "var(--text-muted)"} />
+                      <span>{item.label}</span>
+                    </div>
+
+                    {item.badge && (
+                      <span className="badge badge-danger" style={{ fontSize: "0.68rem" }}>
+                        {item.badge}
+                      </span>
+                    )}
+
+                    {item.isNew && !item.badge && (
+                      <span className="badge badge-info" style={{ fontSize: "0.65rem" }}>
+                        AI OS
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Mobile Security Footer */}
+            <div
+              style={{
+                padding: "12px",
+                background: "rgba(15, 23, 42, 0.6)",
+                borderRadius: "var(--radius-sm)",
+                border: "1px solid var(--border-color)",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginTop: "auto"
+              }}
+            >
+              <ShieldCheck size={20} color="#10b981" />
+              <div style={{ fontSize: "0.78rem" }}>
+                <div style={{ fontWeight: "700", color: "var(--text-main)" }}>RBAC Protection</div>
+                <div style={{ color: "var(--text-dim)", fontSize: "0.72rem" }}>Active as {role}</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* Floating Toast Notification Container */}
       <div style={{

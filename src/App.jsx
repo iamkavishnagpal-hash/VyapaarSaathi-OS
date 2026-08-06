@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { RetailProvider, useRetail } from "./context/RetailContext";
 import { Navbar } from "./components/Navbar";
 import { Sidebar } from "./components/Sidebar";
+import { MobileBottomNav } from "./components/MobileBottomNav";
 
 import { DashboardView } from "./views/DashboardView";
 import { InventoryView } from "./views/InventoryView";
@@ -16,6 +17,7 @@ import { SettingsView } from "./views/SettingsView";
 
 const MainContent = () => {
   const { activeView } = useRetail();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const renderActiveView = () => {
     switch (activeView) {
@@ -48,8 +50,14 @@ const MainContent = () => {
     <div className="app-container">
       <Sidebar />
       <div className="main-content">
-        <Navbar />
+        <Navbar 
+          isMobileMenuOpen={isMobileMenuOpen} 
+          setIsMobileMenuOpen={setIsMobileMenuOpen} 
+        />
         {renderActiveView()}
+        <MobileBottomNav 
+          onOpenMobileMenu={() => setIsMobileMenuOpen(true)} 
+        />
       </div>
     </div>
   );
