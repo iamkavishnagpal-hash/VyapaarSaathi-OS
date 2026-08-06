@@ -18,6 +18,7 @@ import { SettingsView } from "./views/SettingsView";
 const MainContent = () => {
   const { activeView } = useRetail();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true); // Collapsed State (Default: 72px)
 
   const renderActiveView = () => {
     switch (activeView) {
@@ -48,13 +49,22 @@ const MainContent = () => {
 
   return (
     <div className="app-container">
-      <Sidebar />
-      <div className="main-content">
+      {/* COLLAPSIBLE SIDEBAR WITH PUSH CONTENT TRANSITION */}
+      <Sidebar 
+        isCollapsed={isSidebarCollapsed} 
+        setIsCollapsed={setIsSidebarCollapsed} 
+      />
+
+      <div className="main-content" style={{ flex: 1, minWidth: 0, transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)" }}>
         <Navbar 
           isMobileMenuOpen={isMobileMenuOpen} 
           setIsMobileMenuOpen={setIsMobileMenuOpen} 
+          isSidebarCollapsed={isSidebarCollapsed}
+          setIsSidebarCollapsed={setIsSidebarCollapsed}
         />
         {renderActiveView()}
+        
+        {/* STRICTLY MOBILE-ONLY FLOATING DOCK (HIDDEN ON DESKTOP VIA MEDIA QUERY) */}
         <MobileBottomNav 
           onOpenMobileMenu={() => setIsMobileMenuOpen(true)} 
         />
