@@ -5,8 +5,7 @@ import {
   Package, 
   Receipt, 
   ShoppingBag, 
-  Bot, 
-  Menu 
+  Grid 
 } from "lucide-react";
 
 export const MobileBottomNav = ({ onOpenMobileMenu }) => {
@@ -18,8 +17,7 @@ export const MobileBottomNav = ({ onOpenMobileMenu }) => {
     { id: "dashboard", label: t("dashboard"), icon: LayoutDashboard },
     { id: "inventory", label: t("inventory"), icon: Package, badge: lowStockCount > 0 ? lowStockCount : null },
     { id: "pos", label: t("posBilling"), icon: Receipt },
-    { id: "orders", label: t("orders"), icon: ShoppingBag },
-    { id: "ai", label: t("aiCenter"), icon: Bot },
+    { id: "orders", label: t("orders"), icon: ShoppingBag }
   ];
 
   return (
@@ -45,12 +43,12 @@ export const MobileBottomNav = ({ onOpenMobileMenu }) => {
         );
       })}
 
+      {/* Prominent Full-Screen Overlay Launcher Button */}
       <button
         onClick={onOpenMobileMenu}
-        className="mobile-nav-item"
-        style={{ color: "var(--primary)" }}
+        className="mobile-nav-item mobile-menu-launcher"
       >
-        <Menu size={22} />
+        <Grid size={22} color="#ffffff" />
         <span>Menu</span>
       </button>
     </nav>

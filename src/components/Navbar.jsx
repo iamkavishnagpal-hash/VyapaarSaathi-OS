@@ -24,7 +24,8 @@ import {
   BarChart3,
   Upload,
   Settings,
-  ShieldCheck
+  ShieldCheck,
+  ChevronRight
 } from "lucide-react";
 
 export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
@@ -67,34 +68,51 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
     { key: "hinglish", label: "Hinglish" }
   ];
 
-  const navItems = [
-    { id: "dashboard", label: t("dashboard"), icon: LayoutDashboard },
-    { id: "inventory", label: t("inventory"), icon: Package, badge: lowStockCount > 0 ? lowStockCount : null },
-    { id: "pos", label: t("posBilling"), icon: Receipt },
-    { id: "orders", label: t("orders"), icon: ShoppingBag },
-    { id: "storefront", label: t("storeBuilder"), icon: Store },
-    { id: "ai", label: t("aiCenter"), icon: Bot, isNew: true },
-    { id: "comms", label: t("commsHub"), icon: MessageSquare },
-    { id: "analytics", label: t("analytics"), icon: BarChart3 },
-    { id: "migration", label: t("migration"), icon: Upload },
-    { id: "settings", label: t("settings"), icon: Settings },
+  // Grouped Navigation Modules for Full-Screen Menu Overlay
+  const navSections = [
+    {
+      title: "Core Operations",
+      items: [
+        { id: "dashboard", label: t("dashboard"), desc: "Sales summary, metrics & live KPIs", icon: LayoutDashboard, color: "#6366f1" },
+        { id: "pos", label: t("posBilling"), desc: "Fast counter billing & instant digital invoices", icon: Receipt, color: "#10b981" },
+        { id: "inventory", label: t("inventory"), desc: "Stock management & low stock tracking", icon: Package, badge: lowStockCount > 0 ? lowStockCount : null, color: "#f59e0b" },
+        { id: "orders", label: t("orders"), desc: "Order fulfillment, history & customer returns", icon: ShoppingBag, color: "#ec4899" }
+      ]
+    },
+    {
+      title: "Growth & Digital Store",
+      items: [
+        { id: "storefront", label: t("storeBuilder"), desc: "No-code web store builder & theme editor", icon: Store, color: "#8b5cf6" },
+        { id: "ai", label: t("aiCenter"), desc: "AI Copilot, voice commands & store recommendations", icon: Bot, isNew: true, color: "#06b6d4" },
+        { id: "comms", label: t("commsHub"), desc: "WhatsApp broadcasts & customer messaging", icon: MessageSquare, color: "#22c55e" }
+      ]
+    },
+    {
+      title: "Analytics & System",
+      items: [
+        { id: "analytics", label: t("analytics"), desc: "Revenue trends & top performing inventory", icon: BarChart3, color: "#3b82f6" },
+        { id: "migration", label: t("migration"), desc: "Import catalog from Shopify or Excel/CSV", icon: Upload, color: "#a855f7" },
+        { id: "settings", label: t("settings"), desc: "RBAC permissions, branch config & profile", icon: Settings, color: "#64748b" }
+      ]
+    }
   ];
 
   return (
     <header className="glass-panel main-navbar" style={{ borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "12px 20px", zIndex: 100 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
         
-        {/* Left: Hamburger & Brand logo & Store Switcher */}
+        {/* Left: Menu Trigger & App Brand */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           
-          {/* Hamburger Mobile Toggle Button */}
+          {/* Mobile Full-Screen Menu Overlay Trigger Button */}
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={() => setIsMobileMenuOpen(true)}
             className="btn btn-secondary mobile-hamburger-btn"
-            style={{ padding: "8px 10px" }}
-            aria-label="Toggle Navigation Menu"
+            style={{ padding: "8px 12px", gap: "8px" }}
+            aria-label="Open Fullscreen Navigation"
           >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            <Menu size={20} />
+            <span style={{ fontSize: "0.82rem", fontWeight: "700" }}>Menu</span>
           </button>
 
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -350,146 +368,186 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
 
       </div>
 
-      {/* Responsive Mobile Drawer Overlay */}
+      {/* FULL-SCREEN NAVIGATION OVERLAY (REPLACES HAMBURGER DRAWER) */}
       {isMobileMenuOpen && (
-        <div className="mobile-drawer-backdrop" onClick={() => setIsMobileMenuOpen(false)}>
-          <div className="mobile-drawer-content" onClick={(e) => e.stopPropagation()}>
-            
-            {/* Mobile Drawer Header */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border-color)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div style={{
-                  width: "32px",
-                  height: "32px",
-                  borderRadius: "8px",
-                  background: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Sparkles size={18} color="#fff" />
-                </div>
-                <div>
-                  <h3 style={{ fontSize: "1rem", fontWeight: "800", color: "#fff", margin: 0 }}>Retail OS</h3>
-                  <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Mobile Quick Nav</div>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="btn btn-secondary"
-                style={{ padding: "6px 10px" }}
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Store & Role Picker inside Mobile Drawer */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "18px" }}>
-              <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", textTransform: "uppercase", fontWeight: "700" }}>
-                Store & Role Config
-              </div>
-              
-              {/* Mobile Store Selector */}
-              <div style={{ display: "flex", gap: "8px" }}>
-                <select
-                  value={currentStoreId}
-                  onChange={(e) => setCurrentStoreId(e.target.value)}
-                  className="input-field"
-                  style={{ fontSize: "0.82rem", padding: "8px" }}
-                >
-                  {stores.map((s) => (
-                    <option key={s.id} value={s.id}>{s.name} ({s.city})</option>
-                  ))}
-                </select>
-
-                <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="input-field"
-                  style={{ fontSize: "0.82rem", padding: "8px" }}
-                >
-                  {rolesList.map((r) => (
-                    <option key={r.key} value={r.key}>{r.label}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Mobile Navigation List */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "20px" }}>
-              <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", textTransform: "uppercase", fontWeight: "700", marginBottom: "4px" }}>
-                Navigation Modules
-              </div>
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeView === item.id;
-
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveView(item.id);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "12px 14px",
-                      borderRadius: "var(--radius-sm)",
-                      border: "none",
-                      background: isActive
-                        ? "linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(79, 70, 229, 0.15) 100%)"
-                        : "rgba(255, 255, 255, 0.03)",
-                      color: isActive ? "#ffffff" : "var(--text-muted)",
-                      fontWeight: isActive ? "700" : "500",
-                      fontSize: "0.9rem",
-                      cursor: "pointer",
-                      textAlign: "left"
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <Icon size={18} color={isActive ? "var(--primary)" : "var(--text-muted)"} />
-                      <span>{item.label}</span>
-                    </div>
-
-                    {item.badge && (
-                      <span className="badge badge-danger" style={{ fontSize: "0.68rem" }}>
-                        {item.badge}
-                      </span>
-                    )}
-
-                    {item.isNew && !item.badge && (
-                      <span className="badge badge-info" style={{ fontSize: "0.65rem" }}>
-                        AI OS
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Mobile Security Footer */}
-            <div
-              style={{
-                padding: "12px",
-                background: "rgba(15, 23, 42, 0.6)",
-                borderRadius: "var(--radius-sm)",
-                border: "1px solid var(--border-color)",
+        <div className="mobile-fullscreen-overlay">
+          
+          {/* Overlay Top Header Bar */}
+          <div className="mobile-fullscreen-header">
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "12px",
+                background: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
                 display: "flex",
                 alignItems: "center",
-                gap: "10px",
-                marginTop: "auto"
-              }}
-            >
-              <ShieldCheck size={20} color="#10b981" />
-              <div style={{ fontSize: "0.78rem" }}>
-                <div style={{ fontWeight: "700", color: "var(--text-main)" }}>RBAC Protection</div>
-                <div style={{ color: "var(--text-dim)", fontSize: "0.72rem" }}>Active as {role}</div>
+                justifyContent: "center",
+                boxShadow: "0 0 20px rgba(99, 102, 241, 0.6)"
+              }}>
+                <Sparkles size={22} color="#fff" />
+              </div>
+              <div>
+                <h2 style={{ fontSize: "1.2rem", fontWeight: "800", color: "#ffffff", margin: 0, letterSpacing: "-0.5px" }}>
+                  Retail OS
+                </h2>
+                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                  Full-Screen Navigation & Controls
+                </div>
               </div>
             </div>
 
+            {/* Circular Close Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fullscreen-close-btn"
+              aria-label="Close navigation overlay"
+            >
+              <X size={22} color="#ffffff" />
+            </button>
           </div>
+
+          {/* Quick Context Bar (Store Switcher & Role Selector Chips) */}
+          <div className="mobile-fullscreen-context-bar">
+            <div className="context-chip">
+              <Building2 size={15} color="var(--primary)" />
+              <select
+                value={currentStoreId}
+                onChange={(e) => setCurrentStoreId(e.target.value)}
+                className="chip-select"
+              >
+                {stores.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name} ({s.city})</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="context-chip">
+              <UserCheck size={15} color="#10b981" />
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="chip-select"
+              >
+                {rolesList.map((r) => (
+                  <option key={r.key} value={r.key}>{r.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Categorized Navigation Grid */}
+          <div className="mobile-fullscreen-grid-container">
+            {navSections.map((sec, sIdx) => (
+              <div key={sIdx} style={{ marginBottom: "24px" }}>
+                <div style={{ 
+                  fontSize: "0.75rem", 
+                  fontWeight: "800", 
+                  color: "var(--primary)", 
+                  textTransform: "uppercase", 
+                  letterSpacing: "1.2px", 
+                  marginBottom: "12px",
+                  paddingLeft: "4px" 
+                }}>
+                  {sec.title}
+                </div>
+
+                <div className="fullscreen-nav-grid">
+                  {sec.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = activeView === item.id;
+
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() => {
+                          setActiveView(item.id);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className={`fullscreen-nav-card ${isActive ? "active" : ""}`}
+                      >
+                        <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
+                          <div style={{
+                            width: "42px",
+                            height: "42px",
+                            borderRadius: "12px",
+                            background: isActive ? item.color : "rgba(255, 255, 255, 0.05)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                            boxShadow: isActive ? `0 4px 16px ${item.color}66` : "none"
+                          }}>
+                            <Icon size={20} color={isActive ? "#ffffff" : item.color} />
+                          </div>
+
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
+                              <h3 style={{ 
+                                fontSize: "0.98rem", 
+                                fontWeight: "700", 
+                                color: isActive ? "#ffffff" : "var(--text-main)", 
+                                margin: "0 0 2px 0" 
+                              }}>
+                                {item.label}
+                              </h3>
+
+                              {item.badge && (
+                                <span className="badge badge-danger" style={{ fontSize: "0.68rem" }}>
+                                  {item.badge} alert
+                                </span>
+                              )}
+
+                              {item.isNew && !item.badge && (
+                                <span className="badge badge-info" style={{ fontSize: "0.65rem" }}>
+                                  AI Powered
+                                </span>
+                              )}
+                            </div>
+                            
+                            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: 0, lineHeight: "1.3" }}>
+                              {item.desc}
+                            </p>
+                          </div>
+
+                          <ChevronRight size={18} color="var(--text-dim)" style={{ alignSelf: "center", flexShrink: 0 }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Fullscreen Overlay Bottom Action Bar */}
+          <div className="mobile-fullscreen-footer">
+            <button
+              onClick={() => {
+                toggleVoiceListening();
+                setIsMobileMenuOpen(false);
+              }}
+              className={`btn ${isListening ? "mic-active" : "btn-secondary"}`}
+              style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: "0.9rem" }}
+            >
+              <Mic size={18} />
+              <span>{isListening ? "Listening to Voice Command..." : "Trigger Voice Copilot"}</span>
+            </button>
+
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center", 
+              gap: "8px", 
+              marginTop: "12px",
+              color: "var(--text-dim)",
+              fontSize: "0.75rem" 
+            }}>
+              <ShieldCheck size={16} color="#10b981" />
+              <span>RBAC Protected • Active as {role}</span>
+            </div>
+          </div>
+
         </div>
       )}
 
