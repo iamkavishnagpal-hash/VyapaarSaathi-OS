@@ -306,9 +306,13 @@ export const DashboardView = () => {
                 <h3 style={{ fontSize: "18px", margin: "0 0 2px 0" }}>Inventory & Warehouse Capacity</h3>
                 <div className="caption">Real-time stock movement & low stock status</div>
               </div>
-              <button onClick={() => setActiveView("inventory")} className="btn btn-secondary" style={{ minHeight: "38px", fontSize: "13px" }}>
-                <span>Manage Stock</span>
-              </button>
+              <span 
+                onClick={() => setActiveView("inventory")} 
+                style={{ fontSize: "13px", fontWeight: "600", color: "var(--primary)", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
+              >
+                <span>View Full Inventory</span>
+                <ChevronRight size={14} />
+              </span>
             </div>
 
             {/* WAREHOUSE CAPACITY PROGRESS INDICATOR */}
