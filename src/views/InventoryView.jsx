@@ -83,33 +83,32 @@ export const InventoryView = () => {
 
   return (
     <div className="view-container">
-      {/* View Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+      {/* LEVEL 1 HEADER & SINGLE PRIMARY CTA */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#fff", margin: "0 0 4px 0" }}>
-            {t("inventory")}
-          </h2>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", margin: 0 }}>
+          <h2>{t("inventory")}</h2>
+          <p className="caption" style={{ margin: "4px 0 0 0" }}>
             Real-time stock ledger, variant manager & reorder alerts
           </p>
         </div>
 
+        {/* SINGLE PRIMARY CTA PER SCREEN SPECIFICATION */}
         <button onClick={() => setShowAddModal(true)} className="btn btn-primary">
-          <Plus size={16} />
+          <Plus size={18} />
           <span>{t("addProduct")}</span>
         </button>
       </div>
 
-      {/* Filter Bar */}
-      <div className="glass-panel" style={{ padding: "16px", marginBottom: "20px", display: "flex", gap: "14px", flexWrap: "wrap", alignItems: "center" }}>
+      {/* FILTER & SEARCH BAR */}
+      <div className="glass-panel" style={{ padding: "16px", marginBottom: "24px", display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
         
         {/* Search Input */}
         <div style={{ flex: 1, minWidth: "240px", position: "relative" }}>
-          <Search size={16} color="var(--text-dim)" style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)" }} />
+          <Search size={18} color="var(--text-dim)" style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)" }} />
           <input
             type="text"
             className="input-field"
-            style={{ paddingLeft: "36px" }}
+            style={{ paddingLeft: "42px" }}
             placeholder={t("searchProductPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -118,7 +117,7 @@ export const InventoryView = () => {
 
         {/* Category Dropdown */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Layers size={16} color="var(--text-muted)" />
+          <Layers size={18} color="var(--text-muted)" />
           <select
             className="input-field"
             style={{ width: "160px" }}
@@ -132,33 +131,26 @@ export const InventoryView = () => {
         </div>
 
         {/* Stock Status Buttons */}
-        <div style={{ display: "flex", gap: "6px" }}>
+        <div style={{ display: "flex", gap: "8px" }}>
           <button
             onClick={() => setFilterStockStatus("ALL")}
-            className={`btn ${filterStockStatus === "ALL" ? "btn-primary" : "btn-secondary"}`}
-            style={{ fontSize: "0.78rem", padding: "6px 12px" }}
+            className={`btn ${filterStockStatus === "ALL" ? "btn-secondary" : "btn-ghost"}`}
+            style={{ fontSize: "14px", padding: "8px 14px" }}
           >
-            All Stock
+            All
           </button>
           <button
             onClick={() => setFilterStockStatus("LOW")}
-            className={`btn ${filterStockStatus === "LOW" ? "btn-danger" : "btn-secondary"}`}
-            style={{ fontSize: "0.78rem", padding: "6px 12px" }}
+            className={`btn ${filterStockStatus === "LOW" ? "btn-danger" : "btn-ghost"}`}
+            style={{ fontSize: "14px", padding: "8px 14px" }}
           >
-            Low Stock Alerts
-          </button>
-          <button
-            onClick={() => setFilterStockStatus("OUT")}
-            className={`btn ${filterStockStatus === "OUT" ? "btn-secondary" : "btn-secondary"}`}
-            style={{ fontSize: "0.78rem", padding: "6px 12px" }}
-          >
-            Out of Stock
+            Low Stock
           </button>
         </div>
       </div>
 
-      {/* Inventory Table */}
-      <div className="glass-panel" style={{ padding: "16px" }}>
+      {/* DESKTOP DATA TABLE */}
+      <div className="glass-panel hide-on-mobile" style={{ padding: "20px" }}>
         <div className="table-responsive">
           <table className="custom-table">
             <thead>
@@ -166,7 +158,6 @@ export const InventoryView = () => {
                 <th>Product</th>
                 <th>SKU / Brand</th>
                 <th>Category</th>
-                <th>GST %</th>
                 <th>Cost Price</th>
                 <th>Selling Price</th>
                 <th>Available Stock</th>
@@ -200,7 +191,7 @@ export const InventoryView = () => {
                         )}
                         <div>
                           <div style={{ fontWeight: "700", color: "#fff" }}>{prod.title}</div>
-                          <div style={{ fontSize: "0.75rem", color: "var(--text-dim)" }}>
+                          <div className="caption" style={{ fontSize: "12px" }}>
                             Barcode: {prod.barcode || "N/A"}
                           </div>
                         </div>
@@ -209,22 +200,21 @@ export const InventoryView = () => {
 
                     <td>
                       <div style={{ fontWeight: "600", color: "var(--primary)" }}>{prod.sku}</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{prod.brand}</div>
+                      <div className="caption" style={{ fontSize: "12px" }}>{prod.brand}</div>
                     </td>
 
                     <td>
                       <span className="badge badge-info">{prod.category}</span>
                     </td>
 
-                    <td>{prod.gstRate}% GST</td>
                     <td>₹{prod.costPrice}</td>
                     <td style={{ fontWeight: "700", color: "#fff" }}>₹{prod.sellingPrice}</td>
 
                     <td>
-                      <div style={{ fontSize: "1rem", fontWeight: "800", color: prod.stockQty <= prod.lowStockThreshold ? "#f87171" : "#34d399" }}>
+                      <div style={{ fontSize: "18px", fontWeight: "800", color: prod.stockQty <= prod.lowStockThreshold ? "#f87171" : "#34d399" }}>
                         {prod.stockQty} units
                       </div>
-                      <div style={{ fontSize: "0.7rem", color: "var(--text-dim)" }}>Min alert: {prod.lowStockThreshold}</div>
+                      <div className="caption" style={{ fontSize: "12px" }}>Alert: {prod.lowStockThreshold}</div>
                     </td>
 
                     <td>
@@ -238,9 +228,9 @@ export const InventoryView = () => {
                           setShowAdjustModal(true);
                         }}
                         className="btn btn-secondary"
-                        style={{ fontSize: "0.75rem", padding: "4px 10px" }}
+                        style={{ fontSize: "14px", padding: "8px 12px", minHeight: "40px" }}
                       >
-                        <RefreshCw size={13} />
+                        <RefreshCw size={14} />
                         <span>{t("adjustStock")}</span>
                       </button>
                     </td>
@@ -252,22 +242,73 @@ export const InventoryView = () => {
         </div>
       </div>
 
-      {/* Add Product Modal */}
+      {/* MOBILE REFLOW CARDS (NO HORIZONTAL SCROLL GUARANTEE) */}
+      <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        {filteredProducts.map((prod) => {
+          let badgeClass = "badge-success";
+          let badgeText = t("inStock");
+
+          if (prod.stockQty === 0) {
+            badgeClass = "badge-danger";
+            badgeText = t("outOfStock");
+          } else if (prod.stockQty <= prod.lowStockThreshold) {
+            badgeClass = "badge-warning";
+            badgeText = t("lowStock");
+          }
+
+          return (
+            <div key={prod.id} className="glass-card" style={{ padding: "20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", marginBottom: "12px" }}>
+                <div>
+                  <h3 style={{ fontSize: "18px", fontWeight: "700", margin: "0 0 4px 0" }}>{prod.title}</h3>
+                  <div className="caption">{prod.brand} • {prod.sku}</div>
+                </div>
+                <span className={`badge ${badgeClass}`}>{badgeText}</span>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", padding: "12px", background: "rgba(255,255,255,0.03)", borderRadius: "12px" }}>
+                <div>
+                  <div className="caption">Selling Price</div>
+                  <div style={{ fontSize: "20px", fontWeight: "800", color: "#fff" }}>₹{prod.sellingPrice}</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div className="caption">Stock Level</div>
+                  <div style={{ fontSize: "20px", fontWeight: "800", color: prod.stockQty <= prod.lowStockThreshold ? "#f87171" : "#34d399" }}>
+                    {prod.stockQty} units
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setTargetProduct(prod);
+                  setShowAdjustModal(true);
+                }}
+                className="btn btn-secondary"
+                style={{ width: "100%", justifyContent: "center" }}
+              >
+                <RefreshCw size={16} />
+                <span>Adjust Stock Level</span>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ADD PRODUCT MODAL FORM (SINGLE COLUMN FORM ON MOBILE SPECIFICATION) */}
       {showAddModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 300, backdropFilter: "blur(4px)" }}>
-          <div className="glass-panel" style={{ width: "540px", padding: "24px", maxWidth: "90%" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
-              <h3 style={{ fontSize: "1.2rem", fontWeight: "700", color: "#fff", margin: 0 }}>
-                {t("addProduct")}
-              </h3>
-              <button onClick={() => setShowAddModal(false)} className="btn btn-secondary" style={{ padding: "4px 8px" }}>
-                <X size={16} />
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(8px)", padding: "16px" }}>
+          <div className="glass-panel" style={{ width: "540px", padding: "24px", maxWidth: "100%", maxHeight: "90vh", overflowY: "auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <h3 style={{ margin: 0 }}>{t("addProduct")}</h3>
+              <button onClick={() => setShowAddModal(false)} className="btn btn-ghost" style={{ padding: "8px" }}>
+                <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleCreateProduct} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <form onSubmit={handleCreateProduct} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
-                <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Product Title *</label>
+                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Product Title *</label>
                 <input
                   type="text"
                   required
@@ -278,100 +319,82 @@ export const InventoryView = () => {
                 />
               </div>
 
-              <div className="grid-2">
-                <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Category</label>
-                  <select
-                    className="input-field"
-                    value={newProd.category}
-                    onChange={(e) => setNewProd({ ...newProd, category: e.target.value })}
-                  >
-                    <option value="Apparel">Apparel</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Grocery">Grocery</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Home & Lighting">Home & Lighting</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Brand</label>
-                  <input
-                    type="text"
-                    className="input-field"
-                    placeholder="Brand Name"
-                    value={newProd.brand}
-                    onChange={(e) => setNewProd({ ...newProd, brand: e.target.value })}
-                  />
-                </div>
+              <div>
+                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Category</label>
+                <select
+                  className="input-field"
+                  value={newProd.category}
+                  onChange={(e) => setNewProd({ ...newProd, category: e.target.value })}
+                >
+                  <option value="Apparel">Apparel</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Grocery">Grocery</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Home & Lighting">Home & Lighting</option>
+                </select>
               </div>
 
-              <div className="grid-3">
-                <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Selling Price (₹)</label>
-                  <input
-                    type="number"
-                    required
-                    className="input-field"
-                    value={newProd.sellingPrice}
-                    onChange={(e) => setNewProd({ ...newProd, sellingPrice: Number(e.target.value) })}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Cost Price (₹)</label>
-                  <input
-                    type="number"
-                    className="input-field"
-                    value={newProd.costPrice}
-                    onChange={(e) => setNewProd({ ...newProd, costPrice: Number(e.target.value) })}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>GST Slab (%)</label>
-                  <select
-                    className="input-field"
-                    value={newProd.gstRate}
-                    onChange={(e) => setNewProd({ ...newProd, gstRate: Number(e.target.value) })}
-                  >
-                    <option value={0}>0% (Exempt)</option>
-                    <option value={5}>5%</option>
-                    <option value={12}>12%</option>
-                    <option value={18}>18%</option>
-                    <option value={28}>28%</option>
-                  </select>
-                </div>
+              <div>
+                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Brand</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="Brand Name"
+                  value={newProd.brand}
+                  onChange={(e) => setNewProd({ ...newProd, brand: e.target.value })}
+                />
               </div>
 
-              <div className="grid-2">
-                <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Initial Stock Qty</label>
-                  <input
-                    type="number"
-                    className="input-field"
-                    value={newProd.stockQty}
-                    onChange={(e) => setNewProd({ ...newProd, stockQty: Number(e.target.value) })}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Low Stock Alert Qty</label>
-                  <input
-                    type="number"
-                    className="input-field"
-                    value={newProd.lowStockThreshold}
-                    onChange={(e) => setNewProd({ ...newProd, lowStockThreshold: Number(e.target.value) })}
-                  />
-                </div>
+              <div>
+                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Selling Price (₹) *</label>
+                <input
+                  type="number"
+                  required
+                  className="input-field"
+                  value={newProd.sellingPrice}
+                  onChange={(e) => setNewProd({ ...newProd, sellingPrice: Number(e.target.value) })}
+                />
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-                <button type="button" onClick={() => setShowAddModal(false)} className="btn btn-secondary">
-                  {t("cancel")}
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  {t("save")}
+              <div>
+                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Cost Price (₹)</label>
+                <input
+                  type="number"
+                  className="input-field"
+                  value={newProd.costPrice}
+                  onChange={(e) => setNewProd({ ...newProd, costPrice: Number(e.target.value) })}
+                />
+              </div>
+
+              <div>
+                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>GST Slab (%)</label>
+                <select
+                  className="input-field"
+                  value={newProd.gstRate}
+                  onChange={(e) => setNewProd({ ...newProd, gstRate: Number(e.target.value) })}
+                >
+                  <option value={0}>0% (Exempt)</option>
+                  <option value={5}>5%</option>
+                  <option value={12}>12%</option>
+                  <option value={18}>18%</option>
+                  <option value={28}>28%</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Initial Stock Units</label>
+                <input
+                  type="number"
+                  required
+                  className="input-field"
+                  value={newProd.stockQty}
+                  onChange={(e) => setNewProd({ ...newProd, stockQty: Number(e.target.value) })}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                  Create Product
                 </button>
               </div>
             </form>
@@ -379,59 +402,48 @@ export const InventoryView = () => {
         </div>
       )}
 
-      {/* Adjust Stock Modal */}
+      {/* ADJUST STOCK MODAL */}
       {showAdjustModal && targetProduct && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 300, backdropFilter: "blur(4px)" }}>
-          <div className="glass-panel" style={{ width: "420px", padding: "24px", maxWidth: "90%" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-              <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "#fff", margin: 0 }}>
-                Adjust Stock: {targetProduct.title}
-              </h3>
-              <button onClick={() => setShowAdjustModal(false)} className="btn btn-secondary" style={{ padding: "4px 8px" }}>
-                <X size={16} />
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(8px)", padding: "16px" }}>
+          <div className="glass-panel" style={{ width: "480px", padding: "24px", maxWidth: "100%" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
+              <h3 style={{ margin: 0 }}>Stock Adjustment</h3>
+              <button onClick={() => setShowAdjustModal(false)} className="btn btn-ghost" style={{ padding: "8px" }}>
+                <X size={20} />
               </button>
             </div>
 
-            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "16px" }}>
-              Current Available Quantity: <strong style={{ color: "#fff" }}>{targetProduct.stockQty} units</strong>
-            </p>
-
-            <form onSubmit={handleExecuteStockAdjust} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <form onSubmit={handleExecuteStockAdjust} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
-                <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>
-                  Stock Quantity Change (+ to Add, - to Deduct)
-                </label>
+                <div style={{ fontSize: "18px", fontWeight: "700", color: "#fff" }}>{targetProduct.title}</div>
+                <div className="caption">Current Stock: <strong>{targetProduct.stockQty} units</strong></div>
+              </div>
+
+              <div>
+                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Quantity Change (+ or -)</label>
                 <input
                   type="number"
                   required
                   className="input-field"
                   value={adjustQty}
-                  onChange={(e) => setAdjustQty(e.target.value)}
+                  onChange={(e) => setAdjustQty(Number(e.target.value))}
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>
-                  Audit Trail Reason *
-                </label>
-                <select
+                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Adjustment Reason</label>
+                <input
+                  type="text"
+                  required
                   className="input-field"
                   value={adjustReason}
                   onChange={(e) => setAdjustReason(e.target.value)}
-                >
-                  <option value="New Inventory Batch Received">Purchase / New Stock In</option>
-                  <option value="Manual Physical Stock Count">Manual Count Correction</option>
-                  <option value="Damage / Expiry Loss">Damage / Loss / Expiry</option>
-                  <option value="Customer Return Restock">Customer Return Restock</option>
-                </select>
+                />
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-                <button type="button" onClick={() => setShowAdjustModal(false)} className="btn btn-secondary">
-                  {t("cancel")}
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  Record Audit & Update
+              <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                  Confirm Adjustment
                 </button>
               </div>
             </form>

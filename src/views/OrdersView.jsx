@@ -4,11 +4,12 @@ import {
   Search, 
   RotateCcw, 
   Eye, 
-  X 
+  X,
+  Plus
 } from "lucide-react";
 
 export const OrdersView = () => {
-  const { orders, processReturn, t } = useRetail();
+  const { orders, processReturn, t, setActiveView } = useRetail();
 
   const [searchOrder, setSearchOrder] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -32,26 +33,30 @@ export const OrdersView = () => {
 
   return (
     <div className="view-container">
-      {/* View Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+      {/* LEVEL 1 HEADER & SINGLE PRIMARY CTA */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#fff", margin: "0 0 4px 0" }}>
-            {t("orders")}
-          </h2>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", margin: 0 }}>
-            Unified multi-channel order management, fulfillment & return processing
+          <h2>{t("orders")}</h2>
+          <p className="caption" style={{ margin: "4px 0 0 0" }}>
+            Multi-channel order fulfillment & customer returns
           </p>
         </div>
+
+        {/* SINGLE PRIMARY CTA PER SCREEN SPECIFICATION */}
+        <button onClick={() => setActiveView("pos")} className="btn btn-primary">
+          <Plus size={18} />
+          <span>Create New Order</span>
+        </button>
       </div>
 
-      {/* Filter Bar */}
-      <div className="glass-panel" style={{ padding: "16px", marginBottom: "20px", display: "flex", gap: "14px" }}>
-        <div style={{ flex: 1, position: "relative" }}>
-          <Search size={16} color="var(--text-dim)" style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)" }} />
+      {/* FILTER SEARCH BAR */}
+      <div className="glass-panel" style={{ padding: "16px", marginBottom: "24px" }}>
+        <div style={{ position: "relative" }}>
+          <Search size={18} color="var(--text-dim)" style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)" }} />
           <input
             type="text"
             className="input-field"
-            style={{ paddingLeft: "36px" }}
+            style={{ paddingLeft: "42px" }}
             placeholder="Search by Order ID, Customer Name or Channel..."
             value={searchOrder}
             onChange={(e) => setSearchOrder(e.target.value)}
@@ -59,8 +64,8 @@ export const OrdersView = () => {
         </div>
       </div>
 
-      {/* Orders Table */}
-      <div className="glass-panel" style={{ padding: "16px" }}>
+      {/* DESKTOP DATA TABLE */}
+      <div className="glass-panel hide-on-mobile" style={{ padding: "20px" }}>
         <div className="table-responsive">
           <table className="custom-table">
             <thead>
@@ -68,10 +73,9 @@ export const OrdersView = () => {
                 <th>Order ID</th>
                 <th>Channel</th>
                 <th>Customer</th>
-                <th>Date & Time</th>
-                <th>GST Tax</th>
-                <th>Total Bill</th>
-                <th>Payment Mode</th>
+                <th>Items Count</th>
+                <th>Total Value</th>
+                <th>Payment</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -79,44 +83,38 @@ export const OrdersView = () => {
             <tbody>
               {filteredOrders.map((ord) => (
                 <tr key={ord.id}>
-                  <td style={{ fontWeight: "800", color: "var(--primary)" }}>{ord.id}</td>
+                  <td style={{ fontWeight: "700", color: "var(--primary)" }}>{ord.id}</td>
+                  <td><span className="badge badge-info">{ord.channel}</span></td>
                   <td>
-                    <span className="badge badge-info">{ord.channel}</span>
+                    <div style={{ fontWeight: "600" }}>{ord.customerName}</div>
+                    <div className="caption" style={{ fontSize: "12px" }}>{ord.customerPhone}</div>
                   </td>
-                  <td>
-                    <div style={{ fontWeight: "700" }}>{ord.customerName}</div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-dim)" }}>{ord.customerPhone}</div>
-                  </td>
-                  <td style={{ fontSize: "0.8rem" }}>
-                    {new Date(ord.timestamp).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
-                  </td>
-                  <td>₹{ord.gstTotal}</td>
+                  <td>{ord.itemsCount} items</td>
                   <td style={{ fontWeight: "800", color: "#fff" }}>₹{ord.total.toLocaleString("en-IN")}</td>
                   <td>{ord.paymentMethod}</td>
                   <td>
-                    <span className={`badge ${ord.status === "Completed" || ord.status === "Fulfilled" ? "badge-success" : "badge-danger"}`}>
+                    <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
                       {ord.status}
                     </span>
                   </td>
                   <td>
-                    <div style={{ display: "flex", gap: "6px" }}>
+                    <div style={{ display: "flex", gap: "8px" }}>
                       <button
                         onClick={() => {
                           setSelectedOrder(ord);
                           setShowDetailModal(true);
                         }}
                         className="btn btn-secondary"
-                        style={{ fontSize: "0.75rem", padding: "4px 8px" }}
+                        style={{ fontSize: "14px", padding: "6px 10px", minHeight: "36px" }}
                       >
                         <Eye size={14} />
                       </button>
 
-                      {ord.status !== "Returned / Refunded" && (
+                      {ord.status === "Completed" && (
                         <button
                           onClick={() => handleReturnClick(ord)}
                           className="btn btn-danger"
-                          style={{ fontSize: "0.75rem", padding: "4px 8px" }}
-                          title="Process Return & Restock"
+                          style={{ fontSize: "14px", padding: "6px 10px", minHeight: "36px" }}
                         >
                           <RotateCcw size={14} />
                         </button>
@@ -130,42 +128,83 @@ export const OrdersView = () => {
         </div>
       </div>
 
-      {/* Order Detail Modal */}
+      {/* MOBILE REFLOW CARD LIST (ZERO HORIZONTAL SCROLL GUARANTEE) */}
+      <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        {filteredOrders.map((ord) => (
+          <div key={ord.id} className="glass-card" style={{ padding: "20px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+              <span style={{ fontWeight: "700", color: "var(--primary)", fontSize: "18px" }}>{ord.id}</span>
+              <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
+                {ord.status}
+              </span>
+            </div>
+
+            <div style={{ fontSize: "18px", fontWeight: "700", color: "#fff", marginBottom: "4px" }}>
+              {ord.customerName}
+            </div>
+            <div className="caption" style={{ marginBottom: "12px" }}>
+              {ord.channel} • {ord.paymentMethod}
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: "1px solid var(--border-color)" }}>
+              <div>
+                <div className="caption">Total Amount</div>
+                <div style={{ fontSize: "22px", fontWeight: "800", color: "#fff" }}>
+                  ₹{ord.total.toLocaleString("en-IN")}
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: "8px" }}>
+                <button
+                  onClick={() => {
+                    setSelectedOrder(ord);
+                    setShowDetailModal(true);
+                  }}
+                  className="btn btn-secondary"
+                >
+                  <Eye size={16} />
+                  <span>Details</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ORDER DETAILS MODAL */}
       {showDetailModal && selectedOrder && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 300, backdropFilter: "blur(4px)" }}>
-          <div className="glass-panel" style={{ width: "480px", padding: "24px", maxWidth: "90%" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <h3 style={{ fontSize: "1.1rem", fontWeight: "700", color: "#fff", margin: 0 }}>
-                Order Details: {selectedOrder.id}
-              </h3>
-              <button onClick={() => setShowDetailModal(false)} className="btn btn-secondary" style={{ padding: "4px 8px" }}>
-                <X size={16} />
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(8px)", padding: "16px" }}>
+          <div className="glass-panel" style={{ width: "520px", padding: "24px", maxWidth: "100%", maxHeight: "90vh", overflowY: "auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
+              <h3 style={{ margin: 0 }}>Order Details — {selectedOrder.id}</h3>
+              <button onClick={() => setShowDetailModal(false)} className="btn btn-ghost" style={{ padding: "8px" }}>
+                <X size={20} />
               </button>
             </div>
 
-            <div style={{ fontSize: "0.85rem", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "16px" }}>
-              <div><strong>Customer:</strong> {selectedOrder.customerName} ({selectedOrder.customerPhone})</div>
-              <div><strong>Channel:</strong> {selectedOrder.channel}</div>
-              <div><strong>Payment Method:</strong> {selectedOrder.paymentMethod}</div>
-              <div><strong>Status:</strong> {selectedOrder.status}</div>
-            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ padding: "16px", background: "rgba(255,255,255,0.03)", borderRadius: "12px" }}>
+                <div style={{ fontSize: "16px", fontWeight: "700", color: "#fff" }}>{selectedOrder.customerName}</div>
+                <div className="caption">{selectedOrder.customerPhone}</div>
+                <div className="caption" style={{ marginTop: "4px" }}>Channel: {selectedOrder.channel} • Payment: {selectedOrder.paymentMethod}</div>
+              </div>
 
-            <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "12px" }}>
-              <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "#fff", marginBottom: "8px" }}>Line Items</div>
-              {selectedOrder.items?.map((it, idx) => (
-                <div key={idx} className="glass-card" style={{ padding: "8px 12px", display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                  <div>
-                    <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "#fff" }}>{it.title}</div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Qty: {it.qty} • Rate: ₹{it.price}</div>
-                  </div>
-                  <div style={{ fontWeight: "700", color: "#fff" }}>₹{it.price * it.qty}</div>
+              <div>
+                <h4 style={{ fontSize: "16px", margin: "0 0 10px 0" }}>Order Items</h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {selectedOrder.items && selectedOrder.items.map((item, idx) => (
+                    <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "16px", padding: "8px 12px", background: "rgba(255,255,255,0.02)", borderRadius: "8px" }}>
+                      <span>{item.title} x {item.qty}</span>
+                      <span style={{ fontWeight: "700" }}>₹{item.price * item.qty}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
 
-            <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "12px", marginTop: "12px", display: "flex", justifyContent: "space-between", fontWeight: "800", fontSize: "1.1rem", color: "#34d399" }}>
-              <span>Total Amount:</span>
-              <span>₹{selectedOrder.total}</span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: "1px solid var(--border-color)" }}>
+                <span style={{ fontSize: "18px", fontWeight: "700" }}>Total Paid</span>
+                <span style={{ fontSize: "24px", fontWeight: "800", color: "var(--primary)" }}>₹{selectedOrder.total}</span>
+              </div>
             </div>
           </div>
         </div>

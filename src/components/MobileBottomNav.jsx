@@ -2,9 +2,9 @@ import React from "react";
 import { useRetail } from "../context/RetailContext";
 import { 
   LayoutDashboard, 
-  Package, 
-  Receipt, 
   ShoppingBag, 
+  Package, 
+  Bot, 
   Grid 
 } from "lucide-react";
 
@@ -15,9 +15,9 @@ export const MobileBottomNav = ({ onOpenMobileMenu }) => {
 
   const tabs = [
     { id: "dashboard", label: t("dashboard"), icon: LayoutDashboard },
+    { id: "orders", label: t("orders"), icon: ShoppingBag },
     { id: "inventory", label: t("inventory"), icon: Package, badge: lowStockCount > 0 ? lowStockCount : null },
-    { id: "pos", label: t("posBilling"), icon: Receipt },
-    { id: "orders", label: t("orders"), icon: ShoppingBag }
+    { id: "ai", label: t("aiCenter"), icon: Bot },
   ];
 
   return (
@@ -31,9 +31,10 @@ export const MobileBottomNav = ({ onOpenMobileMenu }) => {
             key={tab.id}
             onClick={() => setActiveView(tab.id)}
             className={`mobile-nav-item ${isActive ? "active" : ""}`}
+            aria-label={tab.label}
           >
             <div style={{ position: "relative" }}>
-              <Icon size={20} />
+              <Icon size={22} />
               {tab.badge && (
                 <span className="mobile-badge">{tab.badge}</span>
               )}
@@ -43,13 +44,13 @@ export const MobileBottomNav = ({ onOpenMobileMenu }) => {
         );
       })}
 
-      {/* Prominent Full-Screen Overlay Launcher Button */}
       <button
         onClick={onOpenMobileMenu}
-        className="mobile-nav-item mobile-menu-launcher"
+        className="mobile-nav-item"
+        aria-label="More Options"
       >
-        <Grid size={22} color="#ffffff" />
-        <span>Menu</span>
+        <Grid size={22} />
+        <span>More</span>
       </button>
     </nav>
   );
