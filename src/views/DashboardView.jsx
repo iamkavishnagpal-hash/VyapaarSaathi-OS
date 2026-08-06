@@ -1,304 +1,389 @@
 import React, { useState } from "react";
 import { useRetail } from "../context/RetailContext";
 import { 
-  IndianRupee, 
-  ShoppingBag, 
   AlertTriangle, 
   Sparkles, 
   ArrowUpRight, 
-  Receipt, 
   ChevronRight,
-  ShieldCheck,
-  ChevronDown,
   Zap,
-  Check
+  Check,
+  X,
+  ChevronDown
 } from "lucide-react";
 
 export const DashboardView = () => {
-  const { orders, products, t, setActiveView, currentStore } = useRetail();
+  const { orders, products, customers, setActiveView } = useRetail();
 
-  const [expandedSection, setExpandedSection] = useState("all");
+  const [dismissedAiBrief, setDismissedAiBrief] = useState(false);
   const [executedAction, setExecutedAction] = useState(false);
+  const [expandedSection, setExpandedSection] = useState(true);
 
-  // Priority 1 Metrics
+  // Financial Metrics
   const todaysSales = orders.reduce((acc, o) => acc + o.total, 0);
   const totalOrdersCount = orders.length;
   const estimatedProfit = Math.round(todaysSales * 0.38);
   const lowStockItems = products.filter((p) => p.stockQty <= p.lowStockThreshold);
-
-  // Business Health Score Calculation
+  const activeCustomersCount = customers ? customers.length : 182;
   const healthScore = Math.max(70, 100 - lowStockItems.length * 5);
 
   const handleExecuteAIAction = () => {
     setExecutedAction(true);
     setTimeout(() => {
       setActiveView("comms");
-    }, 800);
+    }, 900);
   };
 
   return (
-    <div className="view-container">
+    <div className="view-container" style={{ maxWidth: "1600px", margin: "0 auto", padding: "32px" }}>
       
-      {/* ABOVE THE FOLD — STICKY TOP BUSINESS HEALTH & SUMMARY */}
-      <div className="glass-panel" style={{ padding: "16px 20px", marginBottom: "24px", background: "linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(18, 24, 38, 0.95) 100%)", borderColor: "rgba(139, 92, 246, 0.3)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <div style={{ width: "44px", height: "44px", borderRadius: "12px", background: "rgba(16, 185, 129, 0.15)", border: "1px solid rgba(16, 185, 129, 0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <ShieldCheck size={22} color="#10B981" />
-            </div>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <h2 style={{ fontSize: "20px", margin: 0 }}>{currentStore.name}</h2>
-                <span className="badge badge-success">{healthScore}/100 Health</span>
-              </div>
-              <div className="caption">Unified Operating System • GSTIN: {currentStore.GSTIN}</div>
-            </div>
-          </div>
-
-          {/* LEVEL 2: SINGLE PRIMARY CTA ABOVE THE FOLD */}
-          <button 
-            onClick={() => setActiveView("pos")} 
-            className="btn btn-primary"
-            style={{ width: "auto" }}
-          >
-            <Receipt size={18} />
-            <span>{t("newSale")}</span>
-          </button>
-        </div>
-      </div>
-
-      {/* PRIORITY 1: REVENUE, ALERTS & ACTIONABLE AI CEO CO-PILOT CARD */}
-      <div className="grid-2" style={{ marginBottom: "24px" }}>
+      {/* 1. EXECUTIVE KPI ROW (5 EQUAL STRIP CARDS) */}
+      <div className="grid-4" style={{ gridTemplateColumns: "repeat(5, 1fr)", gap: "20px", marginBottom: "32px" }}>
         
-        {/* PRIORITY 1 HERO CARD: TODAY'S REVENUE & CASH POSITION */}
-        <div className="glass-card" style={{ padding: "24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-              <div>
-                <h3 style={{ fontSize: "16px", margin: "0 0 2px 0" }}>Today's Revenue</h3>
-                <div className="caption">Gross sales across POS & online storefront</div>
-              </div>
-              <div style={{ background: "rgba(139, 92, 246, 0.15)", padding: "10px", borderRadius: "12px" }}>
-                <IndianRupee size={22} color="var(--primary)" />
-              </div>
-            </div>
-
-            {/* Primary KPI */}
-            <div className="num-tabular" style={{ fontSize: "32px", fontWeight: "800", color: "#ffffff", margin: "12px 0 6px 0" }}>
-              ₹{todaysSales.toLocaleString("en-IN")}
-            </div>
-
-            {/* Trend Indicator & Context */}
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <span style={{ fontSize: "13px", color: "#34D399", fontWeight: "600", display: "flex", alignItems: "center", gap: "4px" }}>
-                <ArrowUpRight size={16} /> +18.4% vs yesterday
-              </span>
-              <span className="caption">• Net Profit: ₹{estimatedProfit.toLocaleString("en-IN")} (38%)</span>
-            </div>
-          </div>
-
-          <div style={{ marginTop: "20px", paddingTop: "14px", borderTop: "1px solid var(--border-color)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span className="caption">Active Cash Position: <strong>₹{todaysSales.toLocaleString("en-IN")}</strong></span>
-            <button onClick={() => setActiveView("pos")} className="btn btn-secondary" style={{ minHeight: "40px", padding: "6px 12px", fontSize: "13px" }}>
-              <span>View POS Ledger</span>
-            </button>
-          </div>
-        </div>
-
-        {/* PRIORITY 1 AI CEO CO-PILOT CARD (EXACT ACTIONABLE SAAS SPEC) */}
-        <div className="glass-card" style={{ padding: "24px", background: "linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(18, 24, 38, 0.95) 100%)", borderColor: "rgba(139, 92, 246, 0.35)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ background: "var(--primary)", padding: "8px", borderRadius: "10px" }}>
-                <Sparkles size={18} color="#ffffff" />
-              </div>
-              <div>
-                <h3 style={{ fontSize: "16px", margin: 0 }}>Next Best Action</h3>
-                <div className="caption">AI CEO Co-Pilot Recommendation</div>
-              </div>
-            </div>
-            <span className="badge badge-info">92% Confidence</span>
-          </div>
-
-          <p style={{ fontSize: "14px", color: "var(--text-main)", margin: "0 0 16px 0", lineHeight: "1.5" }}>
-            <strong>Increase WhatsApp Campaign:</strong> 12 VIP customers haven't purchased in 30 days. Trigger personalized discount broadcast now.
-          </p>
-
-          {/* STRUCTURED METRICS: ROI, CONFIDENCE, TIME, RISK */}
-          <div className="grid-4" style={{ gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", padding: "12px", background: "rgba(0,0,0,0.3)", borderRadius: "12px", marginBottom: "16px" }}>
-            <div>
-              <div className="caption" style={{ fontSize: "11px" }}>Expected ROI</div>
-              <div className="num-tabular" style={{ color: "#34D399", fontSize: "14px" }}>+₹48,000</div>
-            </div>
-
-            <div>
-              <div className="caption" style={{ fontSize: "11px" }}>Confidence</div>
-              <div className="num-tabular" style={{ color: "#A78BFA", fontSize: "14px" }}>92%</div>
-            </div>
-
-            <div>
-              <div className="caption" style={{ fontSize: "11px" }}>Time Req.</div>
-              <div className="num-tabular" style={{ color: "#ffffff", fontSize: "14px" }}>2 mins</div>
-            </div>
-
-            <div>
-              <div className="caption" style={{ fontSize: "11px" }}>Risk Level</div>
-              <div className="num-tabular" style={{ color: "#34D399", fontSize: "14px" }}>Low</div>
-            </div>
-          </div>
-
-          {/* SINGLE-CLICK EXECUTE BUTTON */}
-          <button 
-            onClick={handleExecuteAIAction} 
-            className="btn btn-primary"
-            style={{ width: "100%", justifyContent: "center" }}
-          >
-            {executedAction ? (
-              <>
-                <Check size={18} />
-                <span>Campaign Executed!</span>
-              </>
-            ) : (
-              <>
-                <Zap size={18} />
-                <span>Execute Recommendation</span>
-              </>
-            )}
-          </button>
-        </div>
-
-      </div>
-
-      {/* PRIORITY 2: ORDERS & INVENTORY STATUS CARDS */}
-      <div className="grid-2" style={{ marginBottom: "24px" }}>
-        
-        {/* PRIORITY 2 CARD: ORDERS OVERVIEW */}
-        <div className="glass-card" style={{ padding: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-            <div>
-              <h3 style={{ fontSize: "16px", margin: "0 0 2px 0" }}>Orders & Fulfillment</h3>
-              <div className="caption">Total orders processed today</div>
-            </div>
-            <div style={{ background: "rgba(16, 185, 129, 0.15)", padding: "8px", borderRadius: "10px" }}>
-              <ShoppingBag size={20} color="#10B981" />
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "baseline", gap: "10px", marginBottom: "12px" }}>
-            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>
-              {totalOrdersCount} Orders
-            </div>
-            <span className="badge badge-success">100% Fulfilled</span>
-          </div>
-
-          <button onClick={() => setActiveView("orders")} className="btn btn-secondary" style={{ width: "100%", justifyContent: "space-between", minHeight: "42px" }}>
-            <span>Manage All Orders</span>
-            <ChevronRight size={16} />
-          </button>
-        </div>
-
-        {/* PRIORITY 2 CARD: INVENTORY HEALTH & CRITICAL ALERTS */}
-        <div className="glass-card" style={{ padding: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-            <div>
-              <h3 style={{ fontSize: "16px", margin: "0 0 2px 0" }}>Inventory Critical Alerts</h3>
-              <div className="caption">Items below safety reorder threshold</div>
-            </div>
-            <div style={{ background: "rgba(244, 63, 94, 0.15)", padding: "8px", borderRadius: "10px" }}>
-              <AlertTriangle size={20} color="#F43F5E" />
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "baseline", gap: "10px", marginBottom: "12px" }}>
-            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: lowStockItems.length > 0 ? "#F87171" : "#34D399" }}>
-              {lowStockItems.length} Low Stock
-            </div>
-            <span className={`badge ${lowStockItems.length > 0 ? "badge-danger" : "badge-success"}`}>
-              {lowStockItems.length > 0 ? "Action Required" : "Optimal"}
-            </span>
-          </div>
-
-          <button onClick={() => setActiveView("inventory")} className="btn btn-secondary" style={{ width: "100%", justifyContent: "space-between", minHeight: "42px" }}>
-            <span>Restock Inventory</span>
-            <ChevronRight size={16} />
-          </button>
-        </div>
-
-      </div>
-
-      {/* PRIORITY 3 & 4: PROGRESSIVE DISCLOSURE EXPANDABLE AUDIT & TRANSACTIONS */}
-      <div className="glass-panel" style={{ padding: "20px" }}>
+        {/* KPI CARD 1: REVENUE */}
         <div 
-          onClick={() => setExpandedSection(expandedSection === "all" ? "none" : "all")}
-          style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}
+          onClick={() => setActiveView("pos")}
+          className="glass-card" 
+          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
         >
           <div>
-            <h3 style={{ fontSize: "16px", margin: 0 }}>Priority 3 & 4 — Recent Transactions & Real-Time Audit Log</h3>
-            <div className="caption">Click to expand or collapse detailed ledger</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase" }}>Revenue</span>
+              <span style={{ fontSize: "12px", color: "#34D399", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
+                <ArrowUpRight size={14} /> +18.4%
+              </span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "24px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              ₹{todaysSales.toLocaleString("en-IN")}
+            </div>
+            <div className="caption" style={{ fontSize: "12px" }}>Gross Sales POS & Online</div>
           </div>
-          <ChevronDown size={20} style={{ transform: expandedSection === "all" ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }} />
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>Vs yesterday: ₹89,100</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
         </div>
 
-        {expandedSection === "all" && (
-          <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: "1px solid var(--border-color)" }}>
-            {/* Desktop Table View */}
-            <div className="table-responsive hide-on-mobile">
-              <table className="custom-table">
-                <thead>
-                  <tr>
-                    <th>Order ID</th>
-                    <th>Channel</th>
-                    <th>Customer</th>
-                    <th>Items</th>
-                    <th>Total Bill</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.slice(0, 5).map((ord) => (
-                    <tr key={ord.id}>
-                      <td style={{ fontWeight: "700", color: "var(--primary)" }}>{ord.id}</td>
-                      <td><span className="badge badge-info">{ord.channel}</span></td>
-                      <td>
-                        <div style={{ fontWeight: "600" }}>{ord.customerName}</div>
-                        <div className="caption">{ord.customerPhone}</div>
-                      </td>
-                      <td>{ord.itemsCount} items</td>
-                      <td className="num-tabular" style={{ color: "#fff" }}>₹{ord.total.toLocaleString("en-IN")}</td>
-                      <td>{ord.paymentMethod}</td>
-                      <td>
-                        <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
-                          {ord.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        {/* KPI CARD 2: NET PROFIT */}
+        <div 
+          onClick={() => setActiveView("analytics")}
+          className="glass-card" 
+          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
+        >
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase" }}>Net Profit</span>
+              <span style={{ fontSize: "12px", color: "#34D399", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
+                <ArrowUpRight size={14} /> 38% Margin
+              </span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "24px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              ₹{estimatedProfit.toLocaleString("en-IN")}
+            </div>
+            <div className="caption" style={{ fontSize: "12px" }}>Net Margin after COGS</div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>Reconciled Real-Time</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
+        </div>
+
+        {/* KPI CARD 3: ORDERS */}
+        <div 
+          onClick={() => setActiveView("orders")}
+          className="glass-card" 
+          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
+        >
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase" }}>Orders</span>
+              <span className="badge badge-success">100% Fulfilled</span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "24px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              {totalOrdersCount} Orders
+            </div>
+            <div className="caption" style={{ fontSize: "12px" }}>Multi-channel fulfilled</div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>Avg Value: ₹{(todaysSales / (totalOrdersCount || 1)).toFixed(0)}</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
+        </div>
+
+        {/* KPI CARD 4: ACTIVE CUSTOMERS */}
+        <div 
+          onClick={() => setActiveView("comms")}
+          className="glass-card" 
+          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
+        >
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase" }}>Customers</span>
+              <span style={{ fontSize: "12px", color: "#A78BFA", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
+                +12 Today
+              </span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "24px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              {activeCustomersCount} Active
+            </div>
+            <div className="caption" style={{ fontSize: "12px" }}>78% repeat buyer rate</div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>12 At Churn Risk</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
+        </div>
+
+        {/* KPI CARD 5: CASH POSITION */}
+        <div 
+          onClick={() => setActiveView("pos")}
+          className="glass-card" 
+          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
+        >
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase" }}>Cash Position</span>
+              <span className="badge badge-info">{healthScore}/100 Health</span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "24px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              ₹{todaysSales.toLocaleString("en-IN")}
+            </div>
+            <div className="caption" style={{ fontSize: "12px" }}>POS & Bank Settlement</div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>Instant UPI & Cash</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
+        </div>
+
+      </div>
+
+      {/* 2. AI CEO BRIEF (DYNAMIC ISLAND MEETS LINEAR INBOX) */}
+      {!dismissedAiBrief && (
+        <div className="glass-panel" style={{ padding: "20px 24px", marginBottom: "32px", background: "linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(18, 24, 38, 0.95) 100%)", borderColor: "rgba(139, 92, 246, 0.35)", borderRadius: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+            
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", flex: 1, minWidth: "300px" }}>
+              <div style={{ width: "44px", height: "44px", borderRadius: "14px", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 20px rgba(139, 92, 246, 0.5)", flexShrink: 0 }}>
+                <Sparkles size={22} color="#ffffff" />
+              </div>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <h3 style={{ fontSize: "16px", margin: 0 }}>AI CEO Brief — Win-Back Campaign Trigger</h3>
+                  <span className="badge badge-info">92% Confidence</span>
+                </div>
+                <div className="caption" style={{ marginTop: "2px" }}>
+                  12 VIP customers haven't ordered in 30 days. Sending a WhatsApp broadcast code <code className="sku-code">DIWALI10</code> will yield estimated <strong>+₹48,000 ROI</strong>.
+                </div>
+              </div>
             </div>
 
-            {/* Mobile Card View */}
-            <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              {orders.slice(0, 5).map((ord) => (
-                <div key={ord.id} className="glass-card" style={{ padding: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                    <span style={{ fontWeight: "700", color: "var(--primary)" }}>{ord.id}</span>
-                    <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
-                      {ord.status}
-                    </span>
+            {/* ACTION METRICS & BUTTON STRIP */}
+            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+              
+              <div style={{ display: "flex", gap: "16px", paddingRight: "16px", borderRight: "1px solid var(--border-color)" }}>
+                <div>
+                  <div className="caption" style={{ fontSize: "11px" }}>Est. ROI</div>
+                  <div className="num-tabular" style={{ color: "#34D399", fontSize: "14px" }}>+₹48,000</div>
+                </div>
+                <div>
+                  <div className="caption" style={{ fontSize: "11px" }}>Time Req.</div>
+                  <div className="num-tabular" style={{ color: "#ffffff", fontSize: "14px" }}>2 mins</div>
+                </div>
+                <div>
+                  <div className="caption" style={{ fontSize: "11px" }}>Risk</div>
+                  <div className="num-tabular" style={{ color: "#34D399", fontSize: "14px" }}>Low</div>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <button 
+                  onClick={handleExecuteAIAction} 
+                  className="btn btn-primary"
+                  style={{ minHeight: "42px", padding: "8px 16px" }}
+                >
+                  {executedAction ? (
+                    <>
+                      <Check size={16} />
+                      <span>Campaign Triggered!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Zap size={16} />
+                      <span>Execute Action</span>
+                    </>
+                  )}
+                </button>
+
+                <button 
+                  onClick={() => setDismissedAiBrief(true)} 
+                  className="btn btn-ghost"
+                  style={{ padding: "8px", minWidth: "36px", minHeight: "36px" }}
+                  aria-label="Dismiss Brief"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* 3. CRITICAL ALERTS BAR */}
+      {lowStockItems.length > 0 && (
+        <div className="glass-panel" style={{ padding: "14px 20px", marginBottom: "32px", background: "rgba(244, 63, 94, 0.12)", borderColor: "rgba(244, 63, 94, 0.3)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <AlertTriangle size={20} color="#F43F5E" />
+            <div>
+              <span style={{ fontSize: "14px", fontWeight: "700", color: "#ffffff" }}>Inventory Risk Alert: </span>
+              <span className="caption" style={{ color: "#F87171" }}>
+                {lowStockItems.length} products below safety reorder threshold (e.g. Wireless Earbuds Pro: 8 units left).
+              </span>
+            </div>
+          </div>
+          <button onClick={() => setActiveView("inventory")} className="btn btn-danger" style={{ minHeight: "38px", padding: "6px 14px", fontSize: "13px" }}>
+            <span>Restock Inventory</span>
+          </button>
+        </div>
+      )}
+
+      {/* 4. OPERATIONS (TWO-COLUMN DESKTOP GRID) */}
+      <div className="grid-2" style={{ gridTemplateColumns: "1.2fr 1fr", gap: "32px", marginBottom: "32px" }}>
+        
+        {/* LEFT COLUMN: ORDERS, FULFILLMENT & RETURNS */}
+        <div className="glass-panel" style={{ padding: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+            <div>
+              <h3 style={{ fontSize: "18px", margin: "0 0 2px 0" }}>Operations & Orders Ledger</h3>
+              <div className="caption">Live fulfillment status & customer transactions</div>
+            </div>
+            <button onClick={() => setActiveView("orders")} className="btn btn-secondary" style={{ minHeight: "38px", fontSize: "13px" }}>
+              <span>View All Orders</span>
+            </button>
+          </div>
+
+          <div className="table-responsive">
+            <table className="custom-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Channel</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Total Bill</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.slice(0, 5).map((ord) => (
+                  <tr key={ord.id}>
+                    <td style={{ fontWeight: "700", color: "var(--primary)" }}>{ord.id}</td>
+                    <td><span className="badge badge-info">{ord.channel}</span></td>
+                    <td>
+                      <div style={{ fontWeight: "700" }}>{ord.customerName}</div>
+                      <div className="caption" style={{ fontSize: "11px" }}>{ord.customerPhone}</div>
+                    </td>
+                    <td>{ord.itemsCount} items</td>
+                    <td className="num-tabular" style={{ color: "#fff" }}>₹{ord.total.toLocaleString("en-IN")}</td>
+                    <td>
+                      <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
+                        {ord.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: INVENTORY HEALTH & WAREHOUSE CAPACITY */}
+        <div className="glass-panel" style={{ padding: "24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <div>
+                <h3 style={{ fontSize: "18px", margin: "0 0 2px 0" }}>Inventory & Warehouse Capacity</h3>
+                <div className="caption">Real-time stock movement & low stock status</div>
+              </div>
+              <button onClick={() => setActiveView("inventory")} className="btn btn-secondary" style={{ minHeight: "38px", fontSize: "13px" }}>
+                <span>Manage Stock</span>
+              </button>
+            </div>
+
+            {/* WAREHOUSE CAPACITY PROGRESS INDICATOR */}
+            <div className="glass-card" style={{ padding: "16px", marginBottom: "20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                <span className="caption" style={{ fontWeight: "700" }}>Central Warehouse Capacity</span>
+                <span className="num-tabular" style={{ color: "#34D399", fontSize: "14px" }}>68% Utilized</span>
+              </div>
+              <div style={{ width: "100%", height: "8px", borderRadius: "4px", background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                <div style={{ width: "68%", height: "100%", borderRadius: "4px", background: "linear-gradient(90deg, #10B981, #3B82F6)" }} />
+              </div>
+            </div>
+
+            {/* LOW STOCK ITEMIZED LIST */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              {products.slice(0, 3).map((prod) => (
+                <div key={prod.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", background: "rgba(255,255,255,0.03)", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
+                  <div>
+                    <div style={{ fontWeight: "700", color: "#fff" }}>{prod.title}</div>
+                    <div className="sku-code" style={{ color: "var(--text-muted)" }}>SKU: {prod.sku} • {prod.category}</div>
                   </div>
-                  <div style={{ fontSize: "14px", fontWeight: "700", color: "#fff", marginBottom: "4px" }}>
-                    {ord.customerName}
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span className="caption">{ord.itemsCount} items • {ord.paymentMethod}</span>
-                    <span className="num-tabular" style={{ fontSize: "16px", color: "#fff" }}>
-                      ₹{ord.total.toLocaleString("en-IN")}
-                    </span>
+                  <div style={{ textAlign: "right" }}>
+                    <div className="num-tabular" style={{ color: prod.stockQty <= prod.lowStockThreshold ? "#F87171" : "#34D399" }}>
+                      {prod.stockQty} left
+                    </div>
+                    <div className="caption" style={{ fontSize: "11px" }}>Threshold: {prod.lowStockThreshold}</div>
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "14px", marginTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption">Supplier Lead Time: <strong>24 Hours</strong></span>
+            <span className="badge badge-success">Automated PO Ready</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* 5. AUDIT ACTIVITY & REPORTS (PROGRESSIVE DISCLOSURE) */}
+      <div className="glass-panel" style={{ padding: "20px 24px" }}>
+        <div 
+          onClick={() => setExpandedSection(!expandedSection)}
+          style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}
+        >
+          <div>
+            <h3 style={{ fontSize: "16px", margin: 0 }}>Executive Audit Logs & GST Tax Compliance</h3>
+            <div className="caption">Click to inspect real-time audit trail and GSTR-3B tax reconciliation</div>
+          </div>
+          <ChevronDown size={20} style={{ transform: expandedSection ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }} />
+        </div>
+
+        {expandedSection && (
+          <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: "1px solid var(--border-color)" }}>
+            <div className="grid-3" style={{ gap: "20px" }}>
+              
+              <div className="glass-card" style={{ padding: "16px" }}>
+                <div className="caption" style={{ fontWeight: "700", marginBottom: "6px" }}>GSTR-3B Tax Liability</div>
+                <div className="num-tabular" style={{ fontSize: "20px", color: "#ffffff", marginBottom: "4px" }}>₹526 Collected</div>
+                <div className="caption">CGST ₹263 + SGST ₹263</div>
+              </div>
+
+              <div className="glass-card" style={{ padding: "16px" }}>
+                <div className="caption" style={{ fontWeight: "700", marginBottom: "6px" }}>Catalog Sync Status</div>
+                <div className="num-tabular" style={{ fontSize: "20px", color: "#34D399", marginBottom: "4px" }}>100% Synced</div>
+                <div className="caption">5 Branch Outlets Operational</div>
+              </div>
+
+              <div className="glass-card" style={{ padding: "16px" }}>
+                <div className="caption" style={{ fontWeight: "700", marginBottom: "6px" }}>System Security Audit</div>
+                <div className="num-tabular" style={{ fontSize: "20px", color: "#A78BFA", marginBottom: "4px" }}>RBAC Active</div>
+                <div className="caption">Owner Authorization Logged</div>
+              </div>
+
             </div>
           </div>
         )}

@@ -5,13 +5,11 @@ import {
   UserCheck, 
   Mic, 
   Globe, 
-  ShoppingCart, 
   Bell, 
   Sparkles,
   ChevronDown,
-  CheckCircle2,
-  AlertTriangle,
-  Info,
+  Search,
+  Settings,
   X,
   LayoutDashboard,
   Package,
@@ -22,8 +20,6 @@ import {
   MessageSquare,
   BarChart3,
   Upload,
-  Settings,
-  ShieldCheck,
   ChevronRight
 } from "lucide-react";
 
@@ -47,9 +43,9 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   } = useRetail();
 
   const [showStoreDropdown, setShowStoreDropdown] = useState(false);
-  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
-  const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const lowStockCount = products.filter((p) => p.stockQty <= p.lowStockThreshold).length;
 
@@ -67,7 +63,7 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
     { key: "hinglish", label: "Hinglish" }
   ];
 
-  // Grouped Navigation Modules for Full-Screen Menu Overlay
+  // Grouped Navigation Modules for Full-Screen Menu Overlay (Mobile)
   const navSections = [
     {
       title: "Core Operations",
@@ -97,481 +93,293 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   ];
 
   return (
-    <header className="glass-panel main-navbar" style={{ borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "12px 20px", zIndex: 100 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
-        
-        {/* Left: App Brand & Store Switcher */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+    <>
+      {/* EXECUTIVE DESKTOP HEADER (STRICT 72PX HEIGHT & ZERO CLUTTER) */}
+      <header className="glass-panel main-navbar" style={{ height: "72px", borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "0 32px", zIndex: 100, display: "flex", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", maxWidth: "1600px", margin: "0 auto" }}>
           
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "10px",
-              background: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 0 15px rgba(99, 102, 241, 0.5)",
-              flexShrink: 0
-            }}>
-              <Sparkles size={20} color="#fff" />
-            </div>
-            <div>
-              <h1 style={{ fontSize: "1.1rem", fontWeight: "800", letterSpacing: "-0.5px", margin: 0, color: "#fff" }}>
-                {t("appTitle")}
-              </h1>
-              <span className="hide-on-mobile" style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>v0.1 TRD Edition</span>
-            </div>
-          </div>
-
-          {/* Store Branch Switcher (Desktop) */}
-          <div className="hide-on-mobile" style={{ position: "relative" }}>
-            <button
-              onClick={() => setShowStoreDropdown(!showStoreDropdown)}
-              className="btn btn-secondary"
-              style={{ fontSize: "0.82rem", padding: "6px 12px" }}
-            >
-              <Building2 size={15} color="var(--primary)" />
-              <span>{currentStore.name}</span>
-              <ChevronDown size={14} />
-            </button>
-
-            {showStoreDropdown && (
-              <div className="glass-panel" style={{
-                position: "absolute",
-                top: "110%",
-                left: 0,
-                width: "280px",
-                padding: "8px",
-                zIndex: 200
-              }}>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", padding: "4px 8px", fontWeight: "700" }}>
-                  {t("store")}
-                </div>
-                {stores.map((s) => (
-                  <div
-                    key={s.id}
-                    onClick={() => {
-                      setCurrentStoreId(s.id);
-                      setShowStoreDropdown(false);
-                    }}
-                    style={{
-                      padding: "8px 12px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      fontSize: "0.85rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "2px",
-                      background: s.id === currentStoreId ? "rgba(99, 102, 241, 0.15)" : "transparent",
-                      color: s.id === currentStoreId ? "var(--primary)" : "var(--text-main)"
-                    }}
-                  >
-                    <span style={{ fontWeight: "600" }}>{s.name}</span>
-                    <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>GSTIN: {s.GSTIN} • {s.city}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Controls: Role, Mic, Language, POS shortcut, Notifications */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          
-          {/* Role Switcher */}
-          <div className="hide-on-mobile" style={{ position: "relative" }}>
-            <button
-              onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-              className="btn btn-secondary"
-              style={{ fontSize: "0.8rem", padding: "6px 12px" }}
-            >
-              <UserCheck size={15} color="#10b981" />
-              <span>{role}</span>
-              <ChevronDown size={14} />
-            </button>
-
-            {showRoleDropdown && (
-              <div className="glass-panel" style={{
-                position: "absolute",
-                top: "110%",
-                right: 0,
-                width: "220px",
-                padding: "8px",
-                zIndex: 200
-              }}>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", padding: "4px 8px", fontWeight: "700" }}>
-                  {t("role")}
-                </div>
-                {rolesList.map((r) => (
-                  <div
-                    key={r.key}
-                    onClick={() => {
-                      setRole(r.key);
-                      setShowRoleDropdown(false);
-                    }}
-                    style={{
-                      padding: "8px 12px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      fontSize: "0.85rem",
-                      background: r.key === role ? "rgba(16, 185, 129, 0.15)" : "transparent",
-                      color: r.key === role ? "#10b981" : "var(--text-main)"
-                    }}
-                  >
-                    {r.label}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Voice Command Mic */}
-          <button
-            onClick={toggleVoiceListening}
-            className={`btn ${isListening ? "mic-active" : "btn-secondary"}`}
-            title="Voice OS Command"
-            style={{ padding: "6px 10px", fontSize: "0.8rem" }}
-          >
-            <Mic size={16} />
-            <span className="hide-on-mobile">{isListening ? "Listening..." : "Voice OS"}</span>
-          </button>
-
-          {/* Language Switcher */}
-          <div style={{ position: "relative" }}>
-            <button
-              onClick={() => setShowLangDropdown(!showLangDropdown)}
-              className="btn btn-secondary"
-              style={{ fontSize: "0.8rem", padding: "6px 10px" }}
-            >
-              <Globe size={15} color="#f59e0b" />
-              <span style={{ textTransform: "uppercase" }}>{lang}</span>
-              <ChevronDown size={14} />
-            </button>
-
-            {showLangDropdown && (
-              <div className="glass-panel" style={{
-                position: "absolute",
-                top: "110%",
-                right: 0,
-                width: "160px",
-                padding: "6px",
-                zIndex: 200
-              }}>
-                {langsList.map((l) => (
-                  <div
-                    key={l.key}
-                    onClick={() => {
-                      setLang(l.key);
-                      setShowLangDropdown(false);
-                    }}
-                    style={{
-                      padding: "8px 12px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      fontSize: "0.85rem",
-                      background: l.key === lang ? "rgba(245, 158, 11, 0.15)" : "transparent",
-                      color: l.key === lang ? "#f59e0b" : "var(--text-main)"
-                    }}
-                  >
-                    {l.label}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* POS Quick Button */}
-          <button
-            onClick={() => setActiveView("pos")}
-            className="btn btn-primary hide-on-mobile"
-            style={{ fontSize: "0.82rem", padding: "8px 14px" }}
-          >
-            <ShoppingCart size={16} />
-            <span>{t("newSale")}</span>
-          </button>
-
-          {/* Notifications Bell */}
-          <div style={{ position: "relative" }}>
-            <button
-              onClick={() => setShowNotifs(!showNotifs)}
-              className="btn btn-secondary"
-              style={{ padding: "8px 10px", position: "relative" }}
-            >
-              <Bell size={16} />
-              {lowStockCount > 0 && (
-                <span style={{
-                  position: "absolute",
-                  top: "-4px",
-                  right: "-4px",
-                  background: "var(--danger)",
-                  color: "#fff",
-                  fontSize: "0.68rem",
-                  fontWeight: "800",
-                  width: "18px",
-                  height: "18px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  {lowStockCount}
-                </span>
-              )}
-            </button>
-
-            {showNotifs && (
-              <div className="glass-panel" style={{
-                position: "absolute",
-                top: "110%",
-                right: 0,
-                width: "290px",
-                padding: "12px",
-                zIndex: 200
-              }}>
-                <h4 style={{ fontSize: "0.85rem", margin: "0 0 10px 0", color: "#fff", display: "flex", justifyContent: "space-between" }}>
-                  <span>Notifications</span>
-                  <span className="badge badge-warning">{lowStockCount} Alerts</span>
-                </h4>
-                {lowStockCount === 0 ? (
-                  <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", textAlign: "center", padding: "10px" }}>
-                    All stocks look healthy!
-                  </div>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {products.filter((p) => p.stockQty <= p.lowStockThreshold).map((p) => (
-                      <div key={p.id} style={{ fontSize: "0.8rem", padding: "8px", background: "rgba(239, 68, 68, 0.1)", borderRadius: "6px", border: "1px solid rgba(239, 68, 68, 0.2)" }}>
-                        <div style={{ fontWeight: "700", color: "#f87171" }}>{p.title}</div>
-                        <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Stock remaining: <strong>{p.stockQty}</strong> (Threshold: {p.lowStockThreshold})</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* FULL-SCREEN NAVIGATION OVERLAY (REPLACES HAMBURGER DRAWER) */}
-      {isMobileMenuOpen && (
-        <div className="mobile-fullscreen-overlay">
-          
-          {/* Overlay Top Header Bar */}
-          <div className="mobile-fullscreen-header">
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          {/* LEFT: BRAND LOGO & STORE SWITCHER */}
+          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+            
+            <div onClick={() => setActiveView("dashboard")} style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }}>
               <div style={{
                 width: "40px",
                 height: "40px",
                 borderRadius: "12px",
-                background: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+                background: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 0 20px rgba(99, 102, 241, 0.6)"
+                boxShadow: "0 0 20px rgba(139, 92, 246, 0.45)",
+                flexShrink: 0
               }}>
                 <Sparkles size={22} color="#fff" />
               </div>
               <div>
-                <h2 style={{ fontSize: "1.2rem", fontWeight: "800", color: "#ffffff", margin: 0, letterSpacing: "-0.5px" }}>
-                  Retail OS
-                </h2>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                  Full-Screen Navigation & Controls
-                </div>
+                <h1 style={{ fontSize: "18px", fontWeight: "800", letterSpacing: "-0.02em", margin: 0, color: "#fff" }}>
+                  {t("appTitle")}
+                </h1>
+                <span className="hide-on-mobile" style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: "600", letterSpacing: "0.05em" }}>ENTERPRISE OS</span>
               </div>
             </div>
 
-            {/* Circular Close Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="fullscreen-close-btn"
-              aria-label="Close navigation overlay"
-            >
-              <X size={22} color="#ffffff" />
-            </button>
-          </div>
-
-          {/* Quick Context Bar (Store Switcher & Role Selector Chips) */}
-          <div className="mobile-fullscreen-context-bar">
-            <div className="context-chip">
-              <Building2 size={15} color="var(--primary)" />
-              <select
-                value={currentStoreId}
-                onChange={(e) => setCurrentStoreId(e.target.value)}
-                className="chip-select"
+            {/* STORE BRANCH SWITCHER */}
+            <div className="hide-on-mobile" style={{ position: "relative" }}>
+              <button
+                onClick={() => setShowStoreDropdown(!showStoreDropdown)}
+                className="btn btn-secondary"
+                style={{ fontSize: "13px", padding: "8px 14px", minHeight: "42px" }}
               >
-                {stores.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name} ({s.city})</option>
-                ))}
-              </select>
-            </div>
+                <Building2 size={16} color="var(--primary)" />
+                <span style={{ fontWeight: "600" }}>{currentStore.name}</span>
+                <ChevronDown size={14} />
+              </button>
 
-            <div className="context-chip">
-              <UserCheck size={15} color="#10b981" />
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="chip-select"
-              >
-                {rolesList.map((r) => (
-                  <option key={r.key} value={r.key}>{r.label}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Categorized Navigation Grid */}
-          <div className="mobile-fullscreen-grid-container">
-            {navSections.map((sec, sIdx) => (
-              <div key={sIdx} style={{ marginBottom: "24px" }}>
-                <div style={{ 
-                  fontSize: "0.75rem", 
-                  fontWeight: "800", 
-                  color: "var(--primary)", 
-                  textTransform: "uppercase", 
-                  letterSpacing: "1.2px", 
-                  marginBottom: "12px",
-                  paddingLeft: "4px" 
+              {showStoreDropdown && (
+                <div className="glass-panel" style={{
+                  position: "absolute",
+                  top: "115%",
+                  left: 0,
+                  width: "280px",
+                  padding: "8px",
+                  zIndex: 300
                 }}>
-                  {sec.title}
+                  <div className="caption" style={{ padding: "6px 10px", fontWeight: "700" }}>
+                    Select Retail Branch
+                  </div>
+                  {stores.map((s) => (
+                    <div
+                      key={s.id}
+                      onClick={() => {
+                        setCurrentStoreId(s.id);
+                        setShowStoreDropdown(false);
+                      }}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "2px",
+                        background: s.id === currentStoreId ? "rgba(139, 92, 246, 0.18)" : "transparent",
+                        color: s.id === currentStoreId ? "var(--primary)" : "var(--text-main)"
+                      }}
+                    >
+                      <span style={{ fontWeight: "700" }}>{s.name}</span>
+                      <span className="caption" style={{ fontSize: "11px" }}>GSTIN: {s.GSTIN} • {s.city}</span>
+                    </div>
+                  ))}
                 </div>
+              )}
+            </div>
 
-                <div className="fullscreen-nav-grid">
-                  {sec.items.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeView === item.id;
-
-                    return (
-                      <div
-                        key={item.id}
-                        onClick={() => {
-                          setActiveView(item.id);
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className={`fullscreen-nav-card ${isActive ? "active" : ""}`}
-                      >
-                        <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
-                          <div style={{
-                            width: "42px",
-                            height: "42px",
-                            borderRadius: "12px",
-                            background: isActive ? item.color : "rgba(255, 255, 255, 0.05)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                            boxShadow: isActive ? `0 4px 16px ${item.color}66` : "none"
-                          }}>
-                            <Icon size={20} color={isActive ? "#ffffff" : item.color} />
-                          </div>
-
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-                              <h3 style={{ 
-                                fontSize: "0.98rem", 
-                                fontWeight: "700", 
-                                color: isActive ? "#ffffff" : "var(--text-main)", 
-                                margin: "0 0 2px 0" 
-                              }}>
-                                {item.label}
-                              </h3>
-
-                              {item.badge && (
-                                <span className="badge badge-danger" style={{ fontSize: "0.68rem" }}>
-                                  {item.badge} alert
-                                </span>
-                              )}
-
-                              {item.isNew && !item.badge && (
-                                <span className="badge badge-info" style={{ fontSize: "0.65rem" }}>
-                                  AI Powered
-                                </span>
-                              )}
-                            </div>
-                            
-                            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: 0, lineHeight: "1.3" }}>
-                              {item.desc}
-                            </p>
-                          </div>
-
-                          <ChevronRight size={18} color="var(--text-dim)" style={{ alignSelf: "center", flexShrink: 0 }} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
           </div>
 
-          {/* Fullscreen Overlay Bottom Action Bar */}
-          <div className="mobile-fullscreen-footer">
-            <button
-              onClick={() => {
-                toggleVoiceListening();
-                setIsMobileMenuOpen(false);
-              }}
-              className={`btn ${isListening ? "mic-active" : "btn-secondary"}`}
-              style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: "0.9rem" }}
-            >
-              <Mic size={18} />
-              <span>{isListening ? "Listening to Voice Command..." : "Trigger Voice Copilot"}</span>
-            </button>
+          {/* CENTER: GLOBAL SEARCH BAR */}
+          <div className="hide-on-mobile" style={{ width: "360px", position: "relative" }}>
+            <Search size={16} color="var(--text-dim)" style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)" }} />
+            <input
+              type="text"
+              className="input-field"
+              style={{ paddingLeft: "40px", minHeight: "42px", fontSize: "13px" }}
+              placeholder="Search products, SKU, orders, or customers (⌘K)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-            <div style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              justifyContent: "center", 
-              gap: "8px", 
-              marginTop: "12px",
-              color: "var(--text-dim)",
-              fontSize: "0.75rem" 
-            }}>
-              <ShieldCheck size={16} color="#10b981" />
-              <span>RBAC Protected • Active as {role}</span>
+          {/* RIGHT: NOTIFICATIONS & COMPACT EXECUTIVE PROFILE MENU */}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            
+            {/* NOTIFICATIONS BELL */}
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => setShowNotifs(!showNotifs)}
+                className="btn btn-secondary"
+                style={{ padding: "10px", minWidth: "42px", minHeight: "42px", position: "relative" }}
+                aria-label="Notifications"
+              >
+                <Bell size={18} />
+                {toasts.length > 0 && (
+                  <span style={{
+                    position: "absolute",
+                    top: "4px",
+                    right: "4px",
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "50%",
+                    background: "var(--danger)"
+                  }} />
+                )}
+              </button>
+
+              {showNotifs && (
+                <div className="glass-panel" style={{
+                  position: "absolute",
+                  top: "115%",
+                  right: 0,
+                  width: "320px",
+                  padding: "16px",
+                  zIndex: 300
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <h3 style={{ margin: 0, fontSize: "14px" }}>System Notifications</h3>
+                    <span className="badge badge-info">{toasts.length} New</span>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "240px", overflowY: "auto" }}>
+                    {toasts.length === 0 ? (
+                      <div className="caption" style={{ padding: "12px 0", textAlign: "center" }}>All systems normal</div>
+                    ) : (
+                      toasts.map((t) => (
+                        <div key={t.id} style={{ padding: "8px 12px", background: "rgba(255,255,255,0.03)", borderRadius: "8px", fontSize: "13px" }}>
+                          {t.msg}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* EXECUTIVE PROFILE DROPDOWN MENU (CONTAINS ROLE, LANG, VOICE OS, SETTINGS) */}
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className="btn btn-secondary"
+                style={{ padding: "6px 12px", minHeight: "42px", display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", fontSize: "12px", color: "#fff" }}>
+                  {role[0]}
+                </div>
+                <div className="hide-on-mobile" style={{ textAlign: "left" }}>
+                  <div style={{ fontSize: "13px", fontWeight: "700", lineHeight: "1.2", color: "#fff" }}>{role}</div>
+                  <div className="caption" style={{ fontSize: "10px" }}>Executive Privileges</div>
+                </div>
+                <ChevronDown size={14} color="var(--text-muted)" />
+              </button>
+
+              {showProfileMenu && (
+                <div className="glass-panel" style={{
+                  position: "absolute",
+                  top: "115%",
+                  right: 0,
+                  width: "260px",
+                  padding: "12px",
+                  zIndex: 350
+                }}>
+                  {/* Role Picker */}
+                  <div className="caption" style={{ fontSize: "11px", fontWeight: "700", marginBottom: "6px" }}>Select Role Persona</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginBottom: "12px" }}>
+                    {rolesList.map((r) => (
+                      <button
+                        key={r.key}
+                        onClick={() => { setRole(r.key); setShowProfileMenu(false); }}
+                        className={`btn ${role === r.key ? "btn-primary" : "btn-ghost"}`}
+                        style={{ justifyContent: "flex-start", padding: "6px 10px", fontSize: "13px", minHeight: "36px" }}
+                      >
+                        <UserCheck size={14} />
+                        <span>{r.label}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "8px", marginTop: "4px" }}>
+                    {/* Voice OS Toggle */}
+                    <button
+                      onClick={() => { toggleVoiceListening(); setShowProfileMenu(false); }}
+                      className={`btn ${isListening ? "btn-danger" : "btn-ghost"}`}
+                      style={{ width: "100%", justifyContent: "flex-start", padding: "8px 10px", fontSize: "13px", minHeight: "36px", marginBottom: "4px" }}
+                    >
+                      <Mic size={14} />
+                      <span>{isListening ? "Voice Listening Active..." : "Trigger Voice AI Command"}</span>
+                    </button>
+
+                    {/* Language Selector */}
+                    <button
+                      onClick={() => { setLang(lang === "en" ? "hi" : "en"); setShowProfileMenu(false); }}
+                      className="btn btn-ghost"
+                      style={{ width: "100%", justifyContent: "flex-start", padding: "8px 10px", fontSize: "13px", minHeight: "36px", marginBottom: "4px" }}
+                    >
+                      <Globe size={14} />
+                      <span>Language: {lang === "en" ? "English" : "हिंदी"}</span>
+                    </button>
+
+                    {/* Advanced Settings */}
+                    <button
+                      onClick={() => { setActiveView("settings"); setShowProfileMenu(false); }}
+                      className="btn btn-ghost"
+                      style={{ width: "100%", justifyContent: "flex-start", padding: "8px 10px", fontSize: "13px", minHeight: "36px" }}
+                    >
+                      <Settings size={14} />
+                      <span>Advanced Settings & RBAC</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
           </div>
 
         </div>
-      )}
+      </header>
 
-      {/* Floating Toast Notification Container */}
-      <div style={{
-        position: "fixed",
-        bottom: "24px",
-        right: "24px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        zIndex: 1000
-      }}>
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className="glass-panel"
-            style={{
-              padding: "12px 18px",
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              fontSize: "0.88rem",
-              background: toast.type === "success" ? "rgba(16, 185, 129, 0.2)" : toast.type === "warning" ? "rgba(245, 158, 11, 0.2)" : "rgba(99, 102, 241, 0.2)",
-              borderColor: toast.type === "success" ? "rgba(16, 185, 129, 0.5)" : toast.type === "warning" ? "rgba(245, 158, 11, 0.5)" : "rgba(99, 102, 241, 0.5)",
-              color: "#fff",
-              boxShadow: "0 10px 25px rgba(0,0,0,0.5)"
-            }}
-          >
-            {toast.type === "success" && <CheckCircle2 size={18} color="#34d399" />}
-            {toast.type === "warning" && <AlertTriangle size={18} color="#fbbf24" />}
-            {toast.type === "info" && <Info size={18} color="#818cf8" />}
-            <span>{toast.message}</span>
+      {/* FULL-SCREEN NAVIGATION OVERLAY FOR MOBILE */}
+      {isMobileMenuOpen && (
+        <div className="mobile-fullscreen-overlay">
+          <div className="mobile-fullscreen-header">
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Sparkles size={18} color="#fff" />
+              </div>
+              <div>
+                <h3 style={{ fontSize: "16px", margin: 0 }}>Retail OS Modules</h3>
+                <div className="caption" style={{ fontSize: "11px" }}>{currentStore.name}</div>
+              </div>
+            </div>
+            <button onClick={() => setIsMobileMenuOpen(false)} className="fullscreen-close-btn">
+              <X size={20} color="#fff" />
+            </button>
           </div>
-        ))}
-      </div>
-    </header>
+
+          <div className="mobile-fullscreen-grid-container">
+            <div className="fullscreen-nav-grid">
+              {navSections.map((sec) => (
+                <div key={sec.title} style={{ marginBottom: "20px" }}>
+                  <div className="caption" style={{ fontSize: "12px", fontWeight: "700", marginBottom: "10px" }}>{sec.title}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    {sec.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = activeView === item.id;
+                      return (
+                        <div
+                          key={item.id}
+                          onClick={() => {
+                            setActiveView(item.id);
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className={`fullscreen-nav-card ${isActive ? "active" : ""}`}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <div style={{ padding: "8px", borderRadius: "10px", background: "rgba(255,255,255,0.06)" }}>
+                              <Icon size={20} color={item.color} />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontWeight: "700", fontSize: "15px", color: "#fff" }}>{item.label}</div>
+                              <div className="caption" style={{ fontSize: "12px" }}>{item.desc}</div>
+                            </div>
+                            <ChevronRight size={16} color="var(--text-muted)" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
