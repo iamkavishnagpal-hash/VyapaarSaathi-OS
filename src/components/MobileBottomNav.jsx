@@ -5,11 +5,12 @@ import {
   ShoppingBag, 
   Package, 
   Bot, 
-  Grid 
+  Grid,
+  Sparkles
 } from "lucide-react";
 
 export const MobileBottomNav = ({ onOpenMobileMenu }) => {
-  const { activeView, setActiveView, t, products } = useRetail();
+  const { activeView, setActiveView, t, products, toggleVoiceListening, isListening } = useRetail();
 
   const lowStockCount = products.filter((p) => p.stockQty <= p.lowStockThreshold).length;
 
@@ -21,37 +22,50 @@ export const MobileBottomNav = ({ onOpenMobileMenu }) => {
   ];
 
   return (
-    <nav className="mobile-bottom-nav">
-      {tabs.map((tab) => {
-        const Icon = tab.icon;
-        const isActive = activeView === tab.id;
-
-        return (
-          <button
-            key={tab.id}
-            onClick={() => setActiveView(tab.id)}
-            className={`mobile-nav-item ${isActive ? "active" : ""}`}
-            aria-label={tab.label}
-          >
-            <div style={{ position: "relative" }}>
-              <Icon size={22} />
-              {tab.badge && (
-                <span className="mobile-badge">{tab.badge}</span>
-              )}
-            </div>
-            <span>{tab.label}</span>
-          </button>
-        );
-      })}
-
+    <>
+      {/* FLOATING MOBILE AI ASSISTANT FAB SPECIFICATION */}
       <button
-        onClick={onOpenMobileMenu}
-        className="mobile-nav-item"
-        aria-label="More Options"
+        onClick={toggleVoiceListening}
+        className={`mobile-ai-fab ${isListening ? "mic-active" : ""}`}
+        aria-label="Floating AI Voice Assistant"
+        title="Floating AI Co-Pilot"
       >
-        <Grid size={22} />
-        <span>More</span>
+        <Sparkles size={22} color="#ffffff" />
       </button>
-    </nav>
+
+      {/* 5-TAB MOBILE DOCK */}
+      <nav className="mobile-bottom-nav">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeView === tab.id;
+
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveView(tab.id)}
+              className={`mobile-nav-item ${isActive ? "active" : ""}`}
+              aria-label={tab.label}
+            >
+              <div style={{ position: "relative" }}>
+                <Icon size={22} />
+                {tab.badge && (
+                  <span className="mobile-badge">{tab.badge}</span>
+                )}
+              </div>
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+
+        <button
+          onClick={onOpenMobileMenu}
+          className="mobile-nav-item"
+          aria-label="More Destinations"
+        >
+          <Grid size={22} />
+          <span>More</span>
+        </button>
+      </nav>
+    </>
   );
 };
