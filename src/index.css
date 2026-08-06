@@ -324,31 +324,29 @@ body, p, input, select, textarea, .body-text {
   padding-right: var(--sar);
 }
 
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  background-color: #0B0F17;
-  background-image: 
-    radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 45%),
-    radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 45%);
-  background-size: 150% 150%;
-  animation: breathingGlow 12s ease-in-out infinite alternate;
+/* ====================================================== */
+/* CINEMATIC NEON BREATHING GLOW & GLASSMORPHISM          */
+/* ====================================================== */
+
+@keyframes neon-breath {
+  0% {
+    background-position: 10% 20%, 90% 80%;
+    opacity: 0.85;
+  }
+  50% {
+    background-position: 30% 40%, 70% 60%;
+    opacity: 1;
+  }
+  100% {
+    background-position: 10% 20%, 90% 80%;
+    opacity: 0.85;
+  }
 }
 
-@keyframes breathingGlow {
-  0% { background-position: 0% 0%, 100% 100%; }
-  50% { background-position: 50% 50%, 50% 50%; }
-  100% { background-position: 100% 100%, 0% 0%; }
-}
-
-/* Staggered Fade-In-Up Keyframes for Dashboard Cards */
-@keyframes fadeInUpStagger {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -356,11 +354,29 @@ body, p, input, select, textarea, .body-text {
   }
 }
 
-.animate-stagger-1 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both; }
-.animate-stagger-2 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
-.animate-stagger-3 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.19s both; }
-.animate-stagger-4 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.26s both; }
-.animate-stagger-5 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.33s both; }
+.animate-cascade {
+  animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.12s; }
+.stagger-3 { animation-delay: 0.19s; }
+.stagger-4 { animation-delay: 0.26s; }
+.stagger-5 { animation-delay: 0.33s; }
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-main);
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 45%);
+  animation: neon-breath 14s ease-in-out infinite alternate;
+}
 
 .view-container {
   flex: 1;
