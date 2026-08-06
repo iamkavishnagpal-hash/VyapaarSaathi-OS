@@ -603,27 +603,35 @@ body, p, input, select, textarea, .body-text {
     padding: var(--space-4) var(--space-4) calc(84px + var(--sab)) var(--space-4) !important;
   }
 
-  /* Mobile Floating Bottom Dock (Maximum 5 Tabs) */
-  .mobile-bottom-nav {
+  /* Mobile Floating Glass Dock (Apple / Arc / Linear Grade) */
+  .mobile-floating-dock-wrapper {
     display: flex;
     position: fixed;
-    bottom: calc(10px + var(--sab));
-    left: var(--space-3);
-    right: var(--space-3);
-    height: 56px;
-    background: rgba(11, 15, 23, 0.95);
+    bottom: calc(14px + var(--sab));
+    left: 16px;
+    right: 16px;
+    z-index: 950;
+    justify-content: center;
+    pointer-events: auto;
+  }
+
+  .mobile-glass-dock {
+    width: 100%;
+    max-width: 440px;
+    height: 64px;
+    background: rgba(18, 24, 38, 0.85);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-full);
-    z-index: 900;
+    border-radius: 32px;
+    display: flex;
     align-items: center;
     justify-content: space-around;
-    padding: 0 var(--space-2);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(139, 92, 246, 0.15);
+    padding: 0 6px;
+    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7), 0 0 24px rgba(139, 92, 246, 0.18);
   }
 
-  .mobile-nav-item {
+  .dock-item {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -635,36 +643,96 @@ body, p, input, select, textarea, .body-text {
     font-size: 11px;
     font-weight: 600;
     cursor: pointer;
-    min-height: 44px;
+    min-height: 48px;
     min-width: 44px;
-    padding: 4px 6px;
-    border-radius: var(--radius-full);
+    padding: 4px 8px;
+    border-radius: 20px;
     flex: 1;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .mobile-nav-item.active {
+  .dock-item.active {
     color: #ffffff;
+    background: rgba(139, 92, 246, 0.18);
   }
 
-  .mobile-nav-item.active svg {
+  .dock-item.active svg {
     color: var(--primary);
     filter: drop-shadow(0 0 8px var(--primary));
   }
 
-  .mobile-badge {
+  .dock-item:active {
+    transform: scale(0.92);
+  }
+
+  .dock-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  /* Center AI Elevated Action Button */
+  .dock-ai-center-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-top: -20px;
+    padding: 0 4px;
+    z-index: 10;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ai-btn-inner {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 24px rgba(139, 92, 246, 0.55), 0 0 16px rgba(139, 92, 246, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dock-ai-center-btn:active .ai-btn-inner {
+    transform: scale(0.92);
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.6);
+  }
+
+  .dock-ai-center-btn.listening .ai-btn-inner {
+    animation: pulse-glow 1.5s infinite;
+    background: var(--danger);
+  }
+
+  .ai-label {
+    margin-top: 2px;
+    font-weight: 700;
+    color: #A78BFA;
+  }
+
+  /* Auto-Sizing Red Badge */
+  .dock-badge-pill {
     position: absolute;
     top: -4px;
-    right: -6px;
+    right: -8px;
     background: var(--danger);
     color: #ffffff;
     font-size: 10px;
     font-weight: 800;
-    width: 16px;
+    min-width: 16px;
     height: 16px;
-    border-radius: 50%;
+    padding: 0 4px;
+    border-radius: 9999px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 2px 6px rgba(244, 63, 94, 0.6);
   }
 }

@@ -1,71 +1,95 @@
-import React from "react";
+import React, { memo } from "react";
 import { useRetail } from "../context/RetailContext";
 import { 
   LayoutDashboard, 
   ShoppingBag, 
   Package, 
-  Bot, 
-  Grid,
-  Sparkles
+  Sparkles, 
+  Grid 
 } from "lucide-react";
 
-export const MobileBottomNav = ({ onOpenMobileMenu }) => {
-  const { activeView, setActiveView, t, products, toggleVoiceListening, isListening } = useRetail();
+export const MobileBottomNav = memo(({ onOpenMobileMenu }) => {
+  const { activeView, setActiveView, products, toggleVoiceListening, isListening } = useRetail();
 
   const lowStockCount = products.filter((p) => p.stockQty <= p.lowStockThreshold).length;
 
-  const tabs = [
-    { id: "dashboard", label: t("dashboard"), icon: LayoutDashboard },
-    { id: "orders", label: t("orders"), icon: ShoppingBag },
-    { id: "inventory", label: t("inventory"), icon: Package, badge: lowStockCount > 0 ? lowStockCount : null },
-    { id: "ai", label: t("aiCenter"), icon: Bot },
-  ];
-
   return (
-    <>
-      {/* FLOATING MOBILE AI ASSISTANT FAB SPECIFICATION */}
-      <button
-        onClick={toggleVoiceListening}
-        className={`mobile-ai-fab ${isListening ? "mic-active" : ""}`}
-        aria-label="Floating AI Voice Assistant"
-        title="Floating AI Co-Pilot"
-      >
-        <Sparkles size={22} color="#ffffff" />
-      </button>
+    <nav className="mobile-floating-dock-wrapper" aria-label="Mobile Navigation Dock">
+      <div className="mobile-glass-dock">
+        
+        {/* 1. HOME TAB */}
+        <button
+          onClick={() => setActiveView("dashboard")}
+          className={`dock-item ${activeView === "dashboard" ? "active" : ""}`}
+          aria-selected={activeView === "dashboard"}
+          aria-label="Home Dashboard"
+        >
+          <div className="dock-icon-wrapper">
+            <LayoutDashboard size={activeView === "dashboard" ? 24 : 22} strokeWidth={1.75} />
+          </div>
+          <span className="dock-label">Home</span>
+        </button>
 
-      {/* 5-TAB MOBILE DOCK */}
-      <nav className="mobile-bottom-nav">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeView === tab.id;
+        {/* 2. ORDERS TAB */}
+        <button
+          onClick={() => setActiveView("orders")}
+          className={`dock-item ${activeView === "orders" ? "active" : ""}`}
+          aria-selected={activeView === "orders"}
+          aria-label="Orders"
+        >
+          <div className="dock-icon-wrapper">
+            <ShoppingBag size={activeView === "orders" ? 24 : 22} strokeWidth={1.75} />
+          </div>
+          <span className="dock-label">Orders</span>
+        </button>
 
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveView(tab.id)}
-              className={`mobile-nav-item ${isActive ? "active" : ""}`}
-              aria-label={tab.label}
-            >
-              <div style={{ position: "relative" }}>
-                <Icon size={22} />
-                {tab.badge && (
-                  <span className="mobile-badge">{tab.badge}</span>
-                )}
-              </div>
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
+        {/* 3. AI PRIMARY ACTION BUTTON (CENTER ELEVATED FLOATING ACTION) */}
+        <button
+          onClick={() => {
+            setActiveView("ai");
+            toggleVoiceListening();
+          }}
+          className={`dock-ai-center-btn ${isListening ? "listening" : ""}`}
+          aria-label="AI Co-Pilot Assistant"
+          title="AI Co-Pilot Assistant"
+        >
+          <div className="ai-btn-inner">
+            <Sparkles size={24} strokeWidth={1.75} color="#ffffff" />
+          </div>
+          <span className="dock-label ai-label">AI</span>
+        </button>
 
+        {/* 4. STOCK TAB (WITH AUTO-SIZING RED BADGE) */}
+        <button
+          onClick={() => setActiveView("inventory")}
+          className={`dock-item ${activeView === "inventory" ? "active" : ""}`}
+          aria-selected={activeView === "inventory"}
+          aria-label="Stock Inventory"
+        >
+          <div className="dock-icon-wrapper" style={{ position: "relative" }}>
+            <Package size={activeView === "inventory" ? 24 : 22} strokeWidth={1.75} />
+            {lowStockCount > 0 && (
+              <span className="dock-badge-pill" aria-label={`${lowStockCount} alerts`}>
+                {lowStockCount}
+              </span>
+            )}
+          </div>
+          <span className="dock-label">Stock</span>
+        </button>
+
+        {/* 5. MORE TAB (LAUNCHES FULL-SCREEN OVERLAY) */}
         <button
           onClick={onOpenMobileMenu}
-          className="mobile-nav-item"
-          aria-label="More Destinations"
+          className="dock-item"
+          aria-label="More Navigation Options"
         >
-          <Grid size={22} />
-          <span>More</span>
+          <div className="dock-icon-wrapper">
+            <Grid size={22} strokeWidth={1.75} />
+          </div>
+          <span className="dock-label">More</span>
         </button>
-      </nav>
-    </>
+
+      </div>
+    </nav>
   );
-};
+});
