@@ -10,7 +10,9 @@ export const RetailProvider = ({ children }) => {
   const [lang, setLang] = useState("en");
   const [role, setRole] = useState("Owner");
   
-  // Stores & Products
+  // Stores & Products & Industry Vertical Template
+  const [industryTemplate, setIndustryTemplate] = useState("Retail");
+  const [currency, setCurrency] = useState("INR"); // INR (₹), USD ($), EUR (€), GBP (£), AED (د.إ)
   const [stores, setStores] = useState(initialStores);
   const [currentStoreId, setCurrentStoreId] = useState("store-1");
   const [products, setProducts] = useState(initialProducts);
@@ -302,6 +304,10 @@ export const RetailProvider = ({ children }) => {
         setLang,
         role,
         setRole,
+        industryTemplate,
+        setIndustryTemplate,
+        currency,
+        setCurrency,
         stores,
         currentStore,
         currentStoreId,

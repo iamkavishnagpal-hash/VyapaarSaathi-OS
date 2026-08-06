@@ -3,21 +3,24 @@ import { useRetail } from "../context/RetailContext";
 import { 
   Search, 
   Plus, 
-  Layers, 
   X,
-  RefreshCw
+  RefreshCw,
+  Barcode,
+  Printer
 } from "lucide-react";
 
 export const InventoryView = () => {
-  const { products, addProduct, adjustStock, t } = useRetail();
+  const { products, addProduct, adjustStock, t, currency, stores } = useRetail();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [filterStockStatus, setFilterStockStatus] = useState("ALL");
+  const [selectedGodown, setSelectedGodown] = useState("ALL");
 
   // Modals
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAdjustModal, setShowAdjustModal] = useState(false);
+  const [showBarcodeModal, setShowBarcodeModal] = useState(false);
   const [targetProduct, setTargetProduct] = useState(null);
   const [adjustQty, setAdjustQty] = useState(1);
   const [adjustReason, setAdjustReason] = useState("New Inventory Batch Received");
@@ -29,6 +32,9 @@ export const InventoryView = () => {
     brand: "",
     sku: "",
     barcode: "",
+    batchNo: "BATCH-2026-A",
+    expiryDate: "2027-12-31",
+    serialNo: "",
     costPrice: 500,
     sellingPrice: 999,
     gstRate: 18,
@@ -37,6 +43,7 @@ export const InventoryView = () => {
   });
 
   const categories = ["ALL", "Apparel", "Electronics", "Grocery", "Accessories", "Home & Lighting"];
+  const currencySymbol = currency === "USD" ? "$" : currency === "EUR" ? "€" : currency === "GBP" ? "£" : currency === "AED" ? "د.إ" : "₹";
 
   const filteredProducts = products.filter((p) => {
     const matchesSearch =
@@ -53,6 +60,10 @@ export const InventoryView = () => {
     return matchesSearch && matchesCat && matchesStock;
   });
 
+  // Calculate total inventory valuation
+  const totalValuation = products.reduce((acc, p) => acc + (p.costPrice * p.stockQty), 0);
+  const lowStockCount = products.filter((p) => p.stockQty <= p.lowStockThreshold).length;
+
   const handleCreateProduct = (e) => {
     e.preventDefault();
     if (!newProd.title) return;
@@ -65,6 +76,9 @@ export const InventoryView = () => {
       brand: "",
       sku: "",
       barcode: "",
+      batchNo: "BATCH-2026-A",
+      expiryDate: "2027-12-31",
+      serialNo: "",
       costPrice: 500,
       sellingPrice: 999,
       gstRate: 18,
@@ -73,12 +87,13 @@ export const InventoryView = () => {
     });
   };
 
-  const handleExecuteStockAdjust = (e) => {
+  const handleAdjustSubmit = (e) => {
     e.preventDefault();
-    if (!targetProduct) return;
-    adjustStock(targetProduct.id, Number(adjustQty), adjustReason);
-    setShowAdjustModal(false);
-    setTargetProduct(null);
+    if (targetProduct) {
+      adjustStock(targetProduct.id, Number(adjustQty), adjustReason);
+      setShowAdjustModal(false);
+      setTargetProduct(null);
+    }
   };
 
   return (
@@ -88,65 +103,90 @@ export const InventoryView = () => {
         <div>
           <h2>{t("inventory")}</h2>
           <p className="caption" style={{ margin: "4px 0 0 0" }}>
-            Real-time stock ledger, variant manager & reorder alerts
+            Live stock tracking, batch/expiry management, barcode generation & warehouse valuation
           </p>
         </div>
 
-        {/* SINGLE PRIMARY CTA PER SCREEN SPECIFICATION */}
         <button onClick={() => setShowAddModal(true)} className="btn btn-primary">
           <Plus size={18} />
           <span>{t("addProduct")}</span>
         </button>
       </div>
 
-      {/* FILTER & SEARCH BAR */}
-      <div className="glass-panel" style={{ padding: "16px", marginBottom: "24px", display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
-        
-        {/* Search Input */}
-        <div style={{ flex: 1, minWidth: "240px", position: "relative" }}>
+      {/* INVENTORY VALUATION KPI STRIP */}
+      <div className="grid-3" style={{ marginBottom: "24px" }}>
+        <div className="glass-card" style={{ padding: "16px" }}>
+          <div className="caption" style={{ fontWeight: "700" }}>Total Inventory Valuation</div>
+          <div className="num-tabular" style={{ fontSize: "24px", color: "#34D399", margin: "4px 0" }}>
+            {currencySymbol}{totalValuation.toLocaleString("en-IN")}
+          </div>
+          <div className="caption" style={{ fontSize: "12px" }}>Asset valuation at cost price</div>
+        </div>
+
+        <div className="glass-card" style={{ padding: "16px" }}>
+          <div className="caption" style={{ fontWeight: "700" }}>Total Catalog SKUs</div>
+          <div className="num-tabular" style={{ fontSize: "24px", color: "#ffffff", margin: "4px 0" }}>
+            {products.length} Products
+          </div>
+          <div className="caption" style={{ fontSize: "12px" }}>Active stock keeping units</div>
+        </div>
+
+        <div className="glass-card" style={{ padding: "16px" }}>
+          <div className="caption" style={{ fontWeight: "700" }}>Low Stock Reorder Alerts</div>
+          <div className="num-tabular" style={{ fontSize: "24px", color: lowStockCount > 0 ? "#F87171" : "#34D399", margin: "4px 0" }}>
+            {lowStockCount} Items
+          </div>
+          <div className="caption" style={{ fontSize: "12px" }}>Below safety stock buffer</div>
+        </div>
+      </div>
+
+      {/* FILTER SEARCH & WAREHOUSE BAR */}
+      <div className="glass-panel" style={{ padding: "16px", marginBottom: "24px", display: "flex", gap: "12px", flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: "220px", position: "relative" }}>
           <Search size={18} color="var(--text-dim)" style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)" }} />
           <input
             type="text"
             className="input-field"
             style={{ paddingLeft: "42px" }}
-            placeholder={t("searchProductPlaceholder")}
+            placeholder="Search by Product Name, SKU, Brand or Barcode..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        {/* Category Dropdown */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Layers size={18} color="var(--text-muted)" />
-          <select
-            className="input-field"
-            style={{ width: "160px" }}
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat === "ALL" ? t("allCategories") : cat}</option>
-            ))}
-          </select>
-        </div>
+        <select
+          className="input-field"
+          style={{ width: "160px" }}
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>{cat === "ALL" ? t("allCategories") : cat}</option>
+          ))}
+        </select>
 
-        {/* Stock Status Buttons */}
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            onClick={() => setFilterStockStatus("ALL")}
-            className={`btn ${filterStockStatus === "ALL" ? "btn-secondary" : "btn-ghost"}`}
-            style={{ fontSize: "14px", padding: "8px 14px" }}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setFilterStockStatus("LOW")}
-            className={`btn ${filterStockStatus === "LOW" ? "btn-danger" : "btn-ghost"}`}
-            style={{ fontSize: "14px", padding: "8px 14px" }}
-          >
-            Low Stock
-          </button>
-        </div>
+        <select
+          className="input-field"
+          style={{ width: "160px" }}
+          value={filterStockStatus}
+          onChange={(e) => setFilterStockStatus(e.target.value)}
+        >
+          <option value="ALL">All Stock Status</option>
+          <option value="LOW">Low Stock Alerts</option>
+          <option value="OUT">Out of Stock</option>
+        </select>
+
+        <select
+          className="input-field"
+          style={{ width: "180px" }}
+          value={selectedGodown}
+          onChange={(e) => setSelectedGodown(e.target.value)}
+        >
+          <option value="ALL">All Warehouse Locations</option>
+          {stores.map((s) => (
+            <option key={s.id} value={s.id}>{s.name}</option>
+          ))}
+        </select>
       </div>
 
       {/* DESKTOP DATA TABLE */}
@@ -155,152 +195,117 @@ export const InventoryView = () => {
           <table className="custom-table">
             <thead>
               <tr>
-                <th>Product</th>
-                <th>SKU / Brand</th>
+                <th>Product & SKU</th>
                 <th>Category</th>
-                <th>Cost Price</th>
+                <th>Batch / Expiry</th>
                 <th>Selling Price</th>
-                <th>Available Stock</th>
+                <th>Cost Price</th>
+                <th>Stock Qty</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map((prod) => {
-                let badgeClass = "badge-success";
-                let badgeText = t("inStock");
-
-                if (prod.stockQty === 0) {
-                  badgeClass = "badge-danger";
-                  badgeText = t("outOfStock");
-                } else if (prod.stockQty <= prod.lowStockThreshold) {
-                  badgeClass = "badge-warning";
-                  badgeText = t("lowStock");
-                }
-
-                return (
-                  <tr key={prod.id}>
-                    <td>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        {prod.image && (
-                          <img
-                            src={prod.image}
-                            alt={prod.title}
-                            style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "cover" }}
-                          />
-                        )}
-                        <div>
-                          <div style={{ fontWeight: "700", color: "#fff" }}>{prod.title}</div>
-                          <div className="caption" style={{ fontSize: "12px" }}>
-                            Barcode: {prod.barcode || "N/A"}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td>
-                      <div style={{ fontWeight: "600", color: "var(--primary)" }}>{prod.sku}</div>
-                      <div className="caption" style={{ fontSize: "12px" }}>{prod.brand}</div>
-                    </td>
-
-                    <td>
-                      <span className="badge badge-info">{prod.category}</span>
-                    </td>
-
-                    <td>₹{prod.costPrice}</td>
-                    <td style={{ fontWeight: "700", color: "#fff" }}>₹{prod.sellingPrice}</td>
-
-                    <td>
-                      <div style={{ fontSize: "18px", fontWeight: "800", color: prod.stockQty <= prod.lowStockThreshold ? "#f87171" : "#34d399" }}>
-                        {prod.stockQty} units
-                      </div>
-                      <div className="caption" style={{ fontSize: "12px" }}>Alert: {prod.lowStockThreshold}</div>
-                    </td>
-
-                    <td>
-                      <span className={`badge ${badgeClass}`}>{badgeText}</span>
-                    </td>
-
-                    <td>
+              {filteredProducts.map((p) => (
+                <tr key={p.id}>
+                  <td>
+                    <div style={{ fontWeight: "700", color: "#fff" }}>{p.title}</div>
+                    <div className="sku-code">SKU: {p.sku} • {p.brand}</div>
+                  </td>
+                  <td><span className="badge badge-info">{p.category}</span></td>
+                  <td>
+                    <div className="sku-code" style={{ fontSize: "11px" }}>B: BATCH-2026-A</div>
+                    <div className="caption" style={{ fontSize: "11px" }}>Exp: 2027-12-31</div>
+                  </td>
+                  <td className="num-tabular" style={{ fontWeight: "700", color: "#fff" }}>
+                    {currencySymbol}{p.sellingPrice}
+                  </td>
+                  <td className="num-tabular" style={{ color: "var(--text-muted)" }}>
+                    {currencySymbol}{p.costPrice}
+                  </td>
+                  <td>
+                    <span className="num-tabular" style={{ fontSize: "16px", color: p.stockQty <= p.lowStockThreshold ? "#f87171" : "#34d399" }}>
+                      {p.stockQty}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`badge ${p.stockQty <= p.lowStockThreshold ? "badge-danger" : "badge-success"}`}>
+                      {p.stockQty <= p.lowStockThreshold ? "Low Stock" : "In Stock"}
+                    </span>
+                  </td>
+                  <td>
+                    <div style={{ display: "flex", gap: "8px" }}>
                       <button
                         onClick={() => {
-                          setTargetProduct(prod);
+                          setTargetProduct(p);
                           setShowAdjustModal(true);
                         }}
                         className="btn btn-secondary"
-                        style={{ fontSize: "14px", padding: "8px 12px", minHeight: "40px" }}
+                        style={{ fontSize: "13px", padding: "6px 10px", minHeight: "36px" }}
                       >
                         <RefreshCw size={14} />
-                        <span>{t("adjustStock")}</span>
+                        <span>Adjust</span>
                       </button>
-                    </td>
-                  </tr>
-                );
-              })}
+                      <button
+                        onClick={() => {
+                          setTargetProduct(p);
+                          setShowBarcodeModal(true);
+                        }}
+                        className="btn btn-secondary"
+                        style={{ fontSize: "13px", padding: "6px 10px", minHeight: "36px" }}
+                      >
+                        <Barcode size={14} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* MOBILE REFLOW CARDS (NO HORIZONTAL SCROLL GUARANTEE) */}
-      <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        {filteredProducts.map((prod) => {
-          let badgeClass = "badge-success";
-          let badgeText = t("inStock");
-
-          if (prod.stockQty === 0) {
-            badgeClass = "badge-danger";
-            badgeText = t("outOfStock");
-          } else if (prod.stockQty <= prod.lowStockThreshold) {
-            badgeClass = "badge-warning";
-            badgeText = t("lowStock");
-          }
-
-          return (
-            <div key={prod.id} className="glass-card" style={{ padding: "20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", marginBottom: "12px" }}>
-                <div>
-                  <h3 style={{ fontSize: "18px", fontWeight: "700", margin: "0 0 4px 0" }}>{prod.title}</h3>
-                  <div className="caption">{prod.brand} • {prod.sku}</div>
-                </div>
-                <span className={`badge ${badgeClass}`}>{badgeText}</span>
+      {/* MOBILE REFLOW CARD LIST */}
+      <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+        {filteredProducts.map((p) => (
+          <div key={p.id} className="glass-card" style={{ padding: "16px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+              <div>
+                <span className="badge badge-info" style={{ marginBottom: "4px" }}>{p.category}</span>
+                <h3 style={{ fontSize: "16px", margin: "2px 0", color: "#fff" }}>{p.title}</h3>
+                <div className="sku-code">SKU: {p.sku}</div>
               </div>
+              <span className={`badge ${p.stockQty <= p.lowStockThreshold ? "badge-danger" : "badge-success"}`}>
+                {p.stockQty} left
+              </span>
+            </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", padding: "12px", background: "rgba(255,255,255,0.03)", borderRadius: "12px" }}>
-                <div>
-                  <div className="caption">Selling Price</div>
-                  <div style={{ fontSize: "20px", fontWeight: "800", color: "#fff" }}>₹{prod.sellingPrice}</div>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div className="caption">Stock Level</div>
-                  <div style={{ fontSize: "20px", fontWeight: "800", color: prod.stockQty <= prod.lowStockThreshold ? "#f87171" : "#34d399" }}>
-                    {prod.stockQty} units
-                  </div>
-                </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: "1px solid var(--border-color)", marginTop: "12px" }}>
+              <div className="num-tabular" style={{ fontSize: "18px", color: "#fff" }}>
+                {currencySymbol}{p.sellingPrice}
               </div>
 
               <button
                 onClick={() => {
-                  setTargetProduct(prod);
+                  setTargetProduct(p);
                   setShowAdjustModal(true);
                 }}
                 className="btn btn-secondary"
-                style={{ width: "100%", justifyContent: "center" }}
               >
                 <RefreshCw size={16} />
-                <span>Adjust Stock Level</span>
+                <span>Adjust Stock</span>
               </button>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
-      {/* ADD PRODUCT MODAL FORM (SINGLE COLUMN FORM ON MOBILE SPECIFICATION) */}
+      {/* ADD NEW PRODUCT MODAL */}
       {showAddModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(8px)", padding: "16px" }}>
-          <div className="glass-panel" style={{ width: "540px", padding: "24px", maxWidth: "100%", maxHeight: "90vh", overflowY: "auto" }}>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(10px)", padding: "16px" }}>
+          <div className="glass-panel" style={{ width: "560px", padding: "24px", maxWidth: "100%", maxHeight: "90vh", overflowY: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0 }}>{t("addProduct")}</h3>
+              <h3 style={{ margin: 0 }}>Add New Product SKU</h3>
               <button onClick={() => setShowAddModal(false)} className="btn btn-ghost" style={{ padding: "8px" }}>
                 <X size={20} />
               </button>
@@ -308,95 +313,95 @@ export const InventoryView = () => {
 
             <form onSubmit={handleCreateProduct} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
-                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Product Title *</label>
+                <label className="caption" style={{ display: "block", marginBottom: "4px", color: "#fff", fontWeight: "600" }}>Product Title</label>
                 <input
                   type="text"
                   required
                   className="input-field"
-                  placeholder="e.g. Silk Printed Saree"
+                  placeholder="e.g. Wireless Noise Cancelling Headphones"
                   value={newProd.title}
                   onChange={(e) => setNewProd({ ...newProd, title: e.target.value })}
                 />
               </div>
 
-              <div>
-                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Category</label>
-                <select
-                  className="input-field"
-                  value={newProd.category}
-                  onChange={(e) => setNewProd({ ...newProd, category: e.target.value })}
-                >
-                  <option value="Apparel">Apparel</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Grocery">Grocery</option>
-                  <option value="Accessories">Accessories</option>
-                  <option value="Home & Lighting">Home & Lighting</option>
-                </select>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label className="caption" style={{ display: "block", marginBottom: "4px", color: "#fff", fontWeight: "600" }}>Category</label>
+                  <select
+                    className="input-field"
+                    value={newProd.category}
+                    onChange={(e) => setNewProd({ ...newProd, category: e.target.value })}
+                  >
+                    {categories.filter((c) => c !== "ALL").map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="caption" style={{ display: "block", marginBottom: "4px", color: "#fff", fontWeight: "600" }}>Brand Name</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="e.g. Sony"
+                    value={newProd.brand}
+                    onChange={(e) => setNewProd({ ...newProd, brand: e.target.value })}
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Brand</label>
-                <input
-                  type="text"
-                  className="input-field"
-                  placeholder="Brand Name"
-                  value={newProd.brand}
-                  onChange={(e) => setNewProd({ ...newProd, brand: e.target.value })}
-                />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label className="caption" style={{ display: "block", marginBottom: "4px", color: "#fff", fontWeight: "600" }}>Selling Price ({currencySymbol})</label>
+                  <input
+                    type="number"
+                    required
+                    className="input-field"
+                    value={newProd.sellingPrice}
+                    onChange={(e) => setNewProd({ ...newProd, sellingPrice: Number(e.target.value) })}
+                  />
+                </div>
+
+                <div>
+                  <label className="caption" style={{ display: "block", marginBottom: "4px", color: "#fff", fontWeight: "600" }}>Cost Price ({currencySymbol})</label>
+                  <input
+                    type="number"
+                    required
+                    className="input-field"
+                    value={newProd.costPrice}
+                    onChange={(e) => setNewProd({ ...newProd, costPrice: Number(e.target.value) })}
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Selling Price (₹) *</label>
-                <input
-                  type="number"
-                  required
-                  className="input-field"
-                  value={newProd.sellingPrice}
-                  onChange={(e) => setNewProd({ ...newProd, sellingPrice: Number(e.target.value) })}
-                />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label className="caption" style={{ display: "block", marginBottom: "4px", color: "#fff", fontWeight: "600" }}>Initial Stock Qty</label>
+                  <input
+                    type="number"
+                    required
+                    className="input-field"
+                    value={newProd.stockQty}
+                    onChange={(e) => setNewProd({ ...newProd, stockQty: Number(e.target.value) })}
+                  />
+                </div>
+
+                <div>
+                  <label className="caption" style={{ display: "block", marginBottom: "4px", color: "#fff", fontWeight: "600" }}>Low Stock Alert Level</label>
+                  <input
+                    type="number"
+                    required
+                    className="input-field"
+                    value={newProd.lowStockThreshold}
+                    onChange={(e) => setNewProd({ ...newProd, lowStockThreshold: Number(e.target.value) })}
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Cost Price (₹)</label>
-                <input
-                  type="number"
-                  className="input-field"
-                  value={newProd.costPrice}
-                  onChange={(e) => setNewProd({ ...newProd, costPrice: Number(e.target.value) })}
-                />
-              </div>
-
-              <div>
-                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>GST Slab (%)</label>
-                <select
-                  className="input-field"
-                  value={newProd.gstRate}
-                  onChange={(e) => setNewProd({ ...newProd, gstRate: Number(e.target.value) })}
-                >
-                  <option value={0}>0% (Exempt)</option>
-                  <option value={5}>5%</option>
-                  <option value={12}>12%</option>
-                  <option value={18}>18%</option>
-                  <option value={28}>28%</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Initial Stock Units</label>
-                <input
-                  type="number"
-                  required
-                  className="input-field"
-                  value={newProd.stockQty}
-                  onChange={(e) => setNewProd({ ...newProd, stockQty: Number(e.target.value) })}
-                />
-              </div>
-
-              <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                  Create Product
-                </button>
-              </div>
+              <button type="submit" className="btn btn-primary" style={{ width: "100%", marginTop: "12px", padding: "14px" }}>
+                <Plus size={18} />
+                <span>Create Product SKU</span>
+              </button>
             </form>
           </div>
         </div>
@@ -404,49 +409,74 @@ export const InventoryView = () => {
 
       {/* ADJUST STOCK MODAL */}
       {showAdjustModal && targetProduct && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(8px)", padding: "16px" }}>
-          <div className="glass-panel" style={{ width: "480px", padding: "24px", maxWidth: "100%" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
-              <h3 style={{ margin: 0 }}>Stock Adjustment</h3>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(10px)", padding: "16px" }}>
+          <div className="glass-panel" style={{ width: "440px", padding: "24px", maxWidth: "100%" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h3 style={{ margin: 0 }}>Adjust Stock — {targetProduct.title}</h3>
               <button onClick={() => setShowAdjustModal(false)} className="btn btn-ghost" style={{ padding: "8px" }}>
                 <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleExecuteStockAdjust} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <form onSubmit={handleAdjustSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
-                <div style={{ fontSize: "18px", fontWeight: "700", color: "#fff" }}>{targetProduct.title}</div>
-                <div className="caption">Current Stock: <strong>{targetProduct.stockQty} units</strong></div>
+                <label className="caption" style={{ display: "block", marginBottom: "4px" }}>Current Stock Qty</label>
+                <div style={{ fontSize: "24px", fontWeight: "800", color: "#fff" }}>{targetProduct.stockQty} units</div>
               </div>
 
               <div>
-                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Quantity Change (+ or -)</label>
+                <label className="caption" style={{ display: "block", marginBottom: "4px" }}>Stock Change Qty (+ or -)</label>
                 <input
                   type="number"
-                  required
                   className="input-field"
                   value={adjustQty}
-                  onChange={(e) => setAdjustQty(Number(e.target.value))}
+                  onChange={(e) => setAdjustQty(e.target.value)}
                 />
               </div>
 
               <div>
-                <label className="caption" style={{ display: "block", marginBottom: "6px", color: "var(--text-main)", fontWeight: "600" }}>Adjustment Reason</label>
+                <label className="caption" style={{ display: "block", marginBottom: "4px" }}>Adjustment Note</label>
                 <input
                   type="text"
-                  required
                   className="input-field"
                   value={adjustReason}
                   onChange={(e) => setAdjustReason(e.target.value)}
                 />
               </div>
 
-              <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                  Confirm Adjustment
-                </button>
-              </div>
+              <button type="submit" className="btn btn-primary" style={{ width: "100%", marginTop: "8px" }}>
+                <RefreshCw size={18} />
+                <span>Confirm Stock Adjustment</span>
+              </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* BARCODE GENERATOR PRINT MODAL */}
+      {showBarcodeModal && targetProduct && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(10px)", padding: "16px" }}>
+          <div className="glass-panel" style={{ width: "400px", padding: "24px", maxWidth: "100%", textAlign: "center" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h3 style={{ margin: 0 }}>Barcode Label Generator</h3>
+              <button onClick={() => setShowBarcodeModal(false)} className="btn btn-ghost" style={{ padding: "8px" }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ background: "#ffffff", padding: "20px", borderRadius: "8px", color: "#000", marginBottom: "20px" }}>
+              <div style={{ fontWeight: "800", fontSize: "14px" }}>{targetProduct.title}</div>
+              <div style={{ fontSize: "12px", margin: "4px 0" }}>Price: {currencySymbol}{targetProduct.sellingPrice}</div>
+              <div className="sku-code" style={{ fontSize: "18px", letterSpacing: "4px", margin: "12px 0", fontWeight: "800" }}>
+                ||||| | |||| ||| |||||||
+              </div>
+              <div className="sku-code" style={{ fontSize: "12px" }}>{targetProduct.barcode || targetProduct.sku}</div>
+            </div>
+
+            <button onClick={() => window.print()} className="btn btn-primary" style={{ width: "100%" }}>
+              <Printer size={18} />
+              <span>Print Barcode Sticker</span>
+            </button>
           </div>
         </div>
       )}

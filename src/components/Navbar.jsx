@@ -60,7 +60,13 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   const langsList = [
     { key: "en", label: "English" },
     { key: "hi", label: "हिंदी (Hindi)" },
-    { key: "hinglish", label: "Hinglish" }
+    { key: "hinglish", label: "Hinglish" },
+    { key: "es", label: "Español" },
+    { key: "fr", label: "Français" },
+    { key: "de", label: "Deutsch" },
+    { key: "ar", label: "العربية (Arabic)" },
+    { key: "ja", label: "日本語 (Japanese)" },
+    { key: "zh", label: "中文 (Chinese)" }
   ];
 
   // Grouped Navigation Modules for Full-Screen Menu Overlay (Mobile)
@@ -296,14 +302,22 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                     </button>
 
                     {/* Language Selector */}
-                    <button
-                      onClick={() => { setLang(lang === "en" ? "hi" : "en"); setShowProfileMenu(false); }}
-                      className="btn btn-ghost"
-                      style={{ width: "100%", justifyContent: "flex-start", padding: "8px 10px", fontSize: "13px", minHeight: "36px", marginBottom: "4px" }}
-                    >
-                      <Globe size={14} />
-                      <span>Language: {lang === "en" ? "English" : "हिंदी"}</span>
-                    </button>
+                    <div style={{ padding: "4px 10px", marginBottom: "8px" }}>
+                      <div className="caption" style={{ fontSize: "11px", fontWeight: "700", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <Globe size={13} />
+                        <span>Global Language</span>
+                      </div>
+                      <select
+                        className="input-field"
+                        style={{ minHeight: "36px", padding: "4px 8px", fontSize: "13px" }}
+                        value={lang}
+                        onChange={(e) => { setLang(e.target.value); setShowProfileMenu(false); }}
+                      >
+                        {langsList.map((l) => (
+                          <option key={l.key} value={l.key}>{l.label}</option>
+                        ))}
+                      </select>
+                    </div>
 
                     {/* Advanced Settings */}
                     <button

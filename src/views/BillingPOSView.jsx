@@ -8,7 +8,9 @@ import {
   Share2, 
   Plus, 
   Minus,
-  X
+  X,
+  FileText,
+  CheckCircle2
 } from "lucide-react";
 
 export const BillingPOSView = () => {
@@ -25,18 +27,24 @@ export const BillingPOSView = () => {
     setCartDiscount,
     processCheckout,
     t,
-    currentStore
+    currentStore,
+    currency
   } = useRetail();
 
   const [posSearch, setPosSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [paymentMethod, setPaymentMethod] = useState("UPI");
+  const [docType, setDocType] = useState("Tax Invoice"); // Tax Invoice, Proforma, Quotation, Delivery Challan, Credit Note, PO
+  const [printFormat, setPrintFormat] = useState("Thermal 3-Inch"); // Thermal 2-Inch, Thermal 3-Inch, A4, A5
 
   // Invoice Print Modal State
   const [completedOrder, setCompletedOrder] = useState(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
   const categories = ["ALL", "Apparel", "Electronics", "Grocery", "Accessories", "Home & Lighting"];
+  const docTypesList = ["Tax Invoice", "Proforma Invoice", "Quotation / Estimate", "Delivery Challan", "Credit Note", "Purchase Order"];
+
+  const currencySymbol = currency === "USD" ? "$" : currency === "EUR" ? "€" : currency === "GBP" ? "£" : currency === "AED" ? "د.إ" : "₹";
 
   const filteredProducts = products.filter((p) => {
     const matchesSearch =
@@ -67,12 +75,29 @@ export const BillingPOSView = () => {
   return (
     <div className="view-container">
       
-      {/* LEVEL 1 HEADER */}
-      <div style={{ marginBottom: "24px" }}>
-        <h2>{t("posBilling")}</h2>
-        <p className="caption" style={{ margin: "4px 0 0 0" }}>
-          Instant counter checkout, GST invoice calculation & digital receipts
-        </p>
+      {/* LEVEL 1 HEADER & DOCUMENT TYPE PICKER */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
+        <div>
+          <h2>{t("posBilling")}</h2>
+          <p className="caption" style={{ margin: "4px 0 0 0" }}>
+            GST / Non-GST billing, Thermal & A4 invoices, HSN/SAC codes & WhatsApp digital sharing
+          </p>
+        </div>
+
+        {/* DOCUMENT TYPE SELECTOR STRIP */}
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+          {docTypesList.map((dt) => (
+            <button
+              key={dt}
+              onClick={() => setDocType(dt)}
+              className={`btn ${docType === dt ? "btn-primary" : "btn-secondary"}`}
+              style={{ fontSize: "12px", padding: "6px 12px", minHeight: "36px" }}
+            >
+              <FileText size={14} />
+              <span>{dt}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid-3" style={{ gridTemplateColumns: "1.6fr 1fr", gap: "24px" }}>
@@ -88,7 +113,7 @@ export const BillingPOSView = () => {
                 type="text"
                 className="input-field"
                 style={{ paddingLeft: "42px" }}
-                placeholder="Search products or scan barcode..."
+                placeholder="Search products, SKU, or scan barcode..."
                 value={posSearch}
                 onChange={(e) => setPosSearch(e.target.value)}
               />
@@ -124,22 +149,22 @@ export const BillingPOSView = () => {
               >
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-                    <span className="badge badge-info" style={{ fontSize: "12px" }}>{prod.category}</span>
-                    <span style={{ fontSize: "14px", fontWeight: "700", color: prod.stockQty <= prod.lowStockThreshold ? "#f87171" : "#34d399" }}>
+                    <span className="badge badge-info" style={{ fontSize: "11px" }}>{prod.category}</span>
+                    <span style={{ fontSize: "13px", fontWeight: "700", color: prod.stockQty <= prod.lowStockThreshold ? "#f87171" : "#34d399" }}>
                       {prod.stockQty} left
                     </span>
                   </div>
-                  <h3 style={{ fontSize: "16px", fontWeight: "700", margin: "0 0 4px 0", color: "#fff" }}>
+                  <h3 style={{ fontSize: "15px", fontWeight: "700", margin: "0 0 4px 0", color: "#fff" }}>
                     {prod.title}
                   </h3>
-                  <div className="caption" style={{ fontSize: "12px" }}>SKU: {prod.sku}</div>
+                  <div className="sku-code">SKU: {prod.sku} • HSN: 6204</div>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "14px", paddingTop: "10px", borderTop: "1px solid var(--border-color)" }}>
-                  <div style={{ fontSize: "18px", fontWeight: "800", color: "#fff" }}>
-                    ₹{prod.sellingPrice}
+                  <div className="num-tabular" style={{ fontSize: "18px", fontWeight: "800", color: "#fff" }}>
+                    {currencySymbol}{prod.sellingPrice}
                   </div>
-                  <button className="btn btn-primary" style={{ minHeight: "44px", minWidth: "44px", padding: "8px" }}>
+                  <button className="btn btn-primary" style={{ minHeight: "40px", minWidth: "40px", padding: "8px" }}>
                     <Plus size={18} />
                   </button>
                 </div>
@@ -153,7 +178,7 @@ export const BillingPOSView = () => {
           
           {/* CUSTOMER SELECTOR */}
           <div style={{ marginBottom: "16px" }}>
-            <label className="caption" style={{ display: "block", marginBottom: "6px", color: "#fff", fontWeight: "600" }}>Customer</label>
+            <label className="caption" style={{ display: "block", marginBottom: "6px", color: "#fff", fontWeight: "600" }}>Customer Account</label>
             <select
               className="input-field"
               value={selectedCustomer ? selectedCustomer.id : ""}
@@ -170,7 +195,7 @@ export const BillingPOSView = () => {
           </div>
 
           {/* CART LINE ITEMS */}
-          <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", maxHeight: "280px" }}>
+          <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", maxHeight: "260px" }}>
             {cart.length === 0 ? (
               <div className="caption" style={{ textAlign: "center", padding: "40px 10px" }}>
                 Cart is empty. Click items on the catalog to add.
@@ -179,9 +204,9 @@ export const BillingPOSView = () => {
               cart.map((item, idx) => (
                 <div key={idx} className="glass-card" style={{ padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: "16px", fontWeight: "700", color: "#fff" }}>{item.product.title}</div>
+                    <div style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>{item.product.title}</div>
                     <div className="caption" style={{ fontSize: "12px" }}>
-                      ₹{item.product.sellingPrice} x {item.qty} (+{item.product.gstRate}% GST)
+                      {currencySymbol}{item.product.sellingPrice} x {item.qty} (+{item.product.gstRate}% GST)
                     </div>
                   </div>
 
@@ -189,14 +214,14 @@ export const BillingPOSView = () => {
                     <div style={{ display: "flex", alignItems: "center", gap: "4px", background: "rgba(0,0,0,0.4)", borderRadius: "8px", padding: "2px" }}>
                       <button
                         onClick={() => updateCartQty(idx, item.qty - 1)}
-                        style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "8px", minWidth: "36px", minHeight: "36px" }}
+                        style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "6px", minWidth: "32px", minHeight: "32px" }}
                       >
                         <Minus size={14} />
                       </button>
-                      <span style={{ fontSize: "16px", fontWeight: "700", width: "24px", textAlign: "center" }}>{item.qty}</span>
+                      <span className="num-tabular" style={{ fontSize: "14px", width: "20px", textAlign: "center" }}>{item.qty}</span>
                       <button
                         onClick={() => updateCartQty(idx, item.qty + 1)}
-                        style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "8px", minWidth: "36px", minHeight: "36px" }}
+                        style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "6px", minWidth: "32px", minHeight: "32px" }}
                       >
                         <Plus size={14} />
                       </button>
@@ -204,9 +229,9 @@ export const BillingPOSView = () => {
 
                     <button
                       onClick={() => removeFromCart(idx)}
-                      style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", padding: "8px" }}
+                      style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", padding: "6px" }}
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
@@ -218,16 +243,16 @@ export const BillingPOSView = () => {
           <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "16px", marginTop: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }} className="caption">
               <span>{t("subtotal")}</span>
-              <span>₹{subtotal.toLocaleString("en-IN")}</span>
+              <span className="num-tabular">{currencySymbol}{subtotal.toLocaleString("en-IN")}</span>
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between" }} className="caption">
               <span>{t("taxGST")} (CGST+SGST)</span>
-              <span style={{ color: "#a5b4fc" }}>+₹{Math.round(gstTotal).toLocaleString("en-IN")}</span>
+              <span className="num-tabular" style={{ color: "#a5b4fc" }}>+{currencySymbol}{Math.round(gstTotal).toLocaleString("en-IN")}</span>
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span className="caption">{t("discount")} (₹)</span>
+              <span className="caption">{t("discount")} ({currencySymbol})</span>
               <input
                 type="number"
                 className="input-field"
@@ -237,9 +262,9 @@ export const BillingPOSView = () => {
               />
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", fontSize: "22px", fontWeight: "800", borderTop: "1px solid var(--border-color)", paddingTop: "12px", marginTop: "8px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", fontSize: "20px", fontWeight: "800", borderTop: "1px solid var(--border-color)", paddingTop: "12px", marginTop: "8px" }}>
               <span>{t("grandTotal")}</span>
-              <span style={{ color: "#34d399" }}>₹{grandTotal.toLocaleString("en-IN")}</span>
+              <span className="num-tabular" style={{ color: "#34d399" }}>{currencySymbol}{grandTotal.toLocaleString("en-IN")}</span>
             </div>
           </div>
 
@@ -252,7 +277,7 @@ export const BillingPOSView = () => {
                   key={pm}
                   onClick={() => setPaymentMethod(pm)}
                   className={`btn ${paymentMethod === pm ? "btn-primary" : "btn-secondary"}`}
-                  style={{ fontSize: "14px", padding: "8px 4px", minHeight: "44px" }}
+                  style={{ fontSize: "13px", padding: "8px 4px", minHeight: "42px" }}
                 >
                   {pm}
                 </button>
@@ -265,63 +290,98 @@ export const BillingPOSView = () => {
             onClick={handleCheckoutSubmit}
             disabled={cart.length === 0}
             className="btn btn-primary"
-            style={{ width: "100%", marginTop: "20px", padding: "16px", fontSize: "18px", opacity: cart.length === 0 ? 0.5 : 1 }}
+            style={{ width: "100%", marginTop: "20px", padding: "16px", fontSize: "16px", opacity: cart.length === 0 ? 0.5 : 1 }}
           >
-            <ShoppingCart size={22} />
-            <span>Complete Sale & Print Bill</span>
+            <ShoppingCart size={20} />
+            <span>Generate {docType} ({currencySymbol}{grandTotal})</span>
           </button>
         </div>
 
       </div>
 
-      {/* INVOICE PRINT MODAL */}
+      {/* INVOICE PRINT & SHARE MODAL */}
       {showInvoiceModal && completedOrder && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(8px)", padding: "16px" }}>
-          <div className="glass-panel" style={{ width: "480px", padding: "24px", maxWidth: "100%", maxHeight: "90vh", overflowY: "auto" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0 }}>Tax Invoice — {completedOrder.id}</h3>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(12px)", padding: "16px" }}>
+          <div className="glass-panel" style={{ width: "520px", padding: "24px", maxWidth: "100%", maxHeight: "90vh", overflowY: "auto" }}>
+            
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <CheckCircle2 size={20} color="#10B981" />
+                <h3 style={{ margin: 0 }}>{docType} — {completedOrder.id}</h3>
+              </div>
               <button onClick={() => setShowInvoiceModal(false)} className="btn btn-ghost" style={{ padding: "8px" }}>
                 <X size={20} />
               </button>
             </div>
 
-            <div className="printable-invoice" style={{ background: "rgba(255,255,255,0.03)", padding: "16px", borderRadius: "12px", marginBottom: "20px" }}>
-              <div style={{ textAlign: "center", marginBottom: "16px", borderBottom: "1px solid var(--border-color)", paddingBottom: "12px" }}>
-                <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#fff", margin: 0 }}>{currentStore.name}</h3>
-                <div className="caption">{currentStore.address}, {currentStore.city}</div>
-                <div className="caption" style={{ fontWeight: "700" }}>GSTIN: {currentStore.GSTIN}</div>
+            {/* PRINT FORMAT SELECTOR */}
+            <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+              {["Thermal 2-Inch", "Thermal 3-Inch", "A4 Full Sheet", "A5 Half Sheet"].map((fmt) => (
+                <button
+                  key={fmt}
+                  onClick={() => setPrintFormat(fmt)}
+                  className={`btn ${printFormat === fmt ? "btn-primary" : "btn-secondary"}`}
+                  style={{ fontSize: "11px", padding: "4px 8px", minHeight: "32px", flex: 1 }}
+                >
+                  {fmt}
+                </button>
+              ))}
+            </div>
+
+            {/* INVOICE PREVIEW */}
+            <div className="printable-invoice" style={{ background: "#ffffff", color: "#000000", padding: "20px", borderRadius: "8px", marginBottom: "20px", fontFamily: "sans-serif" }}>
+              <div style={{ textAlign: "center", marginBottom: "16px", borderBottom: "1px solid #ddd", paddingBottom: "12px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: "800", margin: 0, color: "#000" }}>{currentStore.name}</h3>
+                <div style={{ fontSize: "12px", color: "#555" }}>{currentStore.address}, {currentStore.city}</div>
+                <div style={{ fontSize: "12px", fontWeight: "700", color: "#000" }}>GSTIN: {currentStore.GSTIN}</div>
               </div>
 
-              <div style={{ fontSize: "14px", display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
-                <span>Bill To: <strong>{completedOrder.customerName}</strong></span>
+              <div style={{ fontSize: "12px", display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                <span>Doc Type: <strong>{docType}</strong></span>
+                <span>Date: <strong>{new Date().toLocaleDateString()}</strong></span>
+              </div>
+
+              <div style={{ fontSize: "12px", display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                <span>Customer: <strong>{completedOrder.customerName}</strong></span>
                 <span>Pay Mode: <strong>{completedOrder.paymentMethod}</strong></span>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
-                {completedOrder.items.map((it, i) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                    <span>{it.title} x {it.qty}</span>
-                    <span style={{ fontWeight: "700" }}>₹{it.price * it.qty}</span>
-                  </div>
-                ))}
-              </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px", marginBottom: "16px" }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #000", textAlign: "left" }}>
+                    <th style={{ padding: "4px 0" }}>Item</th>
+                    <th style={{ padding: "4px 0", textAlign: "center" }}>Qty</th>
+                    <th style={{ padding: "4px 0", textAlign: "right" }}>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {completedOrder.items.map((it, i) => (
+                    <tr key={i} style={{ borderBottom: "1px solid #eee" }}>
+                      <td style={{ padding: "6px 0" }}>{it.title}</td>
+                      <td style={{ padding: "6px 0", textAlign: "center" }}>{it.qty}</td>
+                      <td style={{ padding: "6px 0", textAlign: "right" }}>{currencySymbol}{it.price * it.qty}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-              <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "12px", display: "flex", justifyContent: "space-between", fontSize: "18px", fontWeight: "800", color: "#fff" }}>
-                <span>Total Amount Paid</span>
-                <span style={{ color: "#34d399" }}>₹{completedOrder.total}</span>
+              <div style={{ borderTop: "2px solid #000", paddingTop: "10px", display: "flex", justifyContent: "space-between", fontSize: "16px", fontWeight: "800", color: "#000" }}>
+                <span>Total Paid</span>
+                <span>{currencySymbol}{completedOrder.total}</span>
               </div>
             </div>
 
             <div style={{ display: "flex", gap: "12px" }}>
               <button onClick={() => window.print()} className="btn btn-primary" style={{ flex: 1 }}>
                 <Printer size={18} />
-                <span>Print Tax Invoice</span>
+                <span>Print Invoice ({printFormat})</span>
               </button>
               <button onClick={() => alert("Invoice PDF shared via WhatsApp!")} className="btn btn-secondary" style={{ flex: 1 }}>
                 <Share2 size={18} />
                 <span>Share WhatsApp</span>
               </button>
             </div>
+
           </div>
         </div>
       )}
