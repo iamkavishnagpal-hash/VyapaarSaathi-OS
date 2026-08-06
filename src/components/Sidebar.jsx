@@ -36,10 +36,10 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 
   return (
     <aside
-      className="glass-panel main-sidebar"
+      className="glass-panel main-sidebar hide-on-mobile"
       style={{
-        width: isCollapsed ? "72px" : "260px",
-        minWidth: isCollapsed ? "72px" : "260px",
+        width: isCollapsed ? "70px" : "240px",
+        minWidth: isCollapsed ? "70px" : "240px",
         borderRadius: 0,
         borderTop: "none",
         borderBottom: "none",
@@ -49,7 +49,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         justifyContent: "space-between",
         padding: isCollapsed ? "16px 8px" : "16px 12px",
         zIndex: 90,
-        transition: "width 0.25s cubic-bezier(0.16, 1, 0.3, 1), padding 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+        transition: "all 0.3s ease-in-out",
         overflowX: "hidden"
       }}
     >

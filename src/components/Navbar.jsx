@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Search,
   Settings,
+  Menu,
   X,
   LayoutDashboard,
   Package,
@@ -23,7 +24,7 @@ import {
   ChevronRight
 } from "lucide-react";
 
-export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
+export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isSidebarCollapsed, setIsSidebarCollapsed }) => {
   const {
     stores,
     currentStore,
@@ -104,9 +105,20 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
       <header className="glass-panel main-navbar" style={{ height: "72px", borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "0 32px", zIndex: 100, display: "flex", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", maxWidth: "1600px", margin: "0 auto" }}>
           
-          {/* LEFT: BRAND LOGO & STORE SWITCHER */}
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          {/* LEFT: HAMBURGER TOGGLE, BRAND LOGO & STORE SWITCHER */}
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             
+            {/* HAMBURGER SIDEBAR TOGGLE (☰) */}
+            <button
+              onClick={() => setIsSidebarCollapsed && setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="btn btn-secondary hide-on-mobile"
+              style={{ padding: "8px", minWidth: "40px", minHeight: "40px" }}
+              title={isSidebarCollapsed ? "Expand Sidebar (240px)" : "Collapse Sidebar (70px)"}
+              aria-label="Toggle Collapsible Sidebar"
+            >
+              <Menu size={20} color="var(--primary)" />
+            </button>
+
             <div onClick={() => setActiveView("dashboard")} style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }}>
               <div style={{
                 width: "40px",

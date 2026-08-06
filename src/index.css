@@ -330,8 +330,37 @@ body, p, input, select, textarea, .body-text {
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
+  background-color: #0B0F17;
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 45%);
+  background-size: 150% 150%;
+  animation: breathingGlow 12s ease-in-out infinite alternate;
 }
+
+@keyframes breathingGlow {
+  0% { background-position: 0% 0%, 100% 100%; }
+  50% { background-position: 50% 50%, 50% 50%; }
+  100% { background-position: 100% 100%, 0% 0%; }
+}
+
+/* Staggered Fade-In-Up Keyframes for Dashboard Cards */
+@keyframes fadeInUpStagger {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-stagger-1 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both; }
+.animate-stagger-2 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
+.animate-stagger-3 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.19s both; }
+.animate-stagger-4 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.26s both; }
+.animate-stagger-5 { animation: fadeInUpStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.33s both; }
 
 .view-container {
   flex: 1;
