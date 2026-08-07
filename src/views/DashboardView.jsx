@@ -37,7 +37,7 @@ export const DashboardView = () => {
     <div className="view-container" style={{ maxWidth: "1600px", margin: "0 auto", padding: "32px" }}>
       
       {/* 4-STEP EXECUTIVE FIRST-SCREEN VISUAL HIERARCHY HERO */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "28px", flexWrap: "wrap", gap: "16px" }}>
+      <div className="mobile-hero-header">
         <div>
           <div className="micro-tag" style={{ color: "var(--primary)", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
             <Zap size={14} /> <span>Enterprise Retail OS Telemetry</span>

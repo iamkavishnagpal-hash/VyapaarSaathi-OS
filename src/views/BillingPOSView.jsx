@@ -75,8 +75,8 @@ export const BillingPOSView = () => {
   return (
     <div className="view-container">
       
-      {/* LEVEL 1 HEADER & DOCUMENT TYPE PICKER */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
+      {/* LEVEL 1 HEADER & DOCUMENT SELECTOR */}
+      <div className="mobile-hero-header">
         <div>
           <h2>{t("posBilling")}</h2>
           <p className="caption" style={{ margin: "4px 0 0 0" }}>

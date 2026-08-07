@@ -29,7 +29,7 @@ export const AnalyticsView = () => {
   return (
     <div className="view-container">
       {/* LEVEL 1 HEADER & TALLY EXPORT */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
+      <div className="mobile-hero-header">
         <div>
           <h2>{t("analytics")}</h2>
           <p className="caption" style={{ margin: "4px 0 0 0" }}>
@@ -37,10 +37,12 @@ export const AnalyticsView = () => {
           </p>
         </div>
 
-        <button onClick={handleExportTally} className="btn btn-primary">
-          <FileSpreadsheet size={18} />
-          <span>Export Tally XML</span>
-        </button>
+        <div>
+          <button onClick={handleExportTally} className="btn btn-primary">
+            <FileSpreadsheet size={18} />
+            <span>Export Tally XML</span>
+          </button>
+        </div>
       </div>
 
       {/* METRIC HIGHLIGHTS (SINGLE-SOURCE RESPONSIVE CONTAINER) */}

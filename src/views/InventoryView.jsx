@@ -99,7 +99,7 @@ export const InventoryView = () => {
   return (
     <div className="view-container">
       {/* LEVEL 1 HEADER & SINGLE PRIMARY CTA */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
+      <div className="mobile-hero-header">
         <div>
           <h2>{t("inventory")}</h2>
           <p className="caption" style={{ margin: "4px 0 0 0" }}>
@@ -107,10 +107,12 @@ export const InventoryView = () => {
           </p>
         </div>
 
-        <button onClick={() => setShowAddModal(true)} className="btn btn-primary">
-          <Plus size={18} />
-          <span>{t("addProduct")}</span>
-        </button>
+        <div>
+          <button onClick={() => setShowAddModal(true)} className="btn btn-primary">
+            <Plus size={18} />
+            <span>{t("addProduct")}</span>
+          </button>
+        </div>
       </div>
 
       {/* INVENTORY VALUATION KPI STRIP (SINGLE-SOURCE RESPONSIVE CONTAINER) */}
