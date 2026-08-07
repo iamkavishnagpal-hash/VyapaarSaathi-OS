@@ -131,28 +131,36 @@ export const OrdersView = () => {
       </div>
 
       {/* MOBILE REFLOW CARD LIST (ZERO HORIZONTAL SCROLL GUARANTEE) */}
-      <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {filteredOrders.map((ord) => (
-          <div key={ord.id} className="glass-card" style={{ padding: "20px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-              <span style={{ fontWeight: "700", color: "var(--primary)", fontSize: "18px" }}>{ord.id}</span>
-              <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
+          <div key={ord.id} className="glass-card" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "10px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "16px" }}>
+            {/* TOP LINE: FONT-MONO ORDER ID & STATUS PILL */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span className="font-mono" style={{ fontSize: "12px", fontWeight: "600", color: "#94A3B8", fontFamily: "monospace" }}>#{ord.id}</span>
+              <span className="badge" style={{ background: ord.status === "Completed" ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)", color: ord.status === "Completed" ? "#34D399" : "#FBBF24", border: ord.status === "Completed" ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(245, 158, 11, 0.2)", borderRadius: "6px", padding: "2px 8px", fontSize: "10px", fontWeight: "600", textTransform: "uppercase" }}>
                 {ord.status}
               </span>
             </div>
 
-            <div style={{ fontSize: "18px", fontWeight: "700", color: "#fff", marginBottom: "4px" }}>
-              {ord.customerName}
-            </div>
-            <div className="caption" style={{ marginBottom: "12px" }}>
-              {ord.channel} • {ord.paymentMethod}
+            {/* MIDDLE LINE: CUSTOMER NAME + CHANNEL DETAILS */}
+            <div>
+              <div style={{ fontSize: "15px", fontWeight: "600", color: "#ffffff", marginBottom: "2px" }}>
+                {ord.customerName}
+              </div>
+              <div style={{ fontSize: "12px", color: "#94A3B8" }}>
+                {ord.channel} • {ord.paymentMethod}
+              </div>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: "1px solid var(--border-color)" }}>
+            {/* FOOTER ROW: BASELINE OPTICAL PRICE & COMPACT 36PX CTA */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: "1px solid rgba(255, 255, 255, 0.08)", marginTop: "4px" }}>
               <div>
-                <div className="caption">Total Amount</div>
-                <div style={{ fontSize: "22px", fontWeight: "800", color: "#fff" }}>
-                  ₹{ord.total.toLocaleString("en-IN")}
+                <div style={{ fontSize: "11px", color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "600" }}>Total Bill</div>
+                <div className="kpi-optical-number" style={{ marginBottom: 0, whiteSpace: "nowrap" }}>
+                  <span className="currency-symbol" style={{ fontSize: "15px", color: "#94A3B8" }}>₹</span>
+                  <span className="num-tabular" style={{ fontSize: "18px", fontWeight: "700", color: "#ffffff" }}>
+                    {ord.total.toLocaleString("en-IN")}
+                  </span>
                 </div>
               </div>
 
@@ -163,8 +171,9 @@ export const OrdersView = () => {
                     setShowDetailModal(true);
                   }}
                   className="btn btn-secondary"
+                  style={{ minHeight: "36px", height: "36px", fontSize: "12px", fontWeight: "600", padding: "6px 12px", borderRadius: "10px" }}
                 >
-                  <Eye size={16} />
+                  <Eye size={14} />
                   <span>Details</span>
                 </button>
               </div>

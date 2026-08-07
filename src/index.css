@@ -945,6 +945,16 @@ body, p, .body-text {
   }
 }
 
+/* Executive Uppercase Section Heading Style */
+.section-header-uppercase {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #94A3B8 !important;
+  margin-bottom: 2px !important;
+}
+
 /* 4-Step Mobile Hero Header Helper (Stacked 4-step hierarchy on mobile, side-by-side on desktop) */
 .mobile-hero-header {
   display: flex;
