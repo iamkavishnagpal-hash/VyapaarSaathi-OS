@@ -45,7 +45,7 @@ export const DashboardView = () => {
           <h2 style={{ fontSize: "28px", fontWeight: "800", letterSpacing: "-0.025em", margin: "0 0 6px 0", color: "#ffffff" }}>
             Executive Dashboard & Real-Time Metrics
           </h2>
-          <p className="caption" style={{ fontSize: "14px", color: "var(--text-muted)", margin: 0, maxWidth: "680px" }}>
+          <p className="caption hide-subtitle-mobile" style={{ fontSize: "14px", color: "var(--text-muted)", margin: 0, maxWidth: "680px" }}>
             Unified merchant telemetry for counter billing, multi-branch catalog sync, customer credit ledgers & AI co-pilot recommendations.
           </p>
         </div>
@@ -80,12 +80,15 @@ export const DashboardView = () => {
                 <ArrowUpRight size={14} /> +18.4%
               </span>
             </div>
-            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
-              ₹{todaysSales.toLocaleString("en-IN")}
+            <div className="kpi-optical-number">
+              <span className="currency-symbol">₹</span>
+              <span className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>
+                {todaysSales.toLocaleString("en-IN")}
+              </span>
             </div>
             <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>POS & Online counter billing</div>
           </div>
-          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className="tappable-row">
             <span className="caption" style={{ fontSize: "11px" }}>Vs yesterday: ₹89,100</span>
             <ChevronRight size={14} color="var(--text-muted)" />
           </div>
@@ -104,12 +107,15 @@ export const DashboardView = () => {
                 <ArrowUpRight size={14} /> 38% Margin
               </span>
             </div>
-            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
-              ₹{estimatedProfit.toLocaleString("en-IN")}
+            <div className="kpi-optical-number">
+              <span className="currency-symbol">₹</span>
+              <span className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>
+                {estimatedProfit.toLocaleString("en-IN")}
+              </span>
             </div>
             <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>Net Margin after COGS</div>
           </div>
-          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className="tappable-row">
             <span className="caption" style={{ fontSize: "11px" }}>Reconciled Real-Time</span>
             <ChevronRight size={14} color="var(--text-muted)" />
           </div>
@@ -131,7 +137,7 @@ export const DashboardView = () => {
             </div>
             <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>Multi-channel fulfilled</div>
           </div>
-          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className="tappable-row">
             <span className="caption" style={{ fontSize: "11px" }}>Avg Value: ₹{(todaysSales / (totalOrdersCount || 1)).toFixed(0)}</span>
             <ChevronRight size={14} color="var(--text-muted)" />
           </div>
@@ -155,7 +161,7 @@ export const DashboardView = () => {
             </div>
             <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>78% repeat buyer rate</div>
           </div>
-          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className="tappable-row">
             <span className="caption" style={{ fontSize: "11px" }}>12 At Churn Risk</span>
             <ChevronRight size={14} color="var(--text-muted)" />
           </div>
@@ -172,12 +178,15 @@ export const DashboardView = () => {
               <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Cash Position</span>
               <span className="badge badge-info">{healthScore}/100 Health</span>
             </div>
-            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
-              ₹{todaysSales.toLocaleString("en-IN")}
+            <div className="kpi-optical-number">
+              <span className="currency-symbol">₹</span>
+              <span className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>
+                {todaysSales.toLocaleString("en-IN")}
+              </span>
             </div>
             <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>POS & Bank Settlement</div>
           </div>
-          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className="tappable-row">
             <span className="caption" style={{ fontSize: "11px" }}>Instant UPI & Cash</span>
             <ChevronRight size={14} color="var(--text-muted)" />
           </div>

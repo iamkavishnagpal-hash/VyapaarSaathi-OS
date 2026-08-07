@@ -908,7 +908,7 @@ body, p, .body-text {
   }
 }
 
-/* Single-Source Responsive KPI Container (Desktop Grid + Mobile Carousel with 0 Duplicate HTML) */
+/* Single-Source Responsive KPI Container (Desktop Grid + Mobile Carousel with Edge Fade Mask & Peek) */
 .responsive-kpi-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -922,18 +922,26 @@ body, p, .body-text {
     gap: 14px !important;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory !important;
+    scroll-padding: 16px !important;
     -webkit-overflow-scrolling: touch !important;
     padding-bottom: 12px !important;
     margin-bottom: 24px !important;
     scrollbar-width: none !important;
+    mask-image: linear-gradient(to right, black 86%, transparent 100%) !important;
+    -webkit-mask-image: linear-gradient(to right, black 86%, transparent 100%) !important;
   }
   .responsive-kpi-container::-webkit-scrollbar {
     display: none !important;
   }
   .responsive-kpi-container > * {
-    flex: 0 0 84vw !important;
-    max-width: 320px !important;
+    flex: 0 0 calc(85vw - 16px) !important;
+    max-width: 310px !important;
     scroll-snap-align: start !important;
+  }
+
+  /* Hide header subtitle paragraphs on mobile so KPIs load immediately at top of screen */
+  .hide-subtitle-mobile {
+    display: none !important;
   }
 }
 
@@ -952,7 +960,7 @@ body, p, .body-text {
     flex-direction: column !important;
     align-items: stretch !important;
     gap: 14px !important;
-    margin-bottom: 20px !important;
+    margin-bottom: 18px !important;
   }
   .mobile-hero-header > div:last-child {
     display: flex !important;
@@ -963,6 +971,39 @@ body, p, .body-text {
   .mobile-hero-header > div:last-child .btn {
     width: 100% !important;
   }
+}
+
+/* Optical KPI Currency & Baseline Number Formatting */
+.kpi-optical-number {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.kpi-optical-number .currency-symbol {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* 48px Touch Target Tappable Rows */
+.tappable-row {
+  min-height: 48px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-color);
+  margin-top: 12px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  touch-action: manipulation;
+}
+.tappable-row:active {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(0.98);
 }
 
 /* ====================================================== */

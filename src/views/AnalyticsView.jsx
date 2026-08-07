@@ -32,7 +32,7 @@ export const AnalyticsView = () => {
       <div className="mobile-hero-header">
         <div>
           <h2>{t("analytics")}</h2>
-          <p className="caption" style={{ margin: "4px 0 0 0" }}>
+          <p className="caption hide-subtitle-mobile" style={{ margin: "4px 0 0 0" }}>
             Accounting ledgers, GST compliance reports (GSTR-1, GSTR-3B), Tally XML export & cash flow analysis
           </p>
         </div>

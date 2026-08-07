@@ -102,7 +102,7 @@ export const InventoryView = () => {
       <div className="mobile-hero-header">
         <div>
           <h2>{t("inventory")}</h2>
-          <p className="caption" style={{ margin: "4px 0 0 0" }}>
+          <p className="caption hide-subtitle-mobile" style={{ margin: "4px 0 0 0" }}>
             Live stock tracking, batch/expiry management, barcode generation & warehouse valuation
           </p>
         </div>

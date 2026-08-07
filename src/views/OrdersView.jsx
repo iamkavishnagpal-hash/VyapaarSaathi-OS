@@ -37,7 +37,7 @@ export const OrdersView = () => {
       <div className="mobile-hero-header">
         <div>
           <h2>{t("orders")}</h2>
-          <p className="caption" style={{ margin: "4px 0 0 0" }}>
+          <p className="caption hide-subtitle-mobile" style={{ margin: "4px 0 0 0" }}>
             Multi-channel order fulfillment & customer returns
           </p>
         </div>
