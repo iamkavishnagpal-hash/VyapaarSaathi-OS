@@ -300,13 +300,13 @@ export const DashboardView = () => {
       <div className="grid-2 animate-cascade stagger-4" style={{ gridTemplateColumns: "1.2fr 1fr", gap: "32px", marginBottom: "32px" }}>
         
         {/* LEFT COLUMN: ORDERS, FULFILLMENT & RETURNS */}
-        <div className="glass-panel" style={{ padding: "24px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+        <div className="glass-panel" style={{ padding: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
             <div>
-              <h3 style={{ fontSize: "18px", margin: "0 0 2px 0" }}>Operations & Orders Ledger</h3>
-              <div className="caption">Live fulfillment status & customer transactions</div>
+              <h3 style={{ fontSize: "16px", fontWeight: "600", margin: "0 0 2px 0", color: "#ffffff" }}>Operations & Orders Ledger</h3>
+              <div className="caption" style={{ color: "#94A3B8" }}>Live fulfillment status & customer transactions</div>
             </div>
-            <button onClick={() => setActiveView("orders")} className="btn btn-secondary" style={{ minHeight: "38px", fontSize: "13px" }}>
+            <button onClick={() => setActiveView("orders")} className="btn btn-secondary" style={{ minHeight: "36px", height: "36px", fontSize: "12px", padding: "6px 12px" }}>
               <span>View All Orders</span>
             </button>
           </div>
@@ -334,7 +334,12 @@ export const DashboardView = () => {
                       <div className="caption" style={{ fontSize: "11px" }}>{ord.customerPhone}</div>
                     </td>
                     <td>{ord.itemsCount} items</td>
-                    <td className="num-tabular" style={{ color: "#fff" }}>₹{ord.total.toLocaleString("en-IN")}</td>
+                    <td className="num-tabular" style={{ color: "#fff" }}>
+                      <span className="kpi-optical-number" style={{ marginBottom: 0 }}>
+                        <span className="currency-symbol" style={{ fontSize: "13px" }}>₹</span>
+                        <span style={{ fontSize: "14px" }}>{ord.total.toLocaleString("en-IN")}</span>
+                      </span>
+                    </td>
                     <td>
                       <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
                         {ord.status}
@@ -349,9 +354,9 @@ export const DashboardView = () => {
           {/* MOBILE STACKED CARDS */}
           <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {orders.slice(0, 5).map((ord) => (
-              <div key={ord.id} className="glass-card" style={{ padding: "14px", display: "flex", flexDirection: "column", gap: "8px" }}>
+              <div key={ord.id} className="glass-card" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: "700", color: "var(--primary)", fontSize: "15px" }}>{ord.id}</span>
+                  <span style={{ fontWeight: "700", color: "var(--primary)", fontSize: "14px" }}>{ord.id}</span>
                   <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
                     {ord.status}
                   </span>
@@ -359,10 +364,13 @@ export const DashboardView = () => {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                   <div>
                     <div style={{ fontWeight: "700", color: "#fff", fontSize: "15px" }}>{ord.customerName}</div>
-                    <div className="caption" style={{ fontSize: "12px" }}>{ord.channel} • {ord.itemsCount} items</div>
+                    <div className="caption" style={{ fontSize: "12px", color: "#94A3B8" }}>{ord.channel} • {ord.itemsCount} items</div>
                   </div>
-                  <div className="num-tabular" style={{ fontSize: "18px", color: "#fff" }}>
-                    ₹{ord.total.toLocaleString("en-IN")}
+                  <div className="kpi-optical-number" style={{ marginBottom: 0 }}>
+                    <span className="currency-symbol" style={{ fontSize: "15px" }}>₹</span>
+                    <span className="num-tabular" style={{ fontSize: "18px", color: "#fff" }}>
+                      {ord.total.toLocaleString("en-IN")}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -373,10 +381,10 @@ export const DashboardView = () => {
         {/* RIGHT COLUMN: INVENTORY HEALTH & WAREHOUSE CAPACITY */}
         <div className="glass-panel" style={{ padding: "24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
               <div>
-                <h3 style={{ fontSize: "18px", margin: "0 0 2px 0" }}>Inventory & Warehouse Capacity</h3>
-                <div className="caption">Real-time stock movement & low stock status</div>
+                <h3 style={{ fontSize: "16px", fontWeight: "600", margin: "0 0 2px 0", color: "#ffffff" }}>Inventory & Warehouse Capacity</h3>
+                <div className="caption" style={{ color: "#94A3B8" }}>Real-time stock movement & low stock status</div>
               </div>
               {/* SUBTLE TEXT LINK (REPLACED DUPLICATE MANAGE STOCK BUTTON) */}
               <span 
