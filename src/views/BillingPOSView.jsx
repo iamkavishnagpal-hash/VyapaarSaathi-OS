@@ -100,7 +100,7 @@ export const BillingPOSView = () => {
         </div>
       </div>
 
-      <div className="grid-3" style={{ gridTemplateColumns: "1.6fr 1fr", gap: "24px" }}>
+      <div className="grid-3" style={{ gap: "24px" }}>
         
         {/* LEFT CATALOG PANEL */}
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -299,11 +299,11 @@ export const BillingPOSView = () => {
 
       </div>
 
-      {/* INVOICE PRINT & SHARE MODAL */}
+      {/* INVOICE PRINT & SHARE MODAL (MOBILE BOTTOM SHEET / DESKTOP MODAL) */}
       {showInvoiceModal && completedOrder && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(12px)", padding: "16px" }}>
-          <div className="glass-panel" style={{ width: "520px", padding: "24px", maxWidth: "100%", maxHeight: "90vh", overflowY: "auto" }}>
-            
+        <div className="mobile-bottom-sheet-overlay" onClick={() => setShowInvoiceModal(false)}>
+          <div className="mobile-bottom-sheet glass-panel" onClick={(e) => e.stopPropagation()} style={{ width: "520px", padding: "20px" }}>
+            <div className="bottom-sheet-handle hide-on-desktop" />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <CheckCircle2 size={20} color="#10B981" />

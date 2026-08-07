@@ -1,0 +1,24 @@
+{
+  "name": "Retail OS — Enterprise SaaS Operating System",
+  "short_name": "Retail OS",
+  "description": "Unified operating system for inventory, GST billing, multi-store sales, store building, and AI assistants.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0F17",
+  "theme_color": "#0B0F17",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -43,8 +43,36 @@ export const AnalyticsView = () => {
         </button>
       </div>
 
-      {/* METRIC HIGHLIGHTS */}
-      <div className="grid-3" style={{ marginBottom: "24px" }}>
+      {/* METRIC HIGHLIGHTS (MOBILE SWIPE CAROUSEL / DESKTOP GRID) */}
+      <div className="mobile-kpi-carousel hide-on-desktop">
+        <div className="glass-panel mobile-kpi-card" style={{ padding: "20px" }}>
+          <div className="caption" style={{ fontWeight: "700" }}>Total Gross Revenue</div>
+          <div className="num-tabular" style={{ fontSize: "28px", color: "#ffffff", margin: "4px 0" }}>
+            {currencySymbol}{totalSales.toLocaleString("en-IN")}
+          </div>
+          <div style={{ fontSize: "13px", color: "#34D399", display: "flex", alignItems: "center", gap: "4px" }}>
+            <ArrowUpRight size={16} /> +24% growth vs last month
+          </div>
+        </div>
+
+        <div className="glass-panel mobile-kpi-card" style={{ padding: "20px" }}>
+          <div className="caption" style={{ fontWeight: "700" }}>Total Receivables (Khata)</div>
+          <div className="num-tabular" style={{ fontSize: "28px", color: "#A78BFA", margin: "4px 0" }}>
+            {currencySymbol}3,650
+          </div>
+          <div className="caption" style={{ fontSize: "12px" }}>Outstanding customer credit</div>
+        </div>
+
+        <div className="glass-panel mobile-kpi-card" style={{ padding: "20px" }}>
+          <div className="caption" style={{ fontWeight: "700" }}>Total Payables (Vendors)</div>
+          <div className="num-tabular" style={{ fontSize: "28px", color: "#F87171", margin: "4px 0" }}>
+            {currencySymbol}23,400
+          </div>
+          <div className="caption" style={{ fontSize: "12px" }}>Supplier purchase ledger due</div>
+        </div>
+      </div>
+
+      <div className="grid-3 hide-on-mobile" style={{ marginBottom: "24px" }}>
         <div className="glass-panel" style={{ padding: "20px" }}>
           <div className="caption" style={{ fontWeight: "700" }}>Total Gross Revenue</div>
           <div className="num-tabular" style={{ fontSize: "28px", color: "#ffffff", margin: "4px 0" }}>
@@ -76,7 +104,7 @@ export const AnalyticsView = () => {
       <div className="glass-panel" style={{ padding: "24px", marginBottom: "24px" }}>
         
         {/* TABS */}
-        <div style={{ display: "flex", gap: "12px", borderBottom: "1px solid var(--border-color)", paddingBottom: "16px", marginBottom: "20px" }}>
+        <div style={{ display: "flex", gap: "12px", borderBottom: "1px solid var(--border-color)", paddingBottom: "16px", marginBottom: "20px", flexWrap: "wrap" }}>
           <button
             onClick={() => setActiveTab("accounting")}
             className={`btn ${activeTab === "accounting" ? "btn-primary" : "btn-secondary"}`}
@@ -99,7 +127,9 @@ export const AnalyticsView = () => {
         {activeTab === "accounting" && (
           <div>
             <h3 style={{ fontSize: "18px", margin: "0 0 16px 0" }}>Party Ledger & Outstanding Ageing Report</h3>
-            <div className="table-responsive">
+            
+            {/* DESKTOP TABLE */}
+            <div className="table-responsive hide-on-mobile">
               <table className="custom-table">
                 <thead>
                   <tr>
@@ -133,6 +163,33 @@ export const AnalyticsView = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* MOBILE STACKED CARDS */}
+            <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {partyLedgers.map((p, idx) => (
+                <div key={idx} className="glass-card" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <h4 style={{ fontSize: "16px", fontWeight: "700", color: "#fff", margin: 0 }}>{p.partyName}</h4>
+                      <span className="caption">{p.status}</span>
+                    </div>
+                    <span className={`badge ${p.type === "Receivable" ? "badge-info" : "badge-warning"}`}>
+                      {p.type}
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--border-color)", paddingTop: "10px" }}>
+                    <div className="num-tabular" style={{ fontSize: "18px", color: p.type === "Receivable" ? "#34D399" : "#F87171" }}>
+                      {currencySymbol}{p.amount.toLocaleString("en-IN")}
+                    </div>
+                    <button onClick={() => alert(`WhatsApp payment reminder sent to ${p.partyName}`)} className="btn btn-secondary" style={{ fontSize: "12px" }}>
+                      Send WhatsApp
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
           </div>
         )}
 

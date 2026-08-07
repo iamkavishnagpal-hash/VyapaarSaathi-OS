@@ -36,8 +36,107 @@ export const DashboardView = () => {
   return (
     <div className="view-container" style={{ maxWidth: "1600px", margin: "0 auto", padding: "32px" }}>
       
-      {/* 1. EXECUTIVE KPI ROW (5 EQUAL STRIP CARDS WITH STAGGERED FADE-IN) */}
-      <div className="grid-4 animate-cascade stagger-1" style={{ gridTemplateColumns: "repeat(5, 1fr)", gap: "20px", marginBottom: "32px" }}>
+      {/* 1. EXECUTIVE KPI ROW (HORIZONTAL SWIPE CAROUSEL ON MOBILE, EQUAL GRID ON DESKTOP) */}
+      <div className="mobile-kpi-carousel hide-on-desktop animate-cascade stagger-1">
+        {/* KPI CARD 1: REVENUE */}
+        <div onClick={() => setActiveView("pos")} className="glass-card mobile-kpi-card" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}>
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Gross Sales</span>
+              <span style={{ fontSize: "12px", color: "#34D399", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
+                <ArrowUpRight size={14} /> +18.4%
+              </span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              ₹{todaysSales.toLocaleString("en-IN")}
+            </div>
+            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>POS & Online counter billing</div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>Vs yesterday: ₹89,100</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
+        </div>
+
+        {/* KPI CARD 2: NET PROFIT */}
+        <div onClick={() => setActiveView("analytics")} className="glass-card mobile-kpi-card" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}>
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Net Profit</span>
+              <span style={{ fontSize: "12px", color: "#34D399", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
+                <ArrowUpRight size={14} /> 38% Margin
+              </span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              ₹{estimatedProfit.toLocaleString("en-IN")}
+            </div>
+            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>Net Margin after COGS</div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>Reconciled Real-Time</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
+        </div>
+
+        {/* KPI CARD 3: ORDERS */}
+        <div onClick={() => setActiveView("orders")} className="glass-card mobile-kpi-card" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}>
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Orders</span>
+              <span className="badge badge-success">100% Fulfilled</span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              {totalOrdersCount} Orders
+            </div>
+            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>Multi-channel fulfilled</div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>Avg Value: ₹{(todaysSales / (totalOrdersCount || 1)).toFixed(0)}</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
+        </div>
+
+        {/* KPI CARD 4: ACTIVE CUSTOMERS */}
+        <div onClick={() => setActiveView("comms")} className="glass-card mobile-kpi-card" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}>
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Customers</span>
+              <span style={{ fontSize: "12px", color: "#A78BFA", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
+                +12 Today
+              </span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              {activeCustomersCount} Active
+            </div>
+            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>78% repeat buyer rate</div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>12 At Churn Risk</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
+        </div>
+
+        {/* KPI CARD 5: CASH POSITION */}
+        <div onClick={() => setActiveView("pos")} className="glass-card mobile-kpi-card" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}>
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Cash Position</span>
+              <span className="badge badge-info">{healthScore}/100 Health</span>
+            </div>
+            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+              ₹{todaysSales.toLocaleString("en-IN")}
+            </div>
+            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>POS & Bank Settlement</div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "10px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ fontSize: "11px" }}>Instant UPI & Cash</span>
+            <ChevronRight size={14} color="var(--text-muted)" />
+          </div>
+        </div>
+      </div>
+
+      {/* DESKTOP KPI ROW (STRICTLY PRESERVED UNCHANGED) */}
+      <div className="grid-4 hide-on-mobile animate-cascade stagger-1" style={{ gridTemplateColumns: "repeat(5, 1fr)", gap: "20px", marginBottom: "32px" }}>
         
         {/* KPI CARD 1: REVENUE */}
         <div 
@@ -270,7 +369,8 @@ export const DashboardView = () => {
             </button>
           </div>
 
-          <div className="table-responsive">
+          {/* DESKTOP TABLE */}
+          <div className="table-responsive hide-on-mobile">
             <table className="custom-table">
               <thead>
                 <tr>
@@ -302,6 +402,29 @@ export const DashboardView = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* MOBILE STACKED CARDS */}
+          <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {orders.slice(0, 5).map((ord) => (
+              <div key={ord.id} className="glass-card" style={{ padding: "14px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontWeight: "700", color: "var(--primary)", fontSize: "15px" }}>{ord.id}</span>
+                  <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
+                    {ord.status}
+                  </span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                  <div>
+                    <div style={{ fontWeight: "700", color: "#fff", fontSize: "15px" }}>{ord.customerName}</div>
+                    <div className="caption" style={{ fontSize: "12px" }}>{ord.channel} • {ord.itemsCount} items</div>
+                  </div>
+                  <div className="num-tabular" style={{ fontSize: "18px", color: "#fff" }}>
+                    ₹{ord.total.toLocaleString("en-IN")}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

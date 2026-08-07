@@ -105,9 +105,9 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", maxWidth: "1600px", margin: "0 auto" }}>
           
           {/* LEFT: BRAND LOGO & STORE SWITCHER */}
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             
-            <div onClick={() => setActiveView("dashboard")} style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }}>
+            <div onClick={() => setActiveView("dashboard")} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
               <div style={{
                 width: "40px",
                 height: "40px",
@@ -129,7 +129,7 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
               </div>
             </div>
 
-            {/* STORE BRANCH SWITCHER */}
+            {/* STORE BRANCH SWITCHER (DESKTOP) */}
             <div className="hide-on-mobile" style={{ position: "relative" }}>
               <button
                 onClick={() => setShowStoreDropdown(!showStoreDropdown)}
@@ -180,9 +180,22 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
               )}
             </div>
 
+            {/* MOBILE STORE SWITCHER CHIP (ONLY ON MOBILE) */}
+            <button
+              onClick={() => setShowStoreDropdown(!showStoreDropdown)}
+              className="btn btn-secondary hide-on-desktop"
+              style={{ fontSize: "12px", padding: "6px 10px", minHeight: "36px", height: "36px" }}
+            >
+              <Building2 size={14} color="var(--primary)" />
+              <span style={{ fontWeight: "700", maxWidth: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {currentStore.name}
+              </span>
+              <ChevronDown size={12} />
+            </button>
+
           </div>
 
-          {/* CENTER: GLOBAL SEARCH BAR */}
+          {/* CENTER: GLOBAL SEARCH BAR (DESKTOP) */}
           <div className="hide-on-mobile" style={{ width: "360px", position: "relative" }}>
             <Search size={16} color="var(--text-dim)" style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)" }} />
             <input

@@ -113,8 +113,34 @@ export const InventoryView = () => {
         </button>
       </div>
 
-      {/* INVENTORY VALUATION KPI STRIP */}
-      <div className="grid-3" style={{ marginBottom: "24px" }}>
+      {/* INVENTORY VALUATION KPI STRIP (DESKTOP GRID & MOBILE SWIPE CAROUSEL) */}
+      <div className="mobile-kpi-carousel hide-on-desktop">
+        <div className="glass-card mobile-kpi-card" style={{ padding: "16px" }}>
+          <div className="caption" style={{ fontWeight: "700" }}>Total Inventory Valuation</div>
+          <div className="num-tabular" style={{ fontSize: "24px", color: "#34D399", margin: "4px 0" }}>
+            {currencySymbol}{totalValuation.toLocaleString("en-IN")}
+          </div>
+          <div className="caption" style={{ fontSize: "12px" }}>Asset valuation at cost price</div>
+        </div>
+
+        <div className="glass-card mobile-kpi-card" style={{ padding: "16px" }}>
+          <div className="caption" style={{ fontWeight: "700" }}>Total Catalog SKUs</div>
+          <div className="num-tabular" style={{ fontSize: "24px", color: "#ffffff", margin: "4px 0" }}>
+            {products.length} Products
+          </div>
+          <div className="caption" style={{ fontSize: "12px" }}>Active stock keeping units</div>
+        </div>
+
+        <div className="glass-card mobile-kpi-card" style={{ padding: "16px" }}>
+          <div className="caption" style={{ fontWeight: "700" }}>Low Stock Reorder Alerts</div>
+          <div className="num-tabular" style={{ fontSize: "24px", color: lowStockCount > 0 ? "#F87171" : "#34D399", margin: "4px 0" }}>
+            {lowStockCount} Items
+          </div>
+          <div className="caption" style={{ fontSize: "12px" }}>Below safety stock buffer</div>
+        </div>
+      </div>
+
+      <div className="grid-3 hide-on-mobile" style={{ marginBottom: "24px" }}>
         <div className="glass-card" style={{ padding: "16px" }}>
           <div className="caption" style={{ fontWeight: "700" }}>Total Inventory Valuation</div>
           <div className="num-tabular" style={{ fontSize: "24px", color: "#34D399", margin: "4px 0" }}>

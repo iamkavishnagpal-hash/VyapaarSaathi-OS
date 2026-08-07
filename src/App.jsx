@@ -19,6 +19,26 @@ const MainContent = () => {
   const { activeView } = useRetail();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true); // Collapsed State (Default: 72px)
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  React.useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  const triggerPullRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1000);
+  };
 
   const renderActiveView = () => {
     switch (activeView) {
@@ -56,12 +76,26 @@ const MainContent = () => {
       />
 
       <div className="main-content" style={{ flex: 1, minWidth: 0, transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)" }}>
+        {/* STICKY OFFLINE STATUS TOAST BANNER */}
+        {isOffline && (
+          <div className="offline-banner">
+            <span>Working Offline — Catalog & Draft Bills Saved Locally. Auto-sync when online.</span>
+          </div>
+        )}
+
         <Navbar 
           isMobileMenuOpen={isMobileMenuOpen} 
           setIsMobileMenuOpen={setIsMobileMenuOpen} 
           isSidebarCollapsed={isSidebarCollapsed}
           setIsSidebarCollapsed={setIsSidebarCollapsed}
         />
+
+        {isRefreshing && (
+          <div className="pull-refresh-indicator">
+            <span>Refreshing Retail OS Live Data...</span>
+          </div>
+        )}
+
         {renderActiveView()}
         
         {/* STRICTLY MOBILE-ONLY FLOATING DOCK (HIDDEN ON DESKTOP VIA MEDIA QUERY) */}

@@ -171,10 +171,11 @@ export const OrdersView = () => {
         ))}
       </div>
 
-      {/* ORDER DETAILS MODAL */}
+      {/* ORDER DETAILS MODAL (MOBILE BOTTOM SHEET / DESKTOP MODAL) */}
       {showDetailModal && selectedOrder && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(8px)", padding: "16px" }}>
-          <div className="glass-panel" style={{ width: "520px", padding: "24px", maxWidth: "100%", maxHeight: "90vh", overflowY: "auto" }}>
+        <div className="mobile-bottom-sheet-overlay" onClick={() => setShowDetailModal(false)}>
+          <div className="mobile-bottom-sheet glass-panel" onClick={(e) => e.stopPropagation()} style={{ width: "520px", padding: "20px" }}>
+            <div className="bottom-sheet-handle hide-on-desktop" />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
               <h3 style={{ margin: 0 }}>Order Details — {selectedOrder.id}</h3>
               <button onClick={() => setShowDetailModal(false)} className="btn btn-ghost" style={{ padding: "8px" }}>
@@ -193,7 +194,7 @@ export const OrdersView = () => {
                 <h4 style={{ fontSize: "16px", margin: "0 0 10px 0" }}>Order Items</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {selectedOrder.items && selectedOrder.items.map((item, idx) => (
-                    <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "16px", padding: "8px 12px", background: "rgba(255,255,255,0.02)", borderRadius: "8px" }}>
+                    <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "15px", padding: "10px 12px", background: "rgba(255,255,255,0.02)", borderRadius: "8px" }}>
                       <span>{item.title} x {item.qty}</span>
                       <span style={{ fontWeight: "700" }}>₹{item.price * item.qty}</span>
                     </div>
