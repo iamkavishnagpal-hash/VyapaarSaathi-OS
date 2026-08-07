@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { RetailProvider, useRetail } from "./context/RetailContext";
 import { Navbar } from "./components/Navbar";
 import { Sidebar } from "./components/Sidebar";
-import { MobileBottomNav } from "./components/MobileBottomNav";
 
 import { DashboardView } from "./views/DashboardView";
 import { InventoryView } from "./views/InventoryView";
@@ -97,11 +96,6 @@ const MainContent = () => {
         )}
 
         {renderActiveView()}
-        
-        {/* STRICTLY MOBILE-ONLY FLOATING DOCK (HIDDEN ON DESKTOP VIA MEDIA QUERY) */}
-        <MobileBottomNav 
-          onOpenMobileMenu={() => setIsMobileMenuOpen(true)} 
-        />
       </div>
     </div>
   );

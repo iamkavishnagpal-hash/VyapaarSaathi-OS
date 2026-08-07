@@ -364,23 +364,28 @@ export const DashboardView = () => {
           </div>
 
           {/* MOBILE STACKED CARDS */}
-          <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {orders.slice(0, 5).map((ord) => (
-              <div key={ord.id} className="glass-card" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+              <div key={ord.id} className="glass-card" style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: "10px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "14px" }}>
+                {/* TOP LINE: FONT-MONO ORDER ID & STATUS PILL */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: "700", color: "var(--primary)", fontSize: "14px" }}>{ord.id}</span>
-                  <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
+                  <span className="font-mono" style={{ fontSize: "12px", fontWeight: "600", color: "#94A3B8", fontFamily: "monospace" }}>#{ord.id}</span>
+                  <span className="badge" style={{ background: ord.status === "Completed" ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)", color: ord.status === "Completed" ? "#34D399" : "#FBBF24", border: ord.status === "Completed" ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(245, 158, 11, 0.2)", borderRadius: "6px", padding: "2px 8px", fontSize: "10px", fontWeight: "600", textTransform: "uppercase" }}>
                     {ord.status}
                   </span>
                 </div>
+
+                {/* MIDDLE LINE: CUSTOMER NAME + CHANNEL BADGE */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                   <div>
-                    <div style={{ fontWeight: "700", color: "#fff", fontSize: "15px" }}>{ord.customerName}</div>
-                    <div className="caption" style={{ fontSize: "12px", color: "#94A3B8" }}>{ord.channel} • {ord.itemsCount} items</div>
+                    <div style={{ fontWeight: "600", color: "#ffffff", fontSize: "14px" }}>{ord.customerName}</div>
+                    <div style={{ fontSize: "12px", color: "#94A3B8", marginTop: "2px" }}>{ord.channel} • {ord.itemsCount} items</div>
                   </div>
+                  
+                  {/* RIGHT/BOTTOM BOLD PRICE WITH BASELINE ALIGNMENT */}
                   <div className="kpi-optical-number" style={{ marginBottom: 0 }}>
-                    <span className="currency-symbol" style={{ fontSize: "15px" }}>₹</span>
-                    <span className="num-tabular" style={{ fontSize: "18px", color: "#fff" }}>
+                    <span className="currency-symbol" style={{ fontSize: "14px", color: "#94A3B8" }}>₹</span>
+                    <span className="num-tabular" style={{ fontSize: "16px", fontWeight: "700", color: "#ffffff" }}>
                       {ord.total.toLocaleString("en-IN")}
                     </span>
                   </div>
@@ -391,14 +396,13 @@ export const DashboardView = () => {
         </div>
 
         {/* RIGHT COLUMN: INVENTORY HEALTH & WAREHOUSE CAPACITY */}
-        <div className="glass-panel" style={{ padding: "24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div className="glass-panel" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
               <div>
                 <h3 style={{ fontSize: "16px", fontWeight: "600", margin: "0 0 2px 0", color: "#ffffff" }}>Inventory & Warehouse Capacity</h3>
                 <div className="caption" style={{ color: "#94A3B8" }}>Real-time stock movement & low stock status</div>
               </div>
-              {/* SUBTLE TEXT LINK (REPLACED DUPLICATE MANAGE STOCK BUTTON) */}
               <span 
                 onClick={() => setActiveView("inventory")} 
                 style={{ fontSize: "13px", fontWeight: "600", color: "var(--primary)", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
@@ -409,79 +413,86 @@ export const DashboardView = () => {
             </div>
 
             {/* WAREHOUSE CAPACITY PROGRESS INDICATOR */}
-            <div className="glass-card" style={{ padding: "16px", marginBottom: "20px" }}>
+            <div className="glass-card" style={{ padding: "16px", marginBottom: "16px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "14px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                <span className="caption" style={{ fontWeight: "700" }}>Central Warehouse Capacity</span>
-                <span className="num-tabular" style={{ color: "#34D399", fontSize: "14px" }}>68% Utilized</span>
+                <span className="caption" style={{ fontWeight: "600", color: "#E2E8F0" }}>Central Warehouse Capacity</span>
+                <span className="num-tabular" style={{ color: "#34D399", fontSize: "13px", fontWeight: "700" }}>68% Utilized</span>
               </div>
-              <div style={{ width: "100%", height: "8px", borderRadius: "4px", background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
-                <div style={{ width: "68%", height: "100%", borderRadius: "4px", background: "linear-gradient(90deg, #10B981, #3B82F6)" }} />
+              <div style={{ width: "100%", height: "8px", borderRadius: "9999px", background: "rgba(30, 41, 59, 0.8)", overflow: "hidden" }}>
+                <div style={{ width: "68%", height: "100%", borderRadius: "9999px", background: "linear-gradient(90deg, #10B981, #3B82F6)" }} />
               </div>
             </div>
 
-            {/* LOW STOCK ITEMIZED LIST */}
+            {/* LOW STOCK ITEMIZED PROGRESS METER LIST */}
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {products.slice(0, 3).map((prod) => (
-                <div key={prod.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", background: "rgba(255,255,255,0.03)", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
-                  <div>
-                    <div style={{ fontWeight: "700", color: "#fff" }}>{prod.title}</div>
-                    <div className="sku-code" style={{ color: "var(--text-muted)" }}>SKU: {prod.sku} • {prod.category}</div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div className="num-tabular" style={{ color: prod.stockQty <= prod.lowStockThreshold ? "#F87171" : "#34D399" }}>
-                      {prod.stockQty} left
+              {products.slice(0, 3).map((prod) => {
+                const isLow = prod.stockQty <= prod.lowStockThreshold;
+                const percent = Math.min(100, Math.round((prod.stockQty / (prod.lowStockThreshold * 3)) * 100));
+                return (
+                  <div key={prod.id} style={{ padding: "12px 14px", background: isLow ? "rgba(244, 63, 94, 0.08)" : "rgba(15, 23, 42, 0.5)", borderRadius: "12px", border: isLow ? "1px solid rgba(244, 63, 94, 0.25)" : "1px solid rgba(255, 255, 255, 0.08)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                      <div>
+                        <div style={{ fontWeight: "600", color: "#ffffff", fontSize: "13px" }}>{prod.title}</div>
+                        <div className="sku-code" style={{ color: "#94A3B8", fontSize: "11px" }}>SKU: {prod.sku}</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <span className="badge" style={{ background: isLow ? "rgba(244, 63, 94, 0.15)" : "rgba(16, 185, 129, 0.15)", color: isLow ? "#F87171" : "#34D399", border: isLow ? "1px solid rgba(244, 63, 94, 0.3)" : "1px solid rgba(16, 185, 129, 0.3)", padding: "2px 8px", fontSize: "11px", fontWeight: "700" }}>
+                          {prod.stockQty} left
+                        </span>
+                      </div>
                     </div>
-                    <div className="caption" style={{ fontSize: "11px" }}>Threshold: {prod.lowStockThreshold}</div>
+                    {/* STOCK LEVEL PROGRESS METER BAR */}
+                    <div style={{ width: "100%", height: "6px", borderRadius: "9999px", background: "rgba(30, 41, 59, 0.8)", overflow: "hidden" }}>
+                      <div style={{ width: `${percent}%`, height: "100%", borderRadius: "9999px", background: isLow ? "#F43F5E" : "#10B981" }} />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
-          <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "14px", marginTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span className="caption">Supplier Lead Time: <strong>24 Hours</strong></span>
+          <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "14px", marginTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="caption" style={{ color: "#94A3B8" }}>Supplier Lead Time: <strong style={{ color: "#ffffff" }}>24 Hours</strong></span>
             <span className="badge badge-success">Automated PO Ready</span>
           </div>
         </div>
 
       </div>
 
-      {/* 5. AUDIT ACTIVITY & REPORTS (PROGRESSIVE DISCLOSURE) */}
-      <div className="glass-panel animate-cascade stagger-5" style={{ padding: "20px 24px" }}>
+      {/* 5. AUDIT ACTIVITY & REPORTS (NEAT 2-COLUMN KEY-VALUE GRID) */}
+      <div className="glass-panel animate-cascade stagger-5" style={{ padding: "20px" }}>
         <div 
           onClick={() => setExpandedSection(!expandedSection)}
           style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}
         >
           <div>
-            <h3 style={{ fontSize: "16px", margin: 0 }}>Executive Audit Logs & GST Tax Compliance</h3>
-            <div className="caption">Click to inspect real-time audit trail and GSTR-3B tax reconciliation</div>
+            <h3 style={{ fontSize: "16px", fontWeight: "600", margin: 0, color: "#ffffff" }}>Executive Audit Logs & GST Tax Compliance</h3>
+            <div className="caption" style={{ color: "#94A3B8", marginTop: "2px" }}>Real-time audit trail and GSTR-3B tax reconciliation</div>
           </div>
-          <ChevronDown size={20} style={{ transform: expandedSection ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }} />
+          <ChevronDown size={20} style={{ transform: expandedSection ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease", color: "#94A3B8" }} />
         </div>
 
         {expandedSection && (
-          <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: "1px solid var(--border-color)" }}>
-            <div className="grid-3" style={{ gap: "20px" }}>
+          <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid rgba(255, 255, 255, 0.08)" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
               
-              <div className="glass-card" style={{ padding: "16px" }}>
-                <div className="caption" style={{ fontWeight: "700", marginBottom: "6px" }}>GSTR-3B Tax Liability</div>
-                <div className="num-tabular" style={{ fontSize: "20px", color: "#ffffff", marginBottom: "4px" }}>₹526 Collected</div>
-                <div className="caption">CGST ₹263 + SGST ₹263</div>
+              <div className="glass-card" style={{ padding: "14px 16px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px" }}>
+                <div className="caption" style={{ fontWeight: "600", color: "#94A3B8", marginBottom: "4px" }}>GSTR-3B Tax Liability</div>
+                <div className="num-tabular" style={{ fontSize: "18px", fontWeight: "700", color: "#ffffff", marginBottom: "2px" }}>₹526 Collected</div>
+                <div className="caption" style={{ fontSize: "11px", color: "#64748B" }}>CGST ₹263 + SGST ₹263</div>
               </div>
 
-              <div className="glass-card" style={{ padding: "16px" }}>
-                <div className="caption" style={{ fontWeight: "700", marginBottom: "6px" }}>Catalog Sync Status</div>
-                <div className="num-tabular" style={{ fontSize: "20px", color: "#34D399", marginBottom: "4px" }}>100% Synced</div>
-                <div className="caption">5 Branch Outlets Operational</div>
+              <div className="glass-card" style={{ padding: "14px 16px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px" }}>
+                <div className="caption" style={{ fontWeight: "600", color: "#94A3B8", marginBottom: "4px" }}>Catalog Sync Status</div>
+                <div className="num-tabular" style={{ fontSize: "18px", fontWeight: "700", color: "#34D399", marginBottom: "2px" }}>100% Synced</div>
+                <div className="caption" style={{ fontSize: "11px", color: "#64748B" }}>5 Branch Outlets Operational</div>
               </div>
 
-              <div className="glass-card" style={{ padding: "16px" }}>
-                <div className="caption" style={{ fontWeight: "700", marginBottom: "6px" }}>System Security Audit</div>
-                <div className="num-tabular" style={{ fontSize: "20px", color: "#A78BFA", marginBottom: "4px" }}>RBAC Active</div>
-                <div className="caption">Owner Authorization Logged</div>
-              </div>
-
-            </div>
+              <div className="glass-card" style={{ padding: "14px 16px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px" }}>
+                <div className="caption" style={{ fontWeight: "600", color: "#94A3B8", marginBottom: "4px" }}>System Security Audit</div>
+                <div className="num-tabular" style={{ fontSize: "18px", fontWeight: "700", color: "#A78BFA", marginBottom: "2px" }}>RBAC Active</div>
+                <div className="caption" style={{ fontSize: "11px", color: "#64748B" }}>2FA Enforced • Audit Log #4920</div>
+              </div>            </div>
           </div>
         )}
       </div>

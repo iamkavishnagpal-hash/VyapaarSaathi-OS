@@ -1188,7 +1188,7 @@ body, p, .body-text {
 @media (min-width: 430px) and (max-width: 767px) {
   .view-container {
     padding: 16px !important;
-    padding-bottom: calc(112px + var(--sab)) !important;
+    padding-bottom: 32px !important;
   }
 }
 
@@ -1196,7 +1196,7 @@ body, p, .body-text {
 @media (min-width: 390px) and (max-width: 429px) {
   .view-container {
     padding: 16px !important;
-    padding-bottom: calc(112px + var(--sab)) !important;
+    padding-bottom: 28px !important;
   }
 }
 
@@ -1204,7 +1204,7 @@ body, p, .body-text {
 @media (max-width: 389px) {
   .view-container {
     padding: 12px 14px !important;
-    padding-bottom: calc(112px + var(--sab)) !important;
+    padding-bottom: 24px !important;
   }
 }
 
