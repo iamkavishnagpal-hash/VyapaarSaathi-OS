@@ -36,6 +36,34 @@ export const DashboardView = () => {
   return (
     <div className="view-container" style={{ maxWidth: "1600px", margin: "0 auto", padding: "32px" }}>
       
+      {/* 4-STEP EXECUTIVE FIRST-SCREEN VISUAL HIERARCHY HERO */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "28px", flexWrap: "wrap", gap: "16px" }}>
+        <div>
+          <div className="micro-tag" style={{ color: "var(--primary)", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+            <Zap size={14} /> <span>Enterprise Retail OS Telemetry</span>
+          </div>
+          <h2 style={{ fontSize: "28px", fontWeight: "800", letterSpacing: "-0.025em", margin: "0 0 6px 0", color: "#ffffff" }}>
+            Executive Dashboard & Real-Time Metrics
+          </h2>
+          <p className="caption" style={{ fontSize: "14px", color: "var(--text-muted)", margin: 0, maxWidth: "680px" }}>
+            Unified merchant telemetry for counter billing, multi-branch catalog sync, customer credit ledgers & AI co-pilot recommendations.
+          </p>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          {/* STEP 3: PRIMARY CTA */}
+          <button onClick={() => setActiveView("pos")} className="btn btn-primary">
+            <Zap size={18} />
+            <span>New POS Bill</span>
+          </button>
+          {/* STEP 4: SECONDARY CTA */}
+          <button onClick={() => setActiveView("ai")} className="btn btn-secondary">
+            <Sparkles size={18} color="var(--primary)" />
+            <span>Explore AI Center</span>
+          </button>
+        </div>
+      </div>
+
       {/* 1. EXECUTIVE KPI ROW (HORIZONTAL SWIPE CAROUSEL ON MOBILE, EQUAL GRID ON DESKTOP) */}
       <div className="mobile-kpi-carousel hide-on-desktop animate-cascade stagger-1">
         {/* KPI CARD 1: REVENUE */}
