@@ -1041,6 +1041,37 @@ body, p, .body-text {
   transform: scale(0.98);
 }
 
+/* Mobile 2-Column Responsive Filter Grid & Non-Clipping Controls */
+.filter-bar-container {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .filter-bar-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .filter-bar-search {
+    width: 100% !important;
+  }
+  .filter-bar-selects {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .filter-bar-selects select {
+    width: 100% !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    font-size: 13px !important;
+  }
+}
+
 /* Mobile Carousel Dot Indicators */
 .mobile-carousel-dots {
   display: none;
