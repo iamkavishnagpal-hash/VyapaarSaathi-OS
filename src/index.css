@@ -1008,15 +1008,17 @@ body, p, .body-text {
 
 /* Optical KPI Currency & Baseline Number Formatting */
 .kpi-optical-number {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 4px;
   margin-bottom: 4px;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 .kpi-optical-number .currency-symbol {
   font-size: 20px;
   font-weight: 700;
   color: var(--text-muted);
+  line-height: 1;
 }
 
 /* 48px Touch Target Tappable Rows */

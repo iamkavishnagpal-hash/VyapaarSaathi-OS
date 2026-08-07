@@ -70,26 +70,26 @@ export const DashboardView = () => {
         <div 
           onClick={() => setActiveView("pos")}
           className="glass-card" 
-          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
+          style={{ padding: "18px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer", background: "rgba(15, 23, 42, 0.6)", borderRadius: "16px" }}
         >
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Gross Sales</span>
-              <span style={{ fontSize: "12px", color: "#34D399", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
-                <ArrowUpRight size={14} /> +18.4%
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+              <span className="caption" style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#94A3B8", letterSpacing: "0.05em" }}>Gross Sales</span>
+              <span className="badge badge-success" style={{ background: "rgba(16, 185, 129, 0.1)", color: "#34D399", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: "9999px", padding: "2px 8px", fontSize: "11px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                <ArrowUpRight size={12} /> +18.4%
               </span>
             </div>
             <div className="kpi-optical-number">
-              <span className="currency-symbol">₹</span>
-              <span className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>
+              <span className="currency-symbol" style={{ fontSize: "20px", color: "#94A3B8" }}>₹</span>
+              <span className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", letterSpacing: "-0.02em" }}>
                 {todaysSales.toLocaleString("en-IN")}
               </span>
             </div>
-            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>POS & Online counter billing</div>
+            <div className="caption" style={{ fontSize: "12px", color: "#94A3B8" }}>POS & Online counter billing</div>
           </div>
           <div className="tappable-row">
-            <span className="caption" style={{ fontSize: "11px" }}>Vs yesterday: ₹89,100</span>
-            <ChevronRight size={14} color="var(--text-muted)" />
+            <span className="caption" style={{ fontSize: "11px", color: "#94A3B8" }}>Vs yesterday: ₹89,100</span>
+            <ChevronRight size={14} color="#94A3B8" />
           </div>
         </div>
 
@@ -97,26 +97,26 @@ export const DashboardView = () => {
         <div 
           onClick={() => setActiveView("analytics")}
           className="glass-card" 
-          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
+          style={{ padding: "18px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer", background: "rgba(15, 23, 42, 0.6)", borderRadius: "16px" }}
         >
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Net Profit</span>
-              <span style={{ fontSize: "12px", color: "#34D399", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
-                <ArrowUpRight size={14} /> 38% Margin
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+              <span className="caption" style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#94A3B8", letterSpacing: "0.05em" }}>Net Profit</span>
+              <span className="badge badge-success" style={{ background: "rgba(16, 185, 129, 0.1)", color: "#34D399", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: "9999px", padding: "2px 8px", fontSize: "11px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                <ArrowUpRight size={12} /> 38% Margin
               </span>
             </div>
             <div className="kpi-optical-number">
-              <span className="currency-symbol">₹</span>
-              <span className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>
+              <span className="currency-symbol" style={{ fontSize: "20px", color: "#94A3B8" }}>₹</span>
+              <span className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", letterSpacing: "-0.02em" }}>
                 {estimatedProfit.toLocaleString("en-IN")}
               </span>
             </div>
-            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>Net Margin after COGS</div>
+            <div className="caption" style={{ fontSize: "12px", color: "#94A3B8" }}>Net Margin after COGS</div>
           </div>
           <div className="tappable-row">
-            <span className="caption" style={{ fontSize: "11px" }}>Reconciled Real-Time</span>
-            <ChevronRight size={14} color="var(--text-muted)" />
+            <span className="caption" style={{ fontSize: "11px", color: "#94A3B8" }}>Reconciled Real-Time</span>
+            <ChevronRight size={14} color="#94A3B8" />
           </div>
         </div>
 
@@ -124,21 +124,21 @@ export const DashboardView = () => {
         <div 
           onClick={() => setActiveView("orders")}
           className="glass-card" 
-          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
+          style={{ padding: "18px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer", background: "rgba(15, 23, 42, 0.6)", borderRadius: "16px" }}
         >
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Orders</span>
-              <span className="badge badge-success">100% Fulfilled</span>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+              <span className="caption" style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#94A3B8", letterSpacing: "0.05em" }}>Orders</span>
+              <span className="badge badge-success" style={{ background: "rgba(16, 185, 129, 0.1)", color: "#34D399", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: "9999px", padding: "2px 8px", fontSize: "11px", fontWeight: "600" }}>100% Fulfilled</span>
             </div>
-            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px", letterSpacing: "-0.02em" }}>
               {totalOrdersCount} Orders
             </div>
-            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>Multi-channel fulfilled</div>
+            <div className="caption" style={{ fontSize: "12px", color: "#94A3B8" }}>Multi-channel fulfilled</div>
           </div>
           <div className="tappable-row">
-            <span className="caption" style={{ fontSize: "11px" }}>Avg Value: ₹{(todaysSales / (totalOrdersCount || 1)).toFixed(0)}</span>
-            <ChevronRight size={14} color="var(--text-muted)" />
+            <span className="caption" style={{ fontSize: "11px", color: "#94A3B8" }}>Avg Value: ₹{(todaysSales / (totalOrdersCount || 1)).toFixed(0)}</span>
+            <ChevronRight size={14} color="#94A3B8" />
           </div>
         </div>
 
@@ -146,23 +146,21 @@ export const DashboardView = () => {
         <div 
           onClick={() => setActiveView("comms")}
           className="glass-card" 
-          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
+          style={{ padding: "18px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer", background: "rgba(15, 23, 42, 0.6)", borderRadius: "16px" }}
         >
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Customers</span>
-              <span style={{ fontSize: "12px", color: "#A78BFA", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
-                +12 Today
-              </span>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+              <span className="caption" style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#94A3B8", letterSpacing: "0.05em" }}>Customers</span>
+              <span className="badge badge-info" style={{ background: "rgba(139, 92, 246, 0.1)", color: "#A78BFA", border: "1px solid rgba(139, 92, 246, 0.2)", borderRadius: "9999px", padding: "2px 8px", fontSize: "11px", fontWeight: "600" }}>+12 Today</span>
             </div>
-            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px" }}>
+            <div className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", marginBottom: "4px", letterSpacing: "-0.02em" }}>
               {activeCustomersCount} Active
             </div>
-            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>78% repeat buyer rate</div>
+            <div className="caption" style={{ fontSize: "12px", color: "#94A3B8" }}>78% repeat buyer rate</div>
           </div>
           <div className="tappable-row">
-            <span className="caption" style={{ fontSize: "11px" }}>12 At Churn Risk</span>
-            <ChevronRight size={14} color="var(--text-muted)" />
+            <span className="caption" style={{ fontSize: "11px", color: "#94A3B8" }}>12 At Churn Risk</span>
+            <ChevronRight size={14} color="#94A3B8" />
           </div>
         </div>
 
@@ -170,24 +168,24 @@ export const DashboardView = () => {
         <div 
           onClick={() => setActiveView("pos")}
           className="glass-card" 
-          style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
+          style={{ padding: "18px", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer", background: "rgba(15, 23, 42, 0.6)", borderRadius: "16px" }}
         >
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-              <span className="caption" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Cash Position</span>
-              <span className="badge badge-info">{healthScore}/100 Health</span>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+              <span className="caption" style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#94A3B8", letterSpacing: "0.05em" }}>Cash Position</span>
+              <span className="badge badge-info" style={{ background: "rgba(99, 102, 241, 0.1)", color: "#818CF8", border: "1px solid rgba(99, 102, 241, 0.2)", borderRadius: "9999px", padding: "2px 8px", fontSize: "11px", fontWeight: "600" }}>{healthScore}/100 Health</span>
             </div>
             <div className="kpi-optical-number">
-              <span className="currency-symbol">₹</span>
-              <span className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>
+              <span className="currency-symbol" style={{ fontSize: "20px", color: "#94A3B8" }}>₹</span>
+              <span className="num-tabular" style={{ fontSize: "28px", fontWeight: "800", color: "#ffffff", letterSpacing: "-0.02em" }}>
                 {todaysSales.toLocaleString("en-IN")}
               </span>
             </div>
-            <div className="caption" style={{ fontSize: "12px", color: "var(--text-dim)" }}>POS & Bank Settlement</div>
+            <div className="caption" style={{ fontSize: "12px", color: "#94A3B8" }}>POS & Bank Settlement</div>
           </div>
           <div className="tappable-row">
-            <span className="caption" style={{ fontSize: "11px" }}>Instant UPI & Cash</span>
-            <ChevronRight size={14} color="var(--text-muted)" />
+            <span className="caption" style={{ fontSize: "11px", color: "#94A3B8" }}>Instant UPI & Cash</span>
+            <ChevronRight size={14} color="#94A3B8" />
           </div>
         </div>
 
