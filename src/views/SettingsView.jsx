@@ -166,6 +166,31 @@ export const SettingsView = () => {
                 </tbody>
               </table>
             </div>
+
+            <div className="hide-on-desktop" style={{ display: "none", flexDirection: "column", gap: "12px" }}>
+              {permissionsMatrix.map((p, idx) => (
+                <div key={idx} className="glass-card" style={{ padding: "16px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "flex-start", marginBottom: "10px" }}>
+                    <div style={{ fontWeight: "700", color: "#fff", fontSize: "15px", lineHeight: 1.35 }}>{p.module}</div>
+                    <span className="badge badge-info">RBAC</span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "8px" }}>
+                    {[
+                      ["Owner", p.Owner],
+                      ["Admin", p.Admin],
+                      ["Manager", p.Manager],
+                      ["Sales", p.Salesman],
+                      ["Warehouse", p.Warehouse]
+                    ].map(([label, value]) => (
+                      <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+                        <span className="caption" style={{ color: "var(--text-main)", fontSize: "12px" }}>{label}</span>
+                        {value ? <Check size={16} color="#10b981" /> : <CrossIcon size={16} color="#ef4444" />}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* MULTI-BRANCH STORE LOCATIONS */}

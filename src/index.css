@@ -79,7 +79,7 @@ html, body {
   background-color: var(--bg-main);
   color: var(--text-main);
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   overflow-x: hidden;
   touch-action: manipulation;
 }
@@ -335,8 +335,8 @@ body, p, input, select, textarea, .body-text {
 
 .app-container {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   overflow: hidden;
   padding-top: var(--sat);
   padding-bottom: var(--sab);
@@ -389,7 +389,8 @@ body, p, input, select, textarea, .body-text {
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
   overflow: hidden;
   background-color: var(--bg-main);
   background-image: 
@@ -402,6 +403,12 @@ body, p, input, select, textarea, .body-text {
   flex: 1;
   padding: var(--space-6);
   overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.hide-on-desktop {
+  display: none !important;
 }
 
 /* Fluid Grids */
@@ -665,12 +672,35 @@ body, p, input, select, textarea, .body-text {
     display: none !important;
   }
 
+  .hide-on-desktop {
+    display: flex !important;
+  }
+
+  .hide-on-desktop.block {
+    display: block !important;
+  }
+
   .main-navbar {
     padding: var(--space-3) var(--space-4) !important;
   }
 
   .view-container {
     padding: var(--space-4) var(--space-4) calc(84px + var(--sab)) var(--space-4) !important;
+  }
+
+  .glass-panel,
+  .glass-card {
+    border-radius: 18px;
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .custom-table {
+    min-width: 680px;
   }
 
   /* Mobile Floating Glass Dock (Apple / Arc / Linear Grade) */
@@ -849,6 +879,25 @@ body, p, input, select, textarea, .body-text {
   }
 }
 
+@media (max-width: 430px) {
+  .view-container {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .mobile-hero-header > div:last-child {
+    width: 100%;
+  }
+
+  .mobile-hero-header .btn {
+    width: 100%;
+  }
+}
+
 /* Single-Source Responsive KPI Container (Desktop Grid + Mobile Carousel with 0 Duplicate HTML) */
 .responsive-kpi-container {
   display: grid;
@@ -987,3 +1036,72 @@ body, p, input, select, textarea, .body-text {
   box-shadow: 0 4px 16px rgba(244, 63, 94, 0.4);
 }
 
+/* ====================================================== */
+/* 7 ENTERPRISE DEVICE BREAKPOINTS & ACCESSIBILITY        */
+/* ====================================================== */
+
+/* 1. Desktop (>= 1440px): Ultra spacious 12-column grid */
+@media (min-width: 1440px) {
+  .view-container {
+    padding: 32px 40px !important;
+  }
+}
+
+/* 2. Laptop (1280px - 1439px): Standard 12-column grid */
+@media (min-width: 1280px) and (max-width: 1439px) {
+  .view-container {
+    padding: 28px 32px !important;
+  }
+}
+
+/* 3. Tablet Landscape (1024px - 1279px): 3-column / 2-column grids */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .view-container {
+    padding: 24px !important;
+  }
+  .grid-4 { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+/* 4. Tablet Portrait (768px - 1023px): 2-column grid */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .view-container {
+    padding: 20px !important;
+  }
+  .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* 5. Mobile Large (430px - 767px): 1-column stacked cards */
+@media (min-width: 430px) and (max-width: 767px) {
+  .view-container {
+    padding: 16px !important;
+  }
+}
+
+/* 6. Mobile Medium (390px - 429px): Fluid 16px padding */
+@media (min-width: 390px) and (max-width: 429px) {
+  .view-container {
+    padding: 16px !important;
+  }
+}
+
+/* 7. Mobile Small (360px - 389px): Compact 14px padding */
+@media (max-width: 389px) {
+  .view-container {
+    padding: 12px 14px !important;
+  }
+}
+
+/* Accessible Focus States & Reduced Motion */
+:focus-visible {
+  outline: 2px solid var(--primary) !important;
+  outline-offset: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -21,6 +21,8 @@ import {
   BarChart3,
   Upload,
   ChevronRight
+  ,
+  Menu
 } from "lucide-react";
 
 export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
@@ -101,7 +103,7 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   return (
     <>
       {/* EXECUTIVE DESKTOP HEADER (STRICT 72PX HEIGHT & ZERO CLUTTER) */}
-      <header className="glass-panel main-navbar" style={{ height: "72px", borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "0 32px", zIndex: 100, display: "flex", alignItems: "center" }}>
+      <header className="glass-panel main-navbar hide-on-mobile" style={{ height: "72px", borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "0 32px", zIndex: 100, display: "flex", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", maxWidth: "1600px", margin: "0 auto" }}>
           
           {/* LEFT: BRAND LOGO & STORE SWITCHER */}
@@ -348,6 +350,64 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
 
           </div>
 
+        </div>
+      </header>
+
+      {/* MOBILE HEADER: LOGO + LOCATION + NOTIFS + PROFILE + MENU */}
+      <header className="glass-panel hide-on-desktop" style={{ borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "12px 14px", zIndex: 100, display: "none", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", minWidth: 0 }}>
+          <button
+            onClick={() => setActiveView("dashboard")}
+            className="btn btn-ghost"
+            style={{ width: "auto", minWidth: "44px", minHeight: "44px", padding: "0 6px", flexShrink: 0 }}
+            aria-label="Open home dashboard"
+          >
+            <div style={{ width: "32px", height: "32px", borderRadius: "10px", background: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Sparkles size={18} color="#fff" />
+            </div>
+          </button>
+
+          <button
+            onClick={() => setShowStoreDropdown(!showStoreDropdown)}
+            className="btn btn-secondary"
+            style={{ minHeight: "44px", padding: "10px 12px", flex: 1, minWidth: 0, justifyContent: "space-between" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
+              <Building2 size={14} color="var(--primary)" />
+              <span style={{ fontSize: "12px", fontWeight: "700", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{currentStore.name}</span>
+            </div>
+            <ChevronDown size={12} />
+          </button>
+
+          <button
+            onClick={() => setShowNotifs(!showNotifs)}
+            className="btn btn-secondary"
+            style={{ width: "44px", minHeight: "44px", minWidth: "44px", padding: 0, flexShrink: 0, position: "relative" }}
+            aria-label="Notifications"
+          >
+            <Bell size={18} />
+            {toasts.length > 0 && <span style={{ position: "absolute", top: "8px", right: "8px", width: "8px", height: "8px", borderRadius: "50%", background: "var(--danger)" }} />}
+          </button>
+
+          <button
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className="btn btn-secondary"
+            style={{ width: "44px", minHeight: "44px", minWidth: "44px", padding: 0, flexShrink: 0 }}
+            aria-label="Profile menu"
+          >
+            <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", fontSize: "12px", color: "#fff" }}>
+              {role[0]}
+            </div>
+          </button>
+
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="btn btn-secondary"
+            style={{ width: "44px", minHeight: "44px", minWidth: "44px", padding: 0, flexShrink: 0 }}
+            aria-label="Open navigation menu"
+          >
+            <Menu size={18} />
+          </button>
         </div>
       </header>
 
