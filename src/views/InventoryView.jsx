@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useRetail } from "../context/RetailContext";
-import { 
-  Search, 
-  Plus, 
+import {
+  Search,
+  Plus,
   X,
   RefreshCw,
   Barcode,

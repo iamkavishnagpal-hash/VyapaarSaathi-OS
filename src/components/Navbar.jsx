@@ -353,57 +353,52 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         </div>
       </header>
 
-      {/* MOBILE HEADER: LOGO + LOCATION + NOTIFS + PROFILE + MENU */}
-      <header className="glass-panel mobile-top-header hide-on-desktop" style={{ borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", zIndex: 100, display: "none", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", minWidth: 0 }}>
+      {/* SECTION 1: TOP NAVIGATION BAR & HEADER (SECTION 1 ARCHITECT SPEC) */}
+      <header className="mobile-top-header hide-on-desktop" style={{ height: "64px", width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", background: "rgba(11, 15, 23, 0.92)", position: "sticky", top: 0, zIndex: 50, borderBottom: "1px solid rgba(30, 41, 59, 0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+        {/* LEFT GROUP: STORE SWITCHER CHIP */}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
           <button
             onClick={() => setActiveView("dashboard")}
-            className="btn btn-ghost"
-            style={{ width: "auto", minWidth: "44px", minHeight: "44px", padding: "0 6px", flexShrink: 0 }}
+            style={{ width: "36px", height: "36px", borderRadius: "10px", background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)", display: "flex", alignItems: "center", justifyContent: "center", border: "none", cursor: "pointer", flexShrink: 0 }}
             aria-label="Open home dashboard"
           >
-            <div style={{ width: "32px", height: "32px", borderRadius: "10px", background: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Sparkles size={18} color="#fff" />
-            </div>
+            <Sparkles size={18} color="#fff" />
           </button>
 
           <button
             onClick={() => setShowStoreDropdown(!showStoreDropdown)}
-            className="btn btn-secondary"
-            style={{ minHeight: "44px", padding: "10px 12px", flex: 1, minWidth: 0, justifyContent: "space-between" }}
+            style={{ height: "36px", padding: "0 12px", background: "#0F172A", border: "1px solid #1E293B", borderRadius: "8px", fontSize: "12px", fontWeight: "500", color: "#E2E8F0", display: "flex", alignItems: "center", gap: "8px", minWidth: 0, cursor: "pointer" }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
-              <Building2 size={14} color="var(--primary)" />
-              <span style={{ fontSize: "12px", fontWeight: "700", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{currentStore.name}</span>
-            </div>
-            <ChevronDown size={12} />
+            <Building2 size={14} color="#6366F1" style={{ flexShrink: 0 }} />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "120px" }}>{currentStore.name}</span>
+            <ChevronDown size={12} color="#94A3B8" style={{ flexShrink: 0 }} />
           </button>
+        </div>
 
+        {/* RIGHT GROUP: ACTION CTAS & MENU */}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <button
             onClick={() => setShowNotifs(!showNotifs)}
-            className="btn btn-secondary"
-            style={{ width: "44px", minHeight: "44px", minWidth: "44px", padding: 0, flexShrink: 0, position: "relative" }}
+            style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#0F172A", border: "1px solid #1E293B", color: "#94A3B8", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", cursor: "pointer" }}
             aria-label="Notifications"
           >
-            <Bell size={18} />
-            {toasts.length > 0 && <span style={{ position: "absolute", top: "8px", right: "8px", width: "8px", height: "8px", borderRadius: "50%", background: "var(--danger)" }} />}
+            <Bell size={16} />
+            {toasts.length > 0 && <span style={{ position: "absolute", top: "6px", right: "6px", width: "6px", height: "6px", borderRadius: "50%", background: "#F43F5E" }} />}
           </button>
 
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="btn btn-secondary"
-            style={{ width: "44px", minHeight: "44px", minWidth: "44px", padding: 0, flexShrink: 0 }}
+            style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#0F172A", border: "1px solid #1E293B", color: "#94A3B8", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
             aria-label="Profile menu"
           >
-            <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", fontSize: "12px", color: "#fff" }}>
+            <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#6366F1", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "11px", color: "#fff" }}>
               {role[0]}
             </div>
           </button>
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="btn btn-secondary"
-            style={{ width: "44px", minHeight: "44px", minWidth: "44px", padding: 0, flexShrink: 0 }}
+            style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#0F172A", border: "1px solid #1E293B", color: "#E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
             aria-label="Open navigation menu"
           >
             <Menu size={18} />

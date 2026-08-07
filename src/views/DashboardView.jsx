@@ -311,115 +311,111 @@ export const DashboardView = () => {
       {/* 4. OPERATIONS (TWO-COLUMN DESKTOP GRID) */}
       <div className="grid-2 animate-cascade stagger-4" style={{ gridTemplateColumns: "1.2fr 1fr", gap: "32px", marginBottom: "32px" }}>
         
-        {/* LEFT COLUMN: ORDERS, FULFILLMENT & RETURNS */}
-        <div className="glass-panel" style={{ padding: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-            <div>
-              <h3 style={{ fontSize: "16px", fontWeight: "600", margin: "0 0 2px 0", color: "#ffffff" }}>Operations & Orders Ledger</h3>
-              <div className="caption" style={{ color: "#94A3B8" }}>Live fulfillment status & customer transactions</div>
+        {/* SECTION 4: OPERATIONS & ORDERS LEDGER */}
+        <div className="glass-panel" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "rgba(15, 23, 42, 0.6)", border: "1px solid rgba(30, 41, 59, 0.8)", borderRadius: "16px" }}>
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <h3 style={{ fontSize: "14px", fontWeight: "700", margin: 0, color: "#F8FAFC", letterSpacing: "-0.01em" }}>Operations & Orders Ledger</h3>
+              <span 
+                onClick={() => setActiveView("orders")}
+                style={{ fontSize: "12px", fontWeight: "600", color: "#818CF8", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
+              >
+                <span>View All Orders</span>
+                <ChevronRight size={14} />
+              </span>
             </div>
-            <button onClick={() => setActiveView("orders")} className="btn btn-secondary" style={{ minHeight: "36px", height: "36px", fontSize: "12px", padding: "6px 12px" }}>
-              <span>View All Orders</span>
-            </button>
-          </div>
 
-          {/* DESKTOP TABLE */}
-          <div className="table-responsive hide-on-mobile">
-            <table className="custom-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Channel</th>
-                  <th>Customer</th>
-                  <th>Items</th>
-                  <th>Total Bill</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.slice(0, 5).map((ord) => (
-                  <tr key={ord.id}>
-                    <td style={{ fontWeight: "700", color: "var(--primary)" }}>{ord.id}</td>
-                    <td><span className="badge badge-info">{ord.channel}</span></td>
-                    <td>
-                      <div style={{ fontWeight: "700" }}>{ord.customerName}</div>
-                      <div className="caption" style={{ fontSize: "11px" }}>{ord.customerPhone}</div>
-                    </td>
-                    <td>{ord.itemsCount} items</td>
-                    <td className="num-tabular" style={{ color: "#fff" }}>
-                      <span className="kpi-optical-number" style={{ marginBottom: 0 }}>
-                        <span className="currency-symbol" style={{ fontSize: "13px" }}>₹</span>
-                        <span style={{ fontSize: "14px" }}>{ord.total.toLocaleString("en-IN")}</span>
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`badge ${ord.status === "Completed" ? "badge-success" : "badge-warning"}`}>
-                        {ord.status}
-                      </span>
-                    </td>
+            {/* DESKTOP TABLE */}
+            <div className="table-responsive hide-on-mobile">
+              <table className="custom-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Channel</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total Bill</th>
+                    <th>Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {orders.slice(0, 5).map((ord) => (
+                    <tr key={ord.id}>
+                      <td style={{ fontWeight: "600", fontFamily: "monospace", color: "#94A3B8" }}>#{ord.id}</td>
+                      <td><span className="badge badge-info">{ord.channel}</span></td>
+                      <td>
+                        <div style={{ fontWeight: "600", color: "#F8FAFC" }}>{ord.customerName}</div>
+                        <div className="caption" style={{ fontSize: "11px", color: "#94A3B8" }}>{ord.customerPhone}</div>
+                      </td>
+                      <td>{ord.itemsCount} items</td>
+                      <td className="num-tabular" style={{ color: "#fff" }}>
+                        <span className="kpi-optical-number" style={{ marginBottom: 0 }}>
+                          <span className="currency-symbol" style={{ fontSize: "13px", color: "#94A3B8" }}>₹</span>
+                          <span style={{ fontSize: "14px", fontWeight: "700" }}>{ord.total.toLocaleString("en-IN")}</span>
+                        </span>
+                      </td>
+                      <td>
+                        <span className="badge" style={{ background: ord.status === "Completed" ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)", color: ord.status === "Completed" ? "#34D399" : "#FBBF24", border: ord.status === "Completed" ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(245, 158, 11, 0.2)", borderRadius: "6px", padding: "2px 8px", fontSize: "10px", fontWeight: "700", textTransform: "uppercase" }}>
+                          {ord.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          {/* MOBILE STACKED CARDS */}
-          <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {orders.slice(0, 5).map((ord) => (
-              <div key={ord.id} className="glass-card" style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: "10px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "14px" }}>
-                {/* TOP LINE: FONT-MONO ORDER ID & STATUS PILL */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span className="font-mono" style={{ fontSize: "12px", fontWeight: "600", color: "#94A3B8", fontFamily: "monospace" }}>#{ord.id}</span>
-                  <span className="badge" style={{ background: ord.status === "Completed" ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)", color: ord.status === "Completed" ? "#34D399" : "#FBBF24", border: ord.status === "Completed" ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(245, 158, 11, 0.2)", borderRadius: "6px", padding: "2px 8px", fontSize: "10px", fontWeight: "600", textTransform: "uppercase" }}>
-                    {ord.status}
-                  </span>
-                </div>
-
-                {/* MIDDLE LINE: CUSTOMER NAME + CHANNEL BADGE */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            {/* MOBILE STACKED CARDS (SECTION 4 SPEC) */}
+            <div className="hide-on-desktop" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              {orders.slice(0, 5).map((ord) => (
+                <div key={ord.id} style={{ padding: "14px", background: "rgba(15, 23, 42, 0.6)", border: "1px solid rgba(30, 41, 59, 0.8)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
                   <div>
-                    <div style={{ fontWeight: "600", color: "#ffffff", fontSize: "14px" }}>{ord.customerName}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span className="font-mono" style={{ fontSize: "12px", fontWeight: "500", color: "#94A3B8", fontFamily: "monospace" }}>#{ord.id}</span>
+                      <span style={{ fontSize: "14px", fontWeight: "600", color: "#F8FAFC" }}>{ord.customerName}</span>
+                    </div>
                     <div style={{ fontSize: "12px", color: "#94A3B8", marginTop: "2px" }}>{ord.channel} • {ord.itemsCount} items</div>
                   </div>
                   
-                  {/* RIGHT/BOTTOM BOLD PRICE WITH BASELINE ALIGNMENT */}
-                  <div className="kpi-optical-number" style={{ marginBottom: 0 }}>
-                    <span className="currency-symbol" style={{ fontSize: "14px", color: "#94A3B8" }}>₹</span>
-                    <span className="num-tabular" style={{ fontSize: "16px", fontWeight: "700", color: "#ffffff" }}>
-                      {ord.total.toLocaleString("en-IN")}
+                  <div style={{ textAlign: "right" }}>
+                    <span className="badge" style={{ background: ord.status === "Completed" ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)", color: ord.status === "Completed" ? "#34D399" : "#FBBF24", border: ord.status === "Completed" ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(245, 158, 11, 0.2)", borderRadius: "6px", padding: "2px 8px", fontSize: "10px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                      {ord.status}
                     </span>
+                    <div className="font-mono" style={{ fontSize: "14px", fontWeight: "700", color: "#F8FAFC", marginTop: "4px" }}>
+                      ₹{ord.total.toLocaleString("en-IN")}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: INVENTORY HEALTH & WAREHOUSE CAPACITY */}
-        <div className="glass-panel" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        {/* SECTION 5: INVENTORY HEALTH & WAREHOUSE CAPACITY */}
+        <div className="glass-panel" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "rgba(15, 23, 42, 0.6)", border: "1px solid rgba(30, 41, 59, 0.8)", borderRadius: "16px" }}>
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
               <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "600", margin: "0 0 2px 0", color: "#ffffff" }}>Inventory & Warehouse Capacity</h3>
-                <div className="caption" style={{ color: "#94A3B8" }}>Real-time stock movement & low stock status</div>
+                <h3 style={{ fontSize: "14px", fontWeight: "700", margin: "0 0 2px 0", color: "#F8FAFC" }}>Inventory & Warehouse Capacity</h3>
+                <div style={{ fontSize: "12px", color: "#94A3B8" }}>Real-time stock movement & low stock status</div>
               </div>
               <span 
                 onClick={() => setActiveView("inventory")} 
-                style={{ fontSize: "13px", fontWeight: "600", color: "var(--primary)", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
+                style={{ fontSize: "12px", fontWeight: "600", color: "#818CF8", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
               >
                 <span>View Full Inventory</span>
                 <ChevronRight size={14} />
               </span>
             </div>
 
-            {/* WAREHOUSE CAPACITY PROGRESS INDICATOR */}
-            <div className="glass-card" style={{ padding: "16px", marginBottom: "16px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "14px" }}>
+            {/* WAREHOUSE CAPACITY PROGRESS INDICATOR (SECTION 5 SPEC) */}
+            <div style={{ padding: "14px", marginBottom: "14px", background: "rgba(2, 6, 23, 0.6)", border: "1px solid rgba(30, 41, 59, 0.8)", borderRadius: "12px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                <span className="caption" style={{ fontWeight: "600", color: "#E2E8F0" }}>Central Warehouse Capacity</span>
-                <span className="num-tabular" style={{ color: "#34D399", fontSize: "13px", fontWeight: "700" }}>68% Utilized</span>
+                <span style={{ fontSize: "12px", fontWeight: "500", color: "#CBD5E1" }}>Central Warehouse Capacity</span>
+                <span style={{ color: "#818CF8", fontSize: "12px", fontWeight: "700" }}>68% Utilized</span>
               </div>
-              <div style={{ width: "100%", height: "8px", borderRadius: "9999px", background: "rgba(30, 41, 59, 0.8)", overflow: "hidden" }}>
-                <div style={{ width: "68%", height: "100%", borderRadius: "9999px", background: "linear-gradient(90deg, #10B981, #3B82F6)" }} />
+              <div style={{ width: "100%", height: "8px", borderRadius: "9999px", background: "#1E293B", overflow: "hidden" }}>
+                <div style={{ width: "68%", height: "100%", borderRadius: "9999px", background: "#6366F1" }} />
               </div>
             </div>
 
@@ -429,21 +425,21 @@ export const DashboardView = () => {
                 const isLow = prod.stockQty <= prod.lowStockThreshold;
                 const percent = Math.min(100, Math.round((prod.stockQty / (prod.lowStockThreshold * 3)) * 100));
                 return (
-                  <div key={prod.id} style={{ padding: "12px 14px", background: isLow ? "rgba(244, 63, 94, 0.08)" : "rgba(15, 23, 42, 0.5)", borderRadius: "12px", border: isLow ? "1px solid rgba(244, 63, 94, 0.25)" : "1px solid rgba(255, 255, 255, 0.08)" }}>
+                  <div key={prod.id} style={{ padding: "12px 14px", background: "rgba(2, 6, 23, 0.5)", borderRadius: "12px", border: "1px solid rgba(30, 41, 59, 0.6)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                       <div>
-                        <div style={{ fontWeight: "600", color: "#ffffff", fontSize: "13px" }}>{prod.title}</div>
-                        <div className="sku-code" style={{ color: "#94A3B8", fontSize: "11px" }}>SKU: {prod.sku}</div>
+                        <div style={{ fontWeight: "600", color: "#F8FAFC", fontSize: "12px" }}>{prod.title}</div>
+                        <div className="font-mono" style={{ color: "#94A3B8", fontSize: "11px", fontFamily: "monospace" }}>SKU: {prod.sku}</div>
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <span className="badge" style={{ background: isLow ? "rgba(244, 63, 94, 0.15)" : "rgba(16, 185, 129, 0.15)", color: isLow ? "#F87171" : "#34D399", border: isLow ? "1px solid rgba(244, 63, 94, 0.3)" : "1px solid rgba(16, 185, 129, 0.3)", padding: "2px 8px", fontSize: "11px", fontWeight: "700" }}>
-                          {prod.stockQty} left
+                        <span className={`badge ${isLow ? "animate-pulse" : ""}`} style={{ background: isLow ? "rgba(244, 63, 94, 0.1)" : "rgba(16, 185, 129, 0.1)", color: isLow ? "#FB7185" : "#34D399", border: isLow ? "1px solid rgba(244, 63, 94, 0.2)" : "1px solid rgba(16, 185, 129, 0.2)", padding: "2px 8px", fontSize: "10px", fontWeight: "700", borderRadius: "9999px" }}>
+                          {prod.stockQty} LEFT
                         </span>
                       </div>
                     </div>
                     {/* STOCK LEVEL PROGRESS METER BAR */}
-                    <div style={{ width: "100%", height: "6px", borderRadius: "9999px", background: "rgba(30, 41, 59, 0.8)", overflow: "hidden" }}>
-                      <div style={{ width: `${percent}%`, height: "100%", borderRadius: "9999px", background: isLow ? "#F43F5E" : "#10B981" }} />
+                    <div style={{ width: "100%", height: "6px", borderRadius: "9999px", background: "#1E293B", overflow: "hidden" }}>
+                      <div style={{ width: `${percent}%`, height: "100%", borderRadius: "9999px", background: isLow ? "#FB7185" : "#34D399" }} />
                     </div>
                   </div>
                 );
@@ -451,48 +447,52 @@ export const DashboardView = () => {
             </div>
           </div>
 
-          <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "14px", marginTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span className="caption" style={{ color: "#94A3B8" }}>Supplier Lead Time: <strong style={{ color: "#ffffff" }}>24 Hours</strong></span>
-            <span className="badge badge-success">Automated PO Ready</span>
+          <div style={{ borderTop: "1px solid rgba(30, 41, 59, 0.8)", paddingTop: "12px", marginTop: "14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "12px", color: "#94A3B8" }}>Supplier Lead Time: <strong style={{ color: "#F8FAFC" }}>24 Hours</strong></span>
+            <button style={{ height: "32px", padding: "0 12px", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.3)", color: "#6EE7B7", fontSize: "12px", fontWeight: "600", borderRadius: "8px", display: "inline-flex", alignItems: "center", gap: "4px", cursor: "pointer" }}>
+              <span>Automated PO Ready</span>
+            </button>
           </div>
         </div>
 
       </div>
 
-      {/* 5. AUDIT ACTIVITY & REPORTS (NEAT 2-COLUMN KEY-VALUE GRID) */}
-      <div className="glass-panel animate-cascade stagger-5" style={{ padding: "20px" }}>
+      {/* SECTION 6: AUDIT LOGS & GST COMPLIANCE FOOTER (SECTION 6 ARCHITECT SPEC) */}
+      <div className="glass-panel animate-cascade stagger-5" style={{ padding: "20px", background: "rgba(15, 23, 42, 0.4)", border: "1px solid rgba(30, 41, 59, 0.6)", borderRadius: "16px" }}>
         <div 
           onClick={() => setExpandedSection(!expandedSection)}
           style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}
         >
           <div>
-            <h3 style={{ fontSize: "16px", fontWeight: "600", margin: 0, color: "#ffffff" }}>Executive Audit Logs & GST Tax Compliance</h3>
-            <div className="caption" style={{ color: "#94A3B8", marginTop: "2px" }}>Real-time audit trail and GSTR-3B tax reconciliation</div>
+            <h3 style={{ fontSize: "14px", fontWeight: "700", margin: 0, color: "#F8FAFC" }}>Executive Audit Logs & GST Tax Compliance</h3>
+            <div style={{ fontSize: "12px", color: "#94A3B8", marginTop: "2px" }}>Real-time audit trail and GSTR-3B tax reconciliation</div>
           </div>
-          <ChevronDown size={20} style={{ transform: expandedSection ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease", color: "#94A3B8" }} />
+          <ChevronDown size={18} style={{ transform: expandedSection ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease", color: "#94A3B8" }} />
         </div>
 
         {expandedSection && (
-          <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid rgba(255, 255, 255, 0.08)" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
+          <div style={{ marginTop: "14px", paddingTop: "14px", borderTop: "1px solid rgba(30, 41, 59, 0.6)" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px" }}>
               
-              <div className="glass-card" style={{ padding: "14px 16px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px" }}>
-                <div className="caption" style={{ fontWeight: "600", color: "#94A3B8", marginBottom: "4px" }}>GSTR-3B Tax Liability</div>
-                <div className="num-tabular" style={{ fontSize: "18px", fontWeight: "700", color: "#ffffff", marginBottom: "2px" }}>₹526 Collected</div>
-                <div className="caption" style={{ fontSize: "11px", color: "#64748B" }}>CGST ₹263 + SGST ₹263</div>
+              <div style={{ padding: "12px", background: "rgba(2, 6, 23, 0.4)", border: "1px solid rgba(30, 41, 59, 0.5)", borderRadius: "12px" }}>
+                <div style={{ fontSize: "11px", fontWeight: "500", color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>GSTR-3B Tax Liability</div>
+                <div style={{ fontSize: "12px", fontWeight: "700", color: "#E2E8F0", marginBottom: "2px" }}>₹526 Collected</div>
+                <div className="font-mono" style={{ fontSize: "11px", color: "#94A3B8", fontFamily: "monospace" }}>CGST ₹263 + SGST ₹263</div>
               </div>
 
-              <div className="glass-card" style={{ padding: "14px 16px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px" }}>
-                <div className="caption" style={{ fontWeight: "600", color: "#94A3B8", marginBottom: "4px" }}>Catalog Sync Status</div>
-                <div className="num-tabular" style={{ fontSize: "18px", fontWeight: "700", color: "#34D399", marginBottom: "2px" }}>100% Synced</div>
-                <div className="caption" style={{ fontSize: "11px", color: "#64748B" }}>5 Branch Outlets Operational</div>
+              <div style={{ padding: "12px", background: "rgba(2, 6, 23, 0.4)", border: "1px solid rgba(30, 41, 59, 0.5)", borderRadius: "12px" }}>
+                <div style={{ fontSize: "11px", fontWeight: "500", color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Catalog Sync Status</div>
+                <div style={{ fontSize: "12px", fontWeight: "700", color: "#34D399", marginBottom: "2px" }}>100% Synced</div>
+                <div className="font-mono" style={{ fontSize: "11px", color: "#94A3B8", fontFamily: "monospace" }}>5 Outlets Operational</div>
               </div>
 
-              <div className="glass-card" style={{ padding: "14px 16px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px" }}>
-                <div className="caption" style={{ fontWeight: "600", color: "#94A3B8", marginBottom: "4px" }}>System Security Audit</div>
-                <div className="num-tabular" style={{ fontSize: "18px", fontWeight: "700", color: "#A78BFA", marginBottom: "2px" }}>RBAC Active</div>
-                <div className="caption" style={{ fontSize: "11px", color: "#64748B" }}>2FA Enforced • Audit Log #4920</div>
-              </div>            </div>
+              <div style={{ padding: "12px", background: "rgba(2, 6, 23, 0.4)", border: "1px solid rgba(30, 41, 59, 0.5)", borderRadius: "12px" }}>
+                <div style={{ fontSize: "11px", fontWeight: "500", color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>System Security Audit</div>
+                <div style={{ fontSize: "12px", fontWeight: "700", color: "#C084FC", marginBottom: "2px" }}>RBAC Active</div>
+                <div className="font-mono" style={{ fontSize: "11px", color: "#94A3B8", fontFamily: "monospace" }}>Audit Log #4920</div>
+              </div>
+
+            </div>
           </div>
         )}
       </div>
