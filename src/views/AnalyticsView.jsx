@@ -43,36 +43,8 @@ export const AnalyticsView = () => {
         </button>
       </div>
 
-      {/* METRIC HIGHLIGHTS (MOBILE SWIPE CAROUSEL / DESKTOP GRID) */}
-      <div className="mobile-kpi-carousel hide-on-desktop">
-        <div className="glass-panel mobile-kpi-card" style={{ padding: "20px" }}>
-          <div className="caption" style={{ fontWeight: "700" }}>Total Gross Revenue</div>
-          <div className="num-tabular" style={{ fontSize: "28px", color: "#ffffff", margin: "4px 0" }}>
-            {currencySymbol}{totalSales.toLocaleString("en-IN")}
-          </div>
-          <div style={{ fontSize: "13px", color: "#34D399", display: "flex", alignItems: "center", gap: "4px" }}>
-            <ArrowUpRight size={16} /> +24% growth vs last month
-          </div>
-        </div>
-
-        <div className="glass-panel mobile-kpi-card" style={{ padding: "20px" }}>
-          <div className="caption" style={{ fontWeight: "700" }}>Total Receivables (Khata)</div>
-          <div className="num-tabular" style={{ fontSize: "28px", color: "#A78BFA", margin: "4px 0" }}>
-            {currencySymbol}3,650
-          </div>
-          <div className="caption" style={{ fontSize: "12px" }}>Outstanding customer credit</div>
-        </div>
-
-        <div className="glass-panel mobile-kpi-card" style={{ padding: "20px" }}>
-          <div className="caption" style={{ fontWeight: "700" }}>Total Payables (Vendors)</div>
-          <div className="num-tabular" style={{ fontSize: "28px", color: "#F87171", margin: "4px 0" }}>
-            {currencySymbol}23,400
-          </div>
-          <div className="caption" style={{ fontSize: "12px" }}>Supplier purchase ledger due</div>
-        </div>
-      </div>
-
-      <div className="grid-3 hide-on-mobile" style={{ marginBottom: "24px" }}>
+      {/* METRIC HIGHLIGHTS (SINGLE-SOURCE RESPONSIVE CONTAINER) */}
+      <div className="responsive-kpi-container" style={{ marginBottom: "24px" }}>
         <div className="glass-panel" style={{ padding: "20px" }}>
           <div className="caption" style={{ fontWeight: "700" }}>Total Gross Revenue</div>
           <div className="num-tabular" style={{ fontSize: "28px", color: "#ffffff", margin: "4px 0" }}>
