@@ -200,76 +200,91 @@ export const DashboardView = () => {
         <div className="mobile-carousel-dot" />
       </div>
 
-      {/* 2. AI CEO BRIEF (NEON GLOW HOVER CARD WITH PRIMARY PURPLE CTA ACCENT ONLY) */}
+      {/* 2. STEP 3: AI CEO BRIEF CARD / BANNER (LINEAR / OPENAI STYLE) */}
       {!dismissedAiBrief && (
-        <div className="glass-panel animate-cascade stagger-2 neon-glow-purple" style={{ padding: "20px 24px", marginBottom: "32px", background: "linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(18, 24, 38, 0.95) 100%)", borderColor: "rgba(139, 92, 246, 0.35)", borderRadius: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
-            
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", flex: 1, minWidth: "300px" }}>
-              <div style={{ width: "44px", height: "44px", borderRadius: "14px", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 20px rgba(139, 92, 246, 0.5)", flexShrink: 0 }}>
-                <Sparkles size={22} color="#ffffff" />
+        <div 
+          className="glass-panel animate-cascade stagger-2 neon-glow-purple" 
+          style={{ 
+            padding: "20px", 
+            marginBottom: "28px", 
+            background: "linear-gradient(135deg, rgba(88, 28, 135, 0.35) 0%, rgba(15, 23, 42, 0.95) 100%)", 
+            border: "1px solid rgba(168, 85, 247, 0.35)", 
+            borderRadius: "20px",
+            position: "relative",
+            overflow: "hidden"
+          }}
+        >
+          {/* TOP ROW: ICON + TITLE & CONFIDENCE BADGE */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 16px rgba(139, 92, 246, 0.4)", flexShrink: 0 }}>
+                <Sparkles size={18} color="#ffffff" />
               </div>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <h3 style={{ fontSize: "16px", margin: 0 }}>AI CEO Brief — Win-Back Campaign Trigger</h3>
-                  <span className="badge badge-info">92% Confidence</span>
-                </div>
-                <div className="caption" style={{ marginTop: "2px" }}>
-                  12 VIP customers haven't ordered in 30 days. Sending a WhatsApp broadcast code <code className="sku-code">DIWALI10</code> will yield estimated <strong>+₹48,000 ROI</strong>.
-                </div>
-              </div>
+              <h3 style={{ fontSize: "16px", fontWeight: "700", margin: 0, color: "#ffffff" }}>
+                AI CEO Brief
+              </h3>
             </div>
 
-            {/* ACTION METRICS & PRIMARY PURPLE ACCENT BUTTON */}
-            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-              
-              <div style={{ display: "flex", gap: "16px", paddingRight: "16px", borderRight: "1px solid var(--border-color)" }}>
-                <div>
-                  <div className="caption" style={{ fontSize: "11px" }}>Est. ROI</div>
-                  <div className="num-tabular" style={{ color: "#34D399", fontSize: "14px" }}>+₹48,000</div>
-                </div>
-                <div>
-                  <div className="caption" style={{ fontSize: "11px" }}>Time Req.</div>
-                  <div className="num-tabular" style={{ color: "#ffffff", fontSize: "14px" }}>2 mins</div>
-                </div>
-                <div>
-                  <div className="caption" style={{ fontSize: "11px" }}>Risk</div>
-                  <div className="num-tabular" style={{ color: "#34D399", fontSize: "14px" }}>Low</div>
-                </div>
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                {/* PRIMARY ACCENT PURPLE BUTTON (RESERVED ONLY FOR HIGH PRIORITY AI ACTION) */}
-                <button 
-                  onClick={handleExecuteAIAction} 
-                  className="btn btn-primary"
-                  style={{ minHeight: "42px", padding: "8px 16px" }}
-                >
-                  {executedAction ? (
-                    <>
-                      <Check size={16} />
-                      <span>Campaign Triggered!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Zap size={16} />
-                      <span>Execute Action</span>
-                    </>
-                  )}
-                </button>
-
-                <button 
-                  onClick={() => setDismissedAiBrief(true)} 
-                  className="btn btn-ghost"
-                  style={{ padding: "8px", minWidth: "36px", minHeight: "36px" }}
-                  aria-label="Dismiss Brief"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span className="badge" style={{ background: "rgba(168, 85, 247, 0.15)", color: "#D8B4FE", border: "1px solid rgba(168, 85, 247, 0.3)", borderRadius: "9999px", padding: "3px 10px", fontSize: "11px", fontWeight: "600" }}>
+                92% Confidence
+              </span>
+              <button 
+                onClick={() => setDismissedAiBrief(true)} 
+                className="btn btn-ghost"
+                style={{ padding: "4px", minWidth: "32px", minHeight: "32px", width: "32px", height: "32px", color: "#94A3B8" }}
+                aria-label="Dismiss Brief"
+              >
+                <X size={16} />
+              </button>
             </div>
+          </div>
 
+          {/* BODY TITLE & DESCRIPTION */}
+          <div style={{ marginBottom: "14px" }}>
+            <h4 style={{ fontSize: "15px", fontWeight: "600", color: "#ffffff", margin: "0 0 4px 0" }}>
+              Win-Back Campaign Trigger
+            </h4>
+            <p style={{ fontSize: "13px", lineHeight: "1.5", color: "#CBD5E1", margin: 0, wordBreak: "break-word" }}>
+              12 VIP customers haven't ordered in 30 days. Sending a WhatsApp broadcast code <code className="sku-code" style={{ background: "rgba(139, 92, 246, 0.2)", color: "#C084FC", padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>DIWALI10</code> will yield an estimated <strong>+₹48,000 ROI</strong>.
+            </p>
+          </div>
+
+          {/* 3-COLUMN METRICS GRID (EST ROI, TIME, RISK) */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", background: "rgba(2, 6, 23, 0.6)", padding: "12px", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.08)", marginBottom: "16px" }}>
+            <div>
+              <div className="caption" style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "2px" }}>Est. ROI</div>
+              <div className="num-tabular" style={{ color: "#34D399", fontSize: "15px", fontWeight: "700" }}>+₹48,000</div>
+            </div>
+            <div>
+              <div className="caption" style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "2px" }}>Time Req.</div>
+              <div className="num-tabular" style={{ color: "#ffffff", fontSize: "15px", fontWeight: "700" }}>2 mins</div>
+            </div>
+            <div>
+              <div className="caption" style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "2px" }}>Risk</div>
+              <div className="num-tabular" style={{ color: "#34D399", fontSize: "15px", fontWeight: "700" }}>Low</div>
+            </div>
+          </div>
+
+          {/* FOOTER ACTION BUTTON */}
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button 
+              onClick={handleExecuteAIAction} 
+              className="btn btn-primary"
+              style={{ width: "100%", smWidth: "auto", minHeight: "44px", padding: "10px 20px", borderRadius: "12px", background: "linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)", fontWeight: "600", fontSize: "13px" }}
+            >
+              {executedAction ? (
+                <>
+                  <Check size={16} />
+                  <span>Campaign Triggered!</span>
+                </>
+              ) : (
+                <>
+                  <Zap size={16} />
+                  <span>Execute Action →</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
       )}
