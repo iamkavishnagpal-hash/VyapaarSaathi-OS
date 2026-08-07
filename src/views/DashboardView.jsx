@@ -194,6 +194,15 @@ export const DashboardView = () => {
 
       </div>
 
+      {/* MOBILE CAROUSEL DOT INDICATORS */}
+      <div className="mobile-carousel-dots" aria-hidden="true">
+        <div className="mobile-carousel-dot active" />
+        <div className="mobile-carousel-dot" />
+        <div className="mobile-carousel-dot" />
+        <div className="mobile-carousel-dot" />
+        <div className="mobile-carousel-dot" />
+      </div>
+
       {/* 2. AI CEO BRIEF (NEON GLOW HOVER CARD WITH PRIMARY PURPLE CTA ACCENT ONLY) */}
       {!dismissedAiBrief && (
         <div className="glass-panel animate-cascade stagger-2 neon-glow-purple" style={{ padding: "20px 24px", marginBottom: "32px", background: "linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(18, 24, 38, 0.95) 100%)", borderColor: "rgba(139, 92, 246, 0.35)", borderRadius: "20px" }}>

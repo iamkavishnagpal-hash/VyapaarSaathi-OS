@@ -1006,6 +1006,34 @@ body, p, .body-text {
   transform: scale(0.98);
 }
 
+/* Mobile Carousel Dot Indicators */
+.mobile-carousel-dots {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-carousel-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: -12px;
+    margin-bottom: 20px;
+  }
+  .mobile-carousel-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    transition: all 0.2s ease;
+  }
+  .mobile-carousel-dot.active {
+    width: 18px;
+    border-radius: 9999px;
+    background: var(--primary);
+  }
+}
+
 /* ====================================================== */
 /* MOBILE BOTTOM SHEETS SYSTEM (Stripe / Apple Style)      */
 /* ====================================================== */
