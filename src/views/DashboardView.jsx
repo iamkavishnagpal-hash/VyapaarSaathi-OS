@@ -39,27 +39,26 @@ export const DashboardView = () => {
       {/* 4-STEP EXECUTIVE FIRST-SCREEN VISUAL HIERARCHY HERO */}
       <div className="mobile-hero-header">
         <div>
-          <div className="micro-tag" style={{ color: "var(--primary)", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+          <div className="micro-tag hide-subtitle-mobile" style={{ color: "var(--primary)", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
             <Zap size={14} /> <span>Enterprise Retail OS Telemetry</span>
           </div>
-          <h2 style={{ fontSize: "28px", fontWeight: "800", letterSpacing: "-0.025em", margin: "0 0 6px 0", color: "#ffffff" }}>
-            Executive Dashboard & Real-Time Metrics
+          <h2 style={{ fontSize: "24px", fontWeight: "800", letterSpacing: "-0.025em", margin: "0 0 4px 0", color: "#ffffff" }}>
+            Executive Dashboard
           </h2>
           <p className="caption hide-subtitle-mobile" style={{ fontSize: "14px", color: "var(--text-muted)", margin: 0, maxWidth: "680px" }}>
             Unified merchant telemetry for counter billing, multi-branch catalog sync, customer credit ledgers & AI co-pilot recommendations.
           </p>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          {/* STEP 3: PRIMARY CTA */}
+        {/* SINGLE-ROW SEGMENTED ACTION PILLS (H-9 36PX, ZERO VERTICAL WASTE) */}
+        <div className="mobile-action-pills">
           <button onClick={() => setActiveView("pos")} className="btn btn-primary">
-            <Zap size={18} />
-            <span>New POS Bill</span>
+            <Zap size={16} />
+            <span>+ New Bill</span>
           </button>
-          {/* STEP 4: SECONDARY CTA */}
           <button onClick={() => setActiveView("ai")} className="btn btn-secondary">
-            <Sparkles size={18} color="var(--primary)" />
-            <span>Explore AI Center</span>
+            <Sparkles size={16} color="var(--primary)" />
+            <span>AI Copilot</span>
           </button>
         </div>
       </div>

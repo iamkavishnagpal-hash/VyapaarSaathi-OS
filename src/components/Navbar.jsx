@@ -354,7 +354,7 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
       </header>
 
       {/* MOBILE HEADER: LOGO + LOCATION + NOTIFS + PROFILE + MENU */}
-      <header className="glass-panel hide-on-desktop" style={{ borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", padding: "12px 14px", zIndex: 100, display: "none", alignItems: "center" }}>
+      <header className="glass-panel mobile-top-header hide-on-desktop" style={{ borderRadius: 0, borderTop: "none", borderLeft: "none", borderRight: "none", zIndex: 100, display: "none", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", minWidth: 0 }}>
           <button
             onClick={() => setActiveView("dashboard")}
