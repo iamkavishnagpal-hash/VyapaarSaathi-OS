@@ -22,6 +22,10 @@ import { GoOnlineView } from "./views/GoOnlineView";
 import { WhatsAppCommerceView } from "./views/WhatsAppCommerceView";
 import { FulfillmentView } from "./views/FulfillmentView";
 import { AutomationsView } from "./views/AutomationsView";
+import { ProductListingsView } from "./views/ProductListingsView";
+import { ChannelCenterView } from "./views/ChannelCenterView";
+import { OrderCenterView } from "./views/OrderCenterView";
+import { Customer360View } from "./views/Customer360View";
 import { ManagementViews } from "./views/ManagementViews";
 import { SettingsViews } from "./views/SettingsViews";
 import { ProductPassportHeroRoute } from "./components/ProductPassportView";
@@ -66,6 +70,8 @@ const MainLayout = () => {
               <Route path="/dashboard" element={<AnimatedPageWrapper><DashboardView /></AnimatedPageWrapper>} />
               <Route path="/superpowers" element={<AnimatedPageWrapper><SuperpowersView /></AnimatedPageWrapper>} />
               <Route path="/go-online" element={<AnimatedPageWrapper><GoOnlineView /></AnimatedPageWrapper>} />
+              <Route path="/listings" element={<AnimatedPageWrapper><ProductListingsView /></AnimatedPageWrapper>} />
+              <Route path="/channels" element={<AnimatedPageWrapper><ChannelCenterView /></AnimatedPageWrapper>} />
               <Route path="/whatsapp-commerce" element={<AnimatedPageWrapper><WhatsAppCommerceView /></AnimatedPageWrapper>} />
               <Route path="/fulfillment" element={<AnimatedPageWrapper><FulfillmentView /></AnimatedPageWrapper>} />
               <Route path="/automations" element={<AnimatedPageWrapper><AutomationsView /></AnimatedPageWrapper>} />
@@ -76,12 +82,13 @@ const MainLayout = () => {
               <Route path="/purchases" element={<AnimatedPageWrapper><PurchasesView /></AnimatedPageWrapper>} />
               <Route path="/transfers" element={<AnimatedPageWrapper><TransfersView /></AnimatedPageWrapper>} />
               <Route path="/returns" element={<AnimatedPageWrapper><ReturnsView /></AnimatedPageWrapper>} />
+              <Route path="/orders" element={<AnimatedPageWrapper><OrderCenterView /></AnimatedPageWrapper>} />
+              <Route path="/customers" element={<AnimatedPageWrapper><Customer360View /></AnimatedPageWrapper>} />
               <Route path="/finance" element={<AnimatedPageWrapper><FinanceView /></AnimatedPageWrapper>} />
               <Route path="/analytics" element={<AnimatedPageWrapper><AnalyticsView /></AnimatedPageWrapper>} />
               <Route path="/ai" element={<AnimatedPageWrapper><AICenterView /></AnimatedPageWrapper>} />
               <Route path="/help" element={<AnimatedPageWrapper><HelpCenterView /></AnimatedPageWrapper>} />
               <Route path="/onboarding" element={<AnimatedPageWrapper><OnboardingView /></AnimatedPageWrapper>} />
-              <Route path="/customers" element={<AnimatedPageWrapper><ManagementViews view="customers" /></AnimatedPageWrapper>} />
               <Route path="/suppliers" element={<AnimatedPageWrapper><ManagementViews view="suppliers" /></AnimatedPageWrapper>} />
               <Route path="/roles" element={<AnimatedPageWrapper><ManagementViews view="roles" /></AnimatedPageWrapper>} />
               <Route path="/stores" element={<AnimatedPageWrapper><ManagementViews view="stores" /></AnimatedPageWrapper>} />

@@ -70,7 +70,13 @@ export const InventoryView = () => {
               return (
                 <tr key={p.id}>
                   <td>
-                    <div style={{ fontWeight: "700", color: "var(--text-main)", cursor: "pointer" }} onClick={() => navigate(`/products/${p.id}`)}>
+                    <div
+                      style={{ fontWeight: "700", color: "var(--text-main)", cursor: "pointer" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/products/${p.id}`);
+                      }}
+                    >
                       {p.title}
                     </div>
                     <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--text-muted)" }}>{p.sku}</div>
@@ -97,7 +103,11 @@ export const InventoryView = () => {
                   <td>
                     <div style={{ display: "flex", gap: "4px" }}>
                       <button
-                        onClick={() => adjustStock(p.id, -1, "Manual Decrement")}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          adjustStock(p.id, -1, "Manual Decrement");
+                        }}
                         className="btn btn-secondary btn-sm"
                         style={{ padding: "4px 8px" }}
                         title="Deduct 1"
@@ -105,7 +115,11 @@ export const InventoryView = () => {
                         <Minus size={12} />
                       </button>
                       <button
-                        onClick={() => adjustStock(p.id, 1, "Manual Increment")}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          adjustStock(p.id, 1, "Manual Increment");
+                        }}
                         className="btn btn-secondary btn-sm"
                         style={{ padding: "4px 8px" }}
                         title="Add 1"
@@ -113,7 +127,11 @@ export const InventoryView = () => {
                         <Plus size={12} />
                       </button>
                       <button
-                        onClick={() => adjustStock(p.id, 10, "Bulk Stock In")}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          adjustStock(p.id, 10, "Bulk Stock In");
+                        }}
                         className="btn btn-secondary btn-sm"
                         style={{ padding: "4px 8px" }}
                         title="Add 10"
@@ -123,7 +141,14 @@ export const InventoryView = () => {
                     </div>
                   </td>
                   <td>
-                    <button onClick={() => navigate(`/products/${p.id}`)} className="btn btn-ghost btn-sm">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/products/${p.id}`);
+                      }}
+                      className="btn btn-ghost btn-sm"
+                    >
                       Passport
                     </button>
                   </td>

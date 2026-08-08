@@ -74,7 +74,11 @@ export const ActionCenter = () => {
               </div>
 
               <button
-                onClick={() => navigate(item.actionPath)}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(item.actionPath);
+                }}
                 className="btn btn-secondary btn-sm"
                 style={{ gap: "4px", whiteSpace: "nowrap" }}
               >
