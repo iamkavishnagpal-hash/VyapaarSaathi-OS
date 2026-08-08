@@ -25,7 +25,6 @@ const loadSaved = (key, fallback) => {
 
 export const RetailProvider = ({ children }) => {
   // Navigation & Preferences
-  const [activeView, setActiveView] = useState("dashboard");
   const [lang, setLang] = useState(() => loadSaved("ros_lang", "en"));
   const [role, setRole] = useState(() => loadSaved("ros_role", "Store Owner"));
 
@@ -51,15 +50,13 @@ export const RetailProvider = ({ children }) => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [cartDiscount, setCartDiscount] = useState(0);
 
-  // Global UI Overlays & Modals
+  // Global UI Overlays & Modals (Single source of truth for modals)
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isCaptureModalOpen, setIsCaptureModalOpen] = useState(false);
   const [isScannerModalOpen, setIsScannerModalOpen] = useState(false);
   const [scannerMode, setScannerMode] = useState("Sale"); // 'Sale' | 'Receive' | 'Stock Count' | 'Transfer' | 'Return' | 'Audit'
   const [isIdentityModalOpen, setIsIdentityModalOpen] = useState(false);
   const [identityProduct, setIdentityProduct] = useState(null);
-  const [isPassportOpen, setIsPassportOpen] = useState(false);
-  const [passportProduct, setPassportProduct] = useState(null);
 
   // Search State
   const [globalSearchQuery, setGlobalSearchQuery] = useState("");
@@ -148,7 +145,7 @@ export const RetailProvider = ({ children }) => {
       model: prodData.model || "Standard Model",
       color: prodData.color || "Default",
       size: prodData.size || "Standard",
-      aiConfidence: prodData.aiConfidence || { brand: 95, title: 98, category: 94, color: 92, price: 90, overall: 95 },
+      aiConfidence: prodData.aiConfidence || { brand: 99, title: 98, category: 96, color: 95, price: 92, overall: 96 },
       isVerified: true,
       productHealthScore: 96,
       dataCompleteness: 100,
@@ -265,12 +262,6 @@ export const RetailProvider = ({ children }) => {
     setIsIdentityModalOpen(true);
   };
 
-  // Open Product Passport
-  const openProductPassport = (product) => {
-    setPassportProduct(product);
-    setIsPassportOpen(true);
-  };
-
   // Open Scanner with Mode
   const openScanner = (mode = "Sale") => {
     setScannerMode(mode);
@@ -280,8 +271,6 @@ export const RetailProvider = ({ children }) => {
   return (
     <RetailContext.Provider
       value={{
-        activeView,
-        setActiveView,
         lang,
         setLang,
         role,
@@ -328,10 +317,6 @@ export const RetailProvider = ({ children }) => {
         setIsIdentityModalOpen,
         identityProduct,
         openProductIdentity,
-        isPassportOpen,
-        setIsPassportOpen,
-        passportProduct,
-        openProductPassport,
         globalSearchQuery,
         setGlobalSearchQuery,
         toasts,

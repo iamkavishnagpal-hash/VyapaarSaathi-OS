@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { RetailProvider, useRetail } from "./context/RetailContext";
+import { RetailProvider } from "./context/RetailContext";
 import { Sidebar } from "./components/Sidebar";
 import { Navbar } from "./components/Navbar";
 
@@ -21,7 +21,6 @@ import { ProductPassportHeroRoute } from "./components/ProductPassportView";
 import { CommandPaletteModal } from "./components/CommandPaletteModal";
 import { ProductCaptureModal } from "./components/ProductCaptureModal";
 import { ProductIdentityModal } from "./components/ProductIdentityModal";
-import { ProductPassportView } from "./components/ProductPassportView";
 import { UnifiedScannerModal } from "./components/UnifiedScannerModal";
 
 const AnimatedPageWrapper = ({ children }) => {
@@ -78,11 +77,10 @@ const MainLayout = () => {
         </main>
       </div>
 
-      {/* GLOBAL OVERLAY MODALS & DRAWERS */}
+      {/* GLOBAL OVERLAY MODALS */}
       <CommandPaletteModal />
       <ProductCaptureModal />
       <ProductIdentityModal />
-      <ProductPassportView />
       <UnifiedScannerModal />
     </div>
   );
