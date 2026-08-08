@@ -14,6 +14,10 @@ import { TransfersView } from "./views/TransfersView";
 import { ReturnsView } from "./views/ReturnsView";
 import { AnalyticsView } from "./views/AnalyticsView";
 import { AICenterView } from "./views/AICenterView";
+import { SuperpowersView } from "./views/SuperpowersView";
+import { FinanceView } from "./views/FinanceView";
+import { HelpCenterView } from "./views/HelpCenterView";
+import { OnboardingView } from "./views/OnboardingView";
 import { ManagementViews } from "./views/ManagementViews";
 import { SettingsViews } from "./views/SettingsViews";
 import { ProductPassportHeroRoute } from "./components/ProductPassportView";
@@ -55,6 +59,7 @@ const MainLayout = () => {
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<AnimatedPageWrapper><DashboardView /></AnimatedPageWrapper>} />
+              <Route path="/superpowers" element={<AnimatedPageWrapper><SuperpowersView /></AnimatedPageWrapper>} />
               <Route path="/products" element={<AnimatedPageWrapper><ProductsView /></AnimatedPageWrapper>} />
               <Route path="/products/:productId" element={<AnimatedPageWrapper><ProductPassportHeroRoute /></AnimatedPageWrapper>} />
               <Route path="/inventory" element={<AnimatedPageWrapper><InventoryView /></AnimatedPageWrapper>} />
@@ -62,8 +67,11 @@ const MainLayout = () => {
               <Route path="/purchases" element={<AnimatedPageWrapper><PurchasesView /></AnimatedPageWrapper>} />
               <Route path="/transfers" element={<AnimatedPageWrapper><TransfersView /></AnimatedPageWrapper>} />
               <Route path="/returns" element={<AnimatedPageWrapper><ReturnsView /></AnimatedPageWrapper>} />
+              <Route path="/finance" element={<AnimatedPageWrapper><FinanceView /></AnimatedPageWrapper>} />
               <Route path="/analytics" element={<AnimatedPageWrapper><AnalyticsView /></AnimatedPageWrapper>} />
               <Route path="/ai" element={<AnimatedPageWrapper><AICenterView /></AnimatedPageWrapper>} />
+              <Route path="/help" element={<AnimatedPageWrapper><HelpCenterView /></AnimatedPageWrapper>} />
+              <Route path="/onboarding" element={<AnimatedPageWrapper><OnboardingView /></AnimatedPageWrapper>} />
               <Route path="/customers" element={<AnimatedPageWrapper><ManagementViews view="customers" /></AnimatedPageWrapper>} />
               <Route path="/suppliers" element={<AnimatedPageWrapper><ManagementViews view="suppliers" /></AnimatedPageWrapper>} />
               <Route path="/roles" element={<AnimatedPageWrapper><ManagementViews view="roles" /></AnimatedPageWrapper>} />
