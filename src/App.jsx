@@ -22,6 +22,7 @@ import { CommandPaletteModal } from "./components/CommandPaletteModal";
 import { ProductCaptureModal } from "./components/ProductCaptureModal";
 import { ProductIdentityModal } from "./components/ProductIdentityModal";
 import { UnifiedScannerModal } from "./components/UnifiedScannerModal";
+import { SaathiFloatingBar } from "./components/SaathiFloatingBar";
 
 const AnimatedPageWrapper = ({ children }) => {
   return (
@@ -45,7 +46,7 @@ const MainLayout = () => {
       {/* PERSISTENT SIDEBAR */}
       <Sidebar isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
 
-      <div className="main-wrapper">
+      <div className="main-wrapper" style={{ paddingBottom: "80px" }}>
         {/* TOP BAR */}
         <Navbar />
 
@@ -76,6 +77,9 @@ const MainLayout = () => {
           </AnimatePresence>
         </main>
       </div>
+
+      {/* GLOBAL SAATHI INTENT BAR ("Saathi, aaj kya important hai?") */}
+      <SaathiFloatingBar />
 
       {/* GLOBAL OVERLAY MODALS */}
       <CommandPaletteModal />
