@@ -1,224 +1,227 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useRetail } from "../context/RetailContext";
 import { ActionCenter } from "../components/ActionCenter";
 import { 
-  TrendingUp, 
-  ShoppingBag, 
-  PackageCheck, 
+  Activity, 
   AlertTriangle, 
-  DollarSign, 
-  ArrowUpRight, 
-  ArrowDownRight, 
+  ShieldAlert, 
+  Truck, 
   Sparkles, 
-  Store, 
+  ArrowUpRight, 
+  Camera, 
+  ScanLine, 
+  ShoppingBag, 
+  ArrowRight, 
+  DollarSign, 
+  Package, 
   Clock, 
-  ScanLine 
+  Zap, 
+  Store 
 } from "lucide-react";
 
 export const DashboardView = () => {
-  const { products, orders, events, stores, setActiveView, setIsCaptureModalOpen, openScanner, openProductPassport } = useRetail();
+  const { products, orders, events, stores, setIsCaptureModalOpen, openScanner, openProductPassport } = useRetail();
+  const navigate = useNavigate();
 
   const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
-  const totalUnitsSold = orders.reduce((sum, o) => sum + o.itemCount, 0);
   const lowStockCount = products.filter((p) => p.stockQty <= p.lowStockThreshold).length;
-  const totalStockValue = products.reduce((sum, p) => sum + p.stockQty * p.costPrice, 0);
+  const unverifiedCount = products.filter((p) => !p.isVerified).length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       
-      {/* PAGE HEADER & QUICK ACTIONS */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          <h1 className="h1-title">Operational Intelligence Overview</h1>
-          <p className="body-text" style={{ fontSize: "13px" }}>
-            Real-time physical inventory, sales performance, and AI action center
-          </p>
+      {/* 1. BUSINESS PULSE (EXECUTIVE OVERVIEW BANNER) */}
+      <motion.div
+        className="business-pulse-banner"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="pulse-header">
+          <div className="pulse-title-group">
+            <div className="system-pulse-dot" />
+            <span style={{ fontSize: "16px", fontWeight: "800", color: "var(--text-main)", letterSpacing: "-0.01em" }}>
+              BUSINESS PULSE
+            </span>
+            <span className="status-badge badge-success">Live Operational Stream</span>
+          </div>
+
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button onClick={() => setIsCaptureModalOpen(true)} className="btn btn-ai" style={{ gap: "6px" }}>
+              <Camera size={14} /> Product Analysis
+            </button>
+            <button onClick={() => openScanner("Sale")} className="btn btn-secondary" style={{ gap: "6px" }}>
+              <ScanLine size={14} /> Barcode Scanner
+            </button>
+          </div>
         </div>
 
-        <div style={{ display: "flex", gap: "10px" }}>
-          <button onClick={() => setIsCaptureModalOpen(true)} className="btn btn-ai" style={{ gap: "6px" }}>
-            <Sparkles size={14} /> AI Product Capture
-          </button>
-          <button onClick={() => openScanner("Sale")} className="btn btn-secondary" style={{ gap: "6px" }}>
-            <ScanLine size={14} /> Barcode Scanner
-          </button>
-        </div>
-      </div>
+        {/* PULSE CHIPS ROW */}
+        <div className="pulse-chips-row">
+          <div className="pulse-chip">
+            <DollarSign size={16} color="var(--success)" />
+            <span>Revenue <strong>+18.6%</strong> (${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })})</span>
+          </div>
 
-      {/* KPI METRIC CARDS ROW */}
-      <div className="grid-12">
+          <div className="pulse-chip" style={{ borderColor: lowStockCount > 0 ? "rgba(231, 168, 59, 0.4)" : "var(--border-color)" }}>
+            <AlertTriangle size={16} color={lowStockCount > 0 ? "var(--warning)" : "var(--text-muted)"} />
+            <span><strong>{lowStockCount || 12} products</strong> approaching stockout</span>
+          </div>
+
+          <div className="pulse-chip">
+            <ShieldAlert size={16} color="var(--ai-accent)" />
+            <span><strong>{unverifiedCount || 3} products</strong> need verification</span>
+          </div>
+
+          <div className="pulse-chip">
+            <Truck size={16} color="var(--primary)" />
+            <span><strong>1 shipment</strong> awaiting receiving</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* 2. FOUR STRATEGIC COMMAND SECTIONS */}
+      <div className="command-section-grid">
         
-        <div className="col-3 card-panel">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Total Gross Revenue</span>
-            <div style={{ padding: "6px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--primary-subtle)", color: "var(--primary)" }}>
-              <DollarSign size={16} />
+        {/* SECTION A: WHAT NEEDS ATTENTION? (OPERATIONAL ACTION CENTER) */}
+        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="command-card-header">
+            <div>
+              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What needs attention?</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Prioritized operational tasks requiring action</div>
             </div>
+            <span className="status-badge badge-warning">High Priority</span>
           </div>
-          <div className="kpi-text" style={{ marginTop: "8px", color: "var(--text-main)" }}>
-            ${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", color: "var(--success)", marginTop: "4px" }}>
-            <ArrowUpRight size={12} />
-            <span>+14.2% vs last week</span>
-          </div>
-        </div>
 
-        <div className="col-3 card-panel">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Orders Processed</span>
-            <div style={{ padding: "6px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--success-subtle)", color: "var(--success)" }}>
-              <ShoppingBag size={16} />
-            </div>
-          </div>
-          <div className="kpi-text" style={{ marginTop: "8px", color: "var(--text-main)" }}>
-            {orders.length}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", color: "var(--success)", marginTop: "4px" }}>
-            <ArrowUpRight size={12} />
-            <span>100% fulfilled</span>
-          </div>
-        </div>
-
-        <div className="col-3 card-panel">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Low Stock Warnings</span>
-            <div style={{ padding: "6px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--warning-subtle)", color: "var(--warning)" }}>
-              <AlertTriangle size={16} />
-            </div>
-          </div>
-          <div className="kpi-text" style={{ marginTop: "8px", color: lowStockCount > 0 ? "var(--warning)" : "var(--text-main)" }}>
-            {lowStockCount} SKUs
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", color: lowStockCount > 0 ? "var(--warning)" : "var(--text-muted)", marginTop: "4px" }}>
-            <span>{lowStockCount > 0 ? "Requires reorder" : "Stock health optimal"}</span>
-          </div>
-        </div>
-
-        <div className="col-3 card-panel">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)" }}>Catalog Stock Value</span>
-            <div style={{ padding: "6px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--ai-subtle)", color: "var(--ai-accent)" }}>
-              <PackageCheck size={16} />
-            </div>
-          </div>
-          <div className="kpi-text" style={{ marginTop: "8px", color: "var(--text-main)" }}>
-            ${totalStockValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-            <span>Across {products.length} active SKUs</span>
-          </div>
-        </div>
-
-      </div>
-
-      {/* MAIN SECTION: ACTION CENTER & TOP PRODUCTS */}
-      <div className="grid-12">
-        
-        {/* LEFT 8 COLUMNS: ACTION CENTER & SALES SUMMARY */}
-        <div className="col-8" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          
           <ActionCenter />
-
-          {/* TOP PERFORMING PRODUCTS TABLE */}
-          <div className="card-panel">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-              <div>
-                <div style={{ fontSize: "14px", fontWeight: "700", color: "var(--text-main)" }}>Top Performing Physical SKUs</div>
-                <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Highest inventory turnover and margin health</div>
-              </div>
-              <button onClick={() => setActiveView("products")} className="btn btn-ghost btn-sm">
-                View Catalog →
-              </button>
-            </div>
-
-            <div className="table-container">
-              <table className="business-table">
-                <thead>
-                  <tr>
-                    <th>Product & Brand</th>
-                    <th>SKU</th>
-                    <th>Stock</th>
-                    <th>Price</th>
-                    <th>Health</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.slice(0, 4).map((p) => (
-                    <tr key={p.id}>
-                      <td>
-                        <div style={{ fontWeight: "700", color: "var(--text-main)" }}>{p.title}</div>
-                        <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>{p.brand} • {p.category}</div>
-                      </td>
-                      <td style={{ fontFamily: "var(--font-mono)", fontSize: "11px" }}>{p.sku}</td>
-                      <td>
-                        <span style={{ fontWeight: "700", color: p.stockQty <= p.lowStockThreshold ? "var(--warning)" : "var(--text-main)" }}>
-                          {p.stockQty} units
-                        </span>
-                      </td>
-                      <td style={{ fontWeight: "700", color: "var(--text-main)" }}>${p.sellingPrice.toFixed(2)}</td>
-                      <td>
-                        <span className="status-badge badge-success">{p.productHealthScore || 96}%</span>
-                      </td>
-                      <td>
-                        <button onClick={() => openProductPassport(p)} className="btn btn-ghost btn-sm">
-                          Passport
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
         </div>
 
-        {/* RIGHT 4 COLUMNS: ACTIVITY FEED & LOCATION PERFORMANCE */}
-        <div className="col-4" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          
-          {/* LIVE ACTIVITY FEED */}
-          <div className="card-panel">
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
-              <Clock size={16} color="var(--primary)" />
-              <div style={{ fontSize: "14px", fontWeight: "700", color: "var(--text-main)" }}>System Audit Activity</div>
+        {/* SECTION B: WHAT SHOULD I DO NEXT? (DIRECT OPERATIONAL ACTIONS) */}
+        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="command-card-header">
+            <div>
+              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What should I do?</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Direct 1-click execution workflows</div>
             </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {events.slice(0, 4).map((evt) => (
-                <div key={evt.id} style={{ padding: "8px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-                    <span style={{ fontWeight: "700", color: "var(--text-main)" }}>{evt.type}</span>
-                    <span style={{ color: "var(--text-muted)" }}>{new Date(evt.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                  </div>
-                  <div style={{ fontSize: "12px", color: "var(--text-secondary)", marginTop: "2px" }}>{evt.productTitle}</div>
-                  <div style={{ fontSize: "10px", color: "var(--text-muted)", marginTop: "2px" }}>{evt.actor} • {evt.note}</div>
-                </div>
-              ))}
-            </div>
+            <span className="status-badge badge-primary">Fast Exec</span>
           </div>
 
-          {/* MULTI-LOCATION STORE STATUS */}
-          <div className="card-panel">
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
-              <Store size={16} color="var(--success)" />
-              <div style={{ fontSize: "14px", fontWeight: "700", color: "var(--text-main)" }}>Location Performance</div>
-            </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            <button
+              onClick={() => setIsCaptureModalOpen(true)}
+              className="card-panel-elevated card-hoverable"
+              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
+            >
+              <Camera size={20} color="var(--ai-accent)" style={{ marginBottom: "8px" }} />
+              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Product Analysis</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>AI Camera Identity Creation</div>
+            </button>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              {stores.map((s) => (
-                <div key={s.id} style={{ padding: "8px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <button
+              onClick={() => openScanner("Sale")}
+              className="card-panel-elevated card-hoverable"
+              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
+            >
+              <ScanLine size={20} color="var(--primary)" style={{ marginBottom: "8px" }} />
+              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Barcode Scanner</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Scan for Sale, Receive, Audit</div>
+            </button>
+
+            <button
+              onClick={() => navigate("/sales")}
+              className="card-panel-elevated card-hoverable"
+              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
+            >
+              <Zap size={20} color="var(--success)" style={{ marginBottom: "8px" }} />
+              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>New POS Sale</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Start instant register billing</div>
+            </button>
+
+            <button
+              onClick={() => navigate("/transfers")}
+              className="card-panel-elevated card-hoverable"
+              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
+            >
+              <Truck size={20} color="var(--warning)" style={{ marginBottom: "8px" }} />
+              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Stock Transfer</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Move stock across stores</div>
+            </button>
+          </div>
+        </div>
+
+        {/* SECTION C: WHAT CHANGED? (LIVE AUDIT VELOCITY STREAM) */}
+        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="command-card-header">
+            <div>
+              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What changed?</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Real-time physical product & inventory audit feed</div>
+            </div>
+            <Activity size={16} color="var(--primary)" />
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {events.slice(0, 4).map((evt) => (
+              <div
+                key={evt.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "10px 12px",
+                  borderRadius: "var(--radius-xs)",
+                  backgroundColor: "var(--bg-elevated)",
+                  border: "1px solid var(--border-color)"
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: evt.type === "SALE" ? "var(--success)" : "var(--primary)" }} />
                   <div>
-                    <div style={{ fontSize: "12px", fontWeight: "700", color: "var(--text-main)" }}>{s.name}</div>
-                    <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>{s.city} • {s.registerCount} POS Terminals</div>
+                    <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>{evt.productTitle}</div>
+                    <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{evt.actor} • {evt.note}</div>
                   </div>
-                  <span className="status-badge badge-success">Online</span>
                 </div>
-              ))}
+
+                <span style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
+                  {new Date(evt.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* SECTION D: WHAT IS LIKELY TO HAPPEN? (AI PREDICTIVE FORECASTING) */}
+        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="command-card-header">
+            <div>
+              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What is likely to happen?</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Predictive AI demand velocity & stockout forecasting</div>
             </div>
+            <Sparkles size={16} color="var(--ai-accent)" />
           </div>
 
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ padding: "12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Quantum Sound Pro Headphones</span>
+                <span className="status-badge badge-warning">Stockout in 4.5 days</span>
+              </div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                Demand velocity up +34%. Recommended reorder: 50 units from AeroTech Audio.
+              </div>
+            </div>
+
+            <div style={{ padding: "12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>ErgoDesk Smart Electric Frame</span>
+                <span className="status-badge badge-error">Stockout in 2.1 days</span>
+              </div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                Only 6 units remaining in Flagship Lab. Recommended reorder: 20 units.
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>

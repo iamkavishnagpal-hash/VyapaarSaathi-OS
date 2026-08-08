@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useRetail } from "../context/RetailContext";
 import { IdentityRing } from "../components/IdentityRing";
 import { 
@@ -10,11 +11,13 @@ import {
   ShieldCheck, 
   Tag, 
   Layers, 
-  ArrowUpDown 
+  ArrowUpDown,
+  ExternalLink 
 } from "lucide-react";
 
 export const ProductsView = () => {
   const { products, openProductIdentity, openProductPassport, setIsCaptureModalOpen } = useRetail();
+  const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -45,7 +48,7 @@ export const ProductsView = () => {
 
         <button onClick={() => setIsCaptureModalOpen(true)} className="btn btn-ai" style={{ gap: "6px" }}>
           <Camera size={16} />
-          <span>AI Camera Capture</span>
+          <span>Product Analysis</span>
         </button>
       </div>
 
@@ -99,7 +102,13 @@ export const ProductsView = () => {
                   <IdentityRing status={p.isVerified ? "verified" : "pending"} />
                 </td>
                 <td>
-                  <div style={{ fontWeight: "700", color: "var(--text-main)" }}>{p.title}</div>
+                  <div
+                    onClick={() => navigate(`/products/${p.id}`)}
+                    style={{ fontWeight: "700", color: "var(--text-main)", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}
+                  >
+                    <span>{p.title}</span>
+                    <ExternalLink size={12} color="var(--text-muted)" />
+                  </div>
                   <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>{p.brand} • {p.model || "Standard Model"}</div>
                 </td>
                 <td style={{ fontFamily: "var(--font-mono)", fontSize: "12px", fontWeight: "600" }}>{p.sku}</td>
@@ -117,11 +126,11 @@ export const ProductsView = () => {
                   </span>
                 </td>
                 <td>
-                  <span className="status-badge badge-success">{p.productHealthScore || 96}%</span>
+                  <span className="status-badge badge-success">{p.productHealthScore || 92}%</span>
                 </td>
                 <td>
                   <div style={{ display: "flex", gap: "6px" }}>
-                    <button onClick={() => openProductPassport(p)} className="btn btn-secondary btn-sm" title="Open Passport">
+                    <button onClick={() => navigate(`/products/${p.id}`)} className="btn btn-secondary btn-sm" title="Hero Passport">
                       Passport
                     </button>
                     <button onClick={() => openProductIdentity(p)} className="btn btn-ghost btn-sm" title="Print Barcode">

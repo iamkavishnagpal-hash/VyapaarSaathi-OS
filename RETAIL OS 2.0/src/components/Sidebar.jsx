@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { useRetail } from "../context/RetailContext";
 import { 
   LayoutDashboard, 
@@ -22,7 +23,8 @@ import {
 } from "lucide-react";
 
 export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
-  const { activeView, setActiveView, role, products } = useRetail();
+  const { role, products } = useRetail();
+  const location = useLocation();
 
   const lowStockCount = products.filter((p) => p.stockQty <= p.lowStockThreshold).length;
 
@@ -30,32 +32,32 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     {
       title: "Navigation",
       items: [
-        { id: "dashboard", label: "Overview", icon: LayoutDashboard },
-        { id: "products", label: "Products", icon: Package },
-        { id: "inventory", label: "Inventory", icon: Layers, badge: lowStockCount > 0 ? lowStockCount : null },
-        { id: "sales", label: "Sales / POS", icon: ScanLine },
-        { id: "purchases", label: "Purchases", icon: ShoppingBag },
-        { id: "transfers", label: "Transfers", icon: Truck },
-        { id: "returns", label: "Returns", icon: RotateCcw },
-        { id: "analytics", label: "Analytics", icon: BarChart3 },
-        { id: "ai", label: "AI Assistant", icon: Bot, isNew: true }
+        { path: "/dashboard", label: "Overview", icon: LayoutDashboard },
+        { path: "/products", label: "Products", icon: Package },
+        { path: "/inventory", label: "Inventory", icon: Layers, badge: lowStockCount > 0 ? lowStockCount : null },
+        { path: "/sales", label: "Sales / POS", icon: ScanLine },
+        { path: "/purchases", label: "Purchases", icon: ShoppingBag },
+        { path: "/transfers", label: "Transfers", icon: Truck },
+        { path: "/returns", label: "Returns", icon: RotateCcw },
+        { path: "/analytics", label: "Analytics", icon: BarChart3 },
+        { path: "/ai", label: "AI Assistant", icon: Bot, isNew: true }
       ]
     },
     {
       title: "Management",
       items: [
-        { id: "customers", label: "Customers", icon: Users },
-        { id: "suppliers", label: "Suppliers", icon: Building2 },
-        { id: "roles", label: "Users & Roles", icon: ShieldCheck },
-        { id: "stores", label: "Stores", icon: Store }
+        { path: "/customers", label: "Customers", icon: Users },
+        { path: "/suppliers", label: "Suppliers", icon: Building2 },
+        { path: "/roles", label: "Users & Roles", icon: ShieldCheck },
+        { path: "/stores", label: "Stores", icon: Store }
       ]
     },
     {
       title: "Settings",
       items: [
-        { id: "integrations", label: "Integrations", icon: Share2 },
-        { id: "billing", label: "Billing", icon: CreditCard },
-        { id: "preferences", label: "Preferences", icon: Sliders }
+        { path: "/integrations", label: "Integrations", icon: Share2 },
+        { path: "/billing", label: "Billing", icon: CreditCard },
+        { path: "/preferences", label: "Preferences", icon: Sliders }
       ]
     }
   ];
@@ -129,12 +131,12 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 
             {sec.items.map((item) => {
               const Icon = item.icon;
-              const isActive = activeView === item.id;
+              const isActive = location.pathname === item.path;
 
               return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveView(item.id)}
+                <NavLink
+                  key={item.path}
+                  to={item.path}
                   title={isCollapsed ? item.label : undefined}
                   style={{
                     display: "flex",
@@ -143,12 +145,11 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                     minHeight: "36px",
                     padding: isCollapsed ? "8px 0" : "8px 10px",
                     borderRadius: "var(--radius-sm)",
-                    border: "none",
+                    textDecoration: "none",
                     background: isActive ? "var(--bg-elevated)" : "transparent",
                     color: isActive ? "var(--text-main)" : "var(--text-secondary)",
                     fontWeight: isActive ? "700" : "500",
                     fontSize: "13px",
-                    cursor: "pointer",
                     transition: "all var(--motion-micro)",
                     position: "relative"
                   }}
@@ -183,7 +184,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                       }}
                     />
                   )}
-                </button>
+                </NavLink>
               );
             })}
           </div>

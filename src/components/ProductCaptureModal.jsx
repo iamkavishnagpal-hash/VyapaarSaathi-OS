@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRetail } from "../context/RetailContext";
 import { 
   Camera, 
-  Sparkles, 
   CheckCircle2, 
   Loader2, 
   X, 
   RefreshCw, 
-  Check, 
   Zap, 
   ShieldCheck, 
-  ArrowRight 
+  ArrowRight,
+  ScanLine,
+  Barcode,
+  Layers
 } from "lucide-react";
 
 export const ProductCaptureModal = () => {
@@ -47,7 +49,7 @@ export const ProductCaptureModal = () => {
     "Reading physical product label & barcode...",
     "Detecting brand, model, & color attributes...",
     "Checking catalog duplicate records...",
-    "Generating SKU identity & QR barcode..."
+    "Generating SKU identity & Code 128 barcode..."
   ];
 
   useEffect(() => {
@@ -62,7 +64,7 @@ export const ProductCaptureModal = () => {
           }
           return prev + 1;
         });
-      }, 700);
+      }, 650);
       return () => clearInterval(interval);
     }
   }, [step]);
@@ -100,8 +102,12 @@ export const ProductCaptureModal = () => {
       }}
       onClick={() => setIsCaptureModalOpen(false)}
     >
-      <div
+      <motion.div
         className="card-panel-elevated"
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: 0.2 }}
         style={{
           width: "100%",
           maxWidth: "680px",
@@ -115,12 +121,12 @@ export const ProductCaptureModal = () => {
         {/* MODAL HEADER */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "1px solid var(--border-color)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ width: "32px", height: "32px", borderRadius: "var(--radius-sm)", background: "linear-gradient(135deg, var(--primary) 0%, var(--ai-accent) 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Camera size={18} color="#FFFFFF" />
+            <div style={{ width: "32px", height: "32px", borderRadius: "var(--radius-sm)", backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-color)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Camera size={18} color="var(--primary)" />
             </div>
             <div>
-              <div style={{ fontSize: "15px", fontWeight: "700", color: "var(--text-main)" }}>AI Physical Product Capture</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Computer vision label extraction & Identity creation</div>
+              <div style={{ fontSize: "15px", fontWeight: "700", color: "var(--text-main)" }}>Product Identity Analysis</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Computer vision label extraction & Identity formation</div>
             </div>
           </div>
 
@@ -175,10 +181,10 @@ export const ProductCaptureModal = () => {
               >
                 <Camera size={40} color="var(--primary)" style={{ opacity: 0.8 }} />
                 <span style={{ fontSize: "12px", color: "var(--text-main)", fontWeight: "600", marginTop: "8px" }}>
-                  Position Product Box / Label in Frame
+                  Position Physical Product Box / Label in Frame
                 </span>
                 <span style={{ fontSize: "10px", color: "var(--text-muted)" }}>
-                  AI will recognize Brand, SKU, and Specs
+                  Computer vision pipeline will analyze Brand, Model, & Barcode
                 </span>
               </div>
 
@@ -210,34 +216,32 @@ export const ProductCaptureModal = () => {
 
             <button
               onClick={handleCapture}
-              className="btn btn-ai btn-lg"
+              className="btn btn-primary btn-lg"
               style={{ width: "100%", gap: "8px" }}
             >
-              <Sparkles size={18} />
-              <span>Capture & Analyze Product (AI)</span>
+              <ScanLine size={18} />
+              <span>Capture & Analyze Product</span>
             </button>
           </div>
         )}
 
-        {/* STEP 2: AI PROCESSING ANIMATION */}
+        {/* STEP 2: INFRASTRUCTURE AI PROCESSING ANIMATION */}
         {step === "processing" && (
           <div style={{ padding: "40px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
-            <div style={{ position: "relative" }}>
-              <Loader2 size={48} color="var(--ai-accent)" style={{ animation: "spin 1s linear infinite" }} />
-              <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
-            </div>
+            <Loader2 size={44} color="var(--primary)" style={{ animation: "spin 1s linear infinite" }} />
+            <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
 
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: "16px", fontWeight: "700", color: "var(--text-main)", marginBottom: "4px" }}>
-                AI Identity Recognition Engine Running
+                Product Analysis Pipeline
               </div>
               <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                Extracting barcode details, model specs, and catalog parameters...
+                Extracting physical parameters and validating catalog integrity...
               </div>
             </div>
 
             {/* PROGRESS CHECKLIST */}
-            <div style={{ width: "100%", maxWidth: "420px", display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ width: "100%", maxWidth: "440px", display: "flex", flexDirection: "column", gap: "10px" }}>
               {processingSteps.map((stepText, idx) => {
                 const isDone = idx < processingIndex;
                 const isCurrent = idx === processingIndex;
@@ -258,7 +262,7 @@ export const ProductCaptureModal = () => {
                     {isDone ? (
                       <CheckCircle2 size={16} color="var(--success)" />
                     ) : isCurrent ? (
-                      <Loader2 size={16} color="var(--ai-accent)" style={{ animation: "spin 1s linear infinite" }} />
+                      <Loader2 size={16} color="var(--primary)" style={{ animation: "spin 1s linear infinite" }} />
                     ) : (
                       <div style={{ width: "16px", height: "16px", borderRadius: "50%", border: "1px solid var(--border-color)" }} />
                     )}
@@ -270,7 +274,7 @@ export const ProductCaptureModal = () => {
           </div>
         )}
 
-        {/* STEP 3: AI CONFIDENCE REVIEW & OVERRIDE */}
+        {/* STEP 3: CONFIDENCE REVIEW & OVERRIDE */}
         {step === "review" && (
           <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
             
@@ -282,27 +286,26 @@ export const ProductCaptureModal = () => {
                 justifyContent: "space-between",
                 padding: "12px",
                 borderRadius: "var(--radius-sm)",
-                backgroundColor: "var(--ai-subtle)",
-                border: "1px solid rgba(124, 108, 255, 0.3)"
+                backgroundColor: "var(--primary-subtle)",
+                border: "1px solid rgba(91, 140, 255, 0.3)"
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <ShieldCheck size={20} color="var(--ai-accent)" />
+                <ShieldCheck size={20} color="var(--primary)" />
                 <div>
                   <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>
-                    Product Identity Extracted ({extractedData.aiConfidence.overall}% AI Confidence)
+                    Product Identity Extracted ({extractedData.aiConfidence.overall}% Overall Confidence)
                   </div>
                   <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>
-                    Review detected parameters before committing to live catalog
+                    Verify extracted parameters before committing to physical inventory
                   </div>
                 </div>
               </div>
-              <span className="status-badge badge-ai">Verified</span>
+              <span className="status-badge badge-success">Verified</span>
             </div>
 
-            {/* EDITABLE ATTRIBUTES FORM WITH CONFIDENCE SCORES */}
+            {/* EDITABLE ATTRIBUTES FORM */}
             <div className="grid-12" style={{ gap: "12px" }}>
-              
               <div className="col-8">
                 <label style={{ fontSize: "11px", fontWeight: "600", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
                   <span>Product Title</span>
@@ -367,31 +370,6 @@ export const ProductCaptureModal = () => {
                   onChange={(e) => setExtractedData({ ...extractedData, sellingPrice: e.target.value })}
                 />
               </div>
-
-              <div className="col-6">
-                <label style={{ fontSize: "11px", fontWeight: "600", color: "var(--text-muted)", marginBottom: "4px", display: "block" }}>
-                  Cost Price ($)
-                </label>
-                <input
-                  type="number"
-                  className="input-field"
-                  value={extractedData.costPrice}
-                  onChange={(e) => setExtractedData({ ...extractedData, costPrice: e.target.value })}
-                />
-              </div>
-
-              <div className="col-6">
-                <label style={{ fontSize: "11px", fontWeight: "600", color: "var(--text-muted)", marginBottom: "4px", display: "block" }}>
-                  Initial Stock Quantity
-                </label>
-                <input
-                  type="number"
-                  className="input-field"
-                  value={extractedData.stockQty}
-                  onChange={(e) => setExtractedData({ ...extractedData, stockQty: e.target.value })}
-                />
-              </div>
-
             </div>
 
             {/* ACTION FOOTER */}
@@ -408,7 +386,7 @@ export const ProductCaptureModal = () => {
           </div>
         )}
 
-      </div>
+      </motion.div>
     </div>
   );
 };

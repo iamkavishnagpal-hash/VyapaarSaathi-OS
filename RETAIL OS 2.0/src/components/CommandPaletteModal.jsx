@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRetail } from "../context/RetailContext";
 import { 
   Search, 
@@ -18,12 +20,11 @@ export const CommandPaletteModal = () => {
     isCommandPaletteOpen,
     setIsCommandPaletteOpen,
     products,
-    setActiveView,
     setIsCaptureModalOpen,
-    openScanner,
-    openProductPassport
+    openScanner
   } = useRetail();
 
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export const CommandPaletteModal = () => {
   const quickActions = [
     {
       id: "action-capture",
-      label: "AI Camera Product Capture",
+      label: "AI Camera Product Analysis",
       detail: "Add physical product using computer vision",
       icon: Camera,
       action: () => {
@@ -78,7 +79,7 @@ export const CommandPaletteModal = () => {
       icon: ScanLine,
       action: () => {
         setIsCommandPaletteOpen(false);
-        setActiveView("sales");
+        navigate("/sales");
       }
     },
     {
@@ -88,7 +89,7 @@ export const CommandPaletteModal = () => {
       icon: ShoppingBag,
       action: () => {
         setIsCommandPaletteOpen(false);
-        setActiveView("purchases");
+        navigate("/purchases");
       }
     },
     {
@@ -98,7 +99,7 @@ export const CommandPaletteModal = () => {
       icon: Truck,
       action: () => {
         setIsCommandPaletteOpen(false);
-        setActiveView("transfers");
+        navigate("/transfers");
       }
     },
     {
@@ -108,7 +109,7 @@ export const CommandPaletteModal = () => {
       icon: BarChart3,
       action: () => {
         setIsCommandPaletteOpen(false);
-        setActiveView("analytics");
+        navigate("/analytics");
       }
     },
     {
@@ -118,7 +119,7 @@ export const CommandPaletteModal = () => {
       icon: Bot,
       action: () => {
         setIsCommandPaletteOpen(false);
-        setActiveView("ai");
+        navigate("/ai");
       }
     }
   ];
@@ -141,8 +142,12 @@ export const CommandPaletteModal = () => {
       }}
       onClick={() => setIsCommandPaletteOpen(false)}
     >
-      <div
+      <motion.div
         className="card-panel-elevated"
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: 0.16 }}
         style={{
           width: "100%",
           maxWidth: "600px",
@@ -194,7 +199,7 @@ export const CommandPaletteModal = () => {
                     key={p.id}
                     onClick={() => {
                       setIsCommandPaletteOpen(false);
-                      openProductPassport(p);
+                      navigate(`/products/${p.id}`);
                     }}
                     style={{
                       width: "100%",
@@ -274,7 +279,7 @@ export const CommandPaletteModal = () => {
           <span><strong>⌘K</strong> to toggle command palette</span>
         </div>
 
-      </div>
+      </motion.div>
     </div>
   );
 };
