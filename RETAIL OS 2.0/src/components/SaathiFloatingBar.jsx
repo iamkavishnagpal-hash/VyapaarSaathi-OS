@@ -8,11 +8,12 @@ import {
   Send, 
   X, 
   ArrowRight, 
-  Bot, 
   Mic, 
-  CheckCircle2, 
-  Package, 
-  Zap 
+  Zap, 
+  PackageCheck, 
+  TrendingUp, 
+  RotateCcw,
+  Package
 } from "lucide-react";
 
 export const SaathiFloatingBar = () => {
@@ -39,9 +40,9 @@ export const SaathiFloatingBar = () => {
     }
   };
 
-  const handleQuickIntent = (intentText) => {
-    setQuery(intentText);
-    const response = saathi.processIntent(intentText);
+  const handleQuickPrompt = (promptText) => {
+    setQuery(promptText);
+    const response = saathi.processIntent(promptText);
     setActiveResponse(response);
 
     if (response.route) {
@@ -53,19 +54,26 @@ export const SaathiFloatingBar = () => {
     setIsListening(true);
     setTimeout(() => {
       setIsListening(false);
-      handleQuickIntent("Saathi, aaj kya important hai?");
+      handleQuickPrompt("Bhai, Nike ke kitne joote bache hain, aur naye kab mangwane hain?");
     }, 1500);
   };
+
+  const contextPrompts = [
+    { label: "Draft PO for items running out", query: "Draft a PO for items running out this week" },
+    { label: "Nike stock & reorder status", query: "Bhai, Nike ke kitne joote bache hain, aur naye kab mangwane hain?" },
+    { label: "Top 5 selling products today?", query: "Top 5 selling products today?" },
+    { label: "Highest supplier return rate?", query: "Kaunse supplier ka maal sabse zyada return ho raha hai?" }
+  ];
 
   return (
     <div
       style={{
         position: "fixed",
-        bottom: "24px",
+        bottom: "20px",
         left: "50%",
         transform: "translateX(-50%)",
-        width: "90%",
-        maxWidth: "680px",
+        width: "92%",
+        maxWidth: "760px",
         zIndex: 999,
         display: "flex",
         flexDirection: "column",
@@ -76,9 +84,9 @@ export const SaathiFloatingBar = () => {
       <AnimatePresence>
         {activeResponse && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.96 }}
+            initial={{ opacity: 0, y: 12, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.96 }}
+            exit={{ opacity: 0, y: 12, scale: 0.96 }}
             className="card-panel-elevated"
             style={{
               padding: "16px",
@@ -136,6 +144,22 @@ export const SaathiFloatingBar = () => {
         )}
       </AnimatePresence>
 
+      {/* CONTEXT-AWARE SUGGESTION CHIPS */}
+      <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "2px" }}>
+        {contextPrompts.map((cp, idx) => (
+          <button
+            key={idx}
+            type="button"
+            onClick={() => handleQuickPrompt(cp.query)}
+            className="btn btn-secondary btn-sm"
+            style={{ fontSize: "11px", whiteSpace: "nowrap", borderRadius: "var(--radius-pill)", gap: "4px" }}
+          >
+            <Zap size={11} color="var(--primary)" />
+            <span>{cp.label}</span>
+          </button>
+        ))}
+      </div>
+
       {/* INTENT INPUT BAR */}
       <form
         onSubmit={handleSubmit}
@@ -143,7 +167,7 @@ export const SaathiFloatingBar = () => {
           display: "flex",
           alignItems: "center",
           gap: "10px",
-          padding: "8px 14px",
+          padding: "8px 16px",
           backgroundColor: "var(--bg-surface)",
           border: "1px solid var(--border-color)",
           borderRadius: "var(--radius-pill)",
@@ -155,7 +179,7 @@ export const SaathiFloatingBar = () => {
 
         <input
           type="text"
-          placeholder='Ask Saathi: "Saathi, aaj kya important hai?" or "A-13 ka stock kitna hai?"...'
+          placeholder='Ask Saathi Intent: "Draft a PO for items running out", "Bhai Nike ke kitne joote bache hain?"...'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           style={{
@@ -170,17 +194,7 @@ export const SaathiFloatingBar = () => {
           }}
         />
 
-        {/* QUICK SUGGESTION CHIP */}
-        <button
-          type="button"
-          onClick={() => handleQuickIntent("Saathi, aaj kya important hai?")}
-          className="btn btn-ghost btn-sm"
-          style={{ fontSize: "11px", color: "var(--primary)", gap: "4px" }}
-        >
-          <Zap size={12} /> Aaj kya important hai?
-        </button>
-
-        {/* VOICE INPUT BUTTON */}
+        {/* VOICE INTENT INPUT BUTTON */}
         <button
           type="button"
           onClick={handleVoiceInput}
@@ -195,7 +209,7 @@ export const SaathiFloatingBar = () => {
         <button
           type="submit"
           className="btn btn-ai btn-sm"
-          style={{ borderRadius: "var(--radius-pill)", padding: "6px 12px" }}
+          style={{ borderRadius: "var(--radius-pill)", padding: "6px 14px" }}
         >
           <Send size={14} />
         </button>

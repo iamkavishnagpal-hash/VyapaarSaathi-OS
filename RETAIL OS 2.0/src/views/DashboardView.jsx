@@ -1,38 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useRetail } from "../context/RetailContext";
-import { ActionCenter } from "../components/ActionCenter";
 import { 
   Activity, 
   AlertTriangle, 
   ShieldAlert, 
   Truck, 
   Sparkles, 
-  ArrowUpRight, 
+  CheckCircle2, 
   Camera, 
   ScanLine, 
+  DollarSign, 
   ShoppingBag, 
   ArrowRight, 
-  DollarSign, 
-  Package, 
   Clock, 
   Zap, 
-  Store 
+  ShieldCheck 
 } from "lucide-react";
 
 export const DashboardView = () => {
-  const { products, orders, events, stores, setIsCaptureModalOpen, openScanner, openProductPassport } = useRetail();
+  const { products, orders, events, setIsCaptureModalOpen, openScanner, addToast } = useRetail();
   const navigate = useNavigate();
+
+  const [approvedPOs, setApprovedPOs] = useState([]);
+  const [reviewedAnomalies, setReviewedAnomalies] = useState([]);
 
   const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
   const lowStockCount = products.filter((p) => p.stockQty <= p.lowStockThreshold).length;
-  const unverifiedCount = products.filter((p) => !p.isVerified).length;
+
+  const handleApprovePO = (poId, poName) => {
+    setApprovedPOs((prev) => [...prev, poId]);
+    addToast(`Approved ${poName}! Order sent to supplier AeroTech.`, "success");
+  };
+
+  const handleReviewAnomaly = (skuId) => {
+    setReviewedAnomalies((prev) => [...prev, skuId]);
+    addToast(`Price anomaly confirmed and locked for ${skuId}.`, "info");
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       
-      {/* 1. BUSINESS PULSE (EXECUTIVE OVERVIEW BANNER) */}
+      {/* 1. BUSINESS COMMAND EXECUTIVE BANNER */}
       <motion.div
         className="business-pulse-banner"
         initial={{ opacity: 0, y: 10 }}
@@ -43,9 +53,9 @@ export const DashboardView = () => {
           <div className="pulse-title-group">
             <div className="system-pulse-dot" />
             <span style={{ fontSize: "16px", fontWeight: "800", color: "var(--text-main)", letterSpacing: "-0.01em" }}>
-              BUSINESS PULSE
+              COMMAND CENTER — ACTION ENGINE
             </span>
-            <span className="status-badge badge-success">Live Operational Stream</span>
+            <span className="status-badge badge-success">Live Executive Stream</span>
           </div>
 
           <div style={{ display: "flex", gap: "10px" }}>
@@ -58,167 +68,151 @@ export const DashboardView = () => {
           </div>
         </div>
 
-        {/* PULSE CHIPS ROW */}
+        {/* PULSE METRICS CHIPS */}
         <div className="pulse-chips-row">
           <div className="pulse-chip">
             <DollarSign size={16} color="var(--success)" />
             <span>Revenue <strong>+18.6%</strong> (${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })})</span>
           </div>
 
-          <div className="pulse-chip" style={{ borderColor: lowStockCount > 0 ? "rgba(231, 168, 59, 0.4)" : "var(--border-color)" }}>
-            <AlertTriangle size={16} color={lowStockCount > 0 ? "var(--warning)" : "var(--text-muted)"} />
-            <span><strong>{lowStockCount || 12} products</strong> approaching stockout</span>
+          <div className="pulse-chip">
+            <AlertTriangle size={16} color="var(--warning)" />
+            <span><strong>{lowStockCount} SKUs</strong> approaching stockout</span>
           </div>
 
           <div className="pulse-chip">
             <ShieldAlert size={16} color="var(--ai-accent)" />
-            <span><strong>{unverifiedCount || 3} products</strong> need verification</span>
-          </div>
-
-          <div className="pulse-chip">
-            <Truck size={16} color="var(--primary)" />
-            <span><strong>1 shipment</strong> awaiting receiving</span>
+            <span><strong>2 AI Drafts</strong> awaiting Human Approval</span>
           </div>
         </div>
       </motion.div>
 
-      {/* 2. FOUR STRATEGIC COMMAND SECTIONS */}
-      <div className="command-section-grid">
+      {/* 2. THREE STRATEGIC COMMAND SECTIONS */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         
-        {/* SECTION A: WHAT NEEDS ATTENTION? (OPERATIONAL ACTION CENTER) */}
-        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        {/* SECTION 1: NEEDS APPROVAL (HUMAN IN THE LOOP) */}
+        <div className="card-panel" style={{ borderLeft: "4px solid var(--warning)" }}>
           <div className="command-card-header">
             <div>
-              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What needs attention?</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Prioritized operational tasks requiring action</div>
+              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>
+                1. Needs Approval (Human-in-the-Loop)
+              </div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>
+                AI-drafted operational actions requiring manager sign-off
+              </div>
             </div>
-            <span className="status-badge badge-warning">High Priority</span>
+            <span className="status-badge badge-warning">2 Drafts Pending</span>
           </div>
 
-          <ActionCenter />
-        </div>
-
-        {/* SECTION B: WHAT SHOULD I DO NEXT? (DIRECT OPERATIONAL ACTIONS) */}
-        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <div className="command-card-header">
-            <div>
-              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What should I do?</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Direct 1-click execution workflows</div>
-            </div>
-            <span className="status-badge badge-primary">Fast Exec</span>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-            <button
-              onClick={() => setIsCaptureModalOpen(true)}
-              className="card-panel-elevated card-hoverable"
-              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
-            >
-              <Camera size={20} color="var(--ai-accent)" style={{ marginBottom: "8px" }} />
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Product Analysis</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>AI Camera Identity Creation</div>
-            </button>
-
-            <button
-              onClick={() => openScanner("Sale")}
-              className="card-panel-elevated card-hoverable"
-              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
-            >
-              <ScanLine size={20} color="var(--primary)" style={{ marginBottom: "8px" }} />
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Barcode Scanner</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Scan for Sale, Receive, Audit</div>
-            </button>
-
-            <button
-              onClick={() => navigate("/sales")}
-              className="card-panel-elevated card-hoverable"
-              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
-            >
-              <Zap size={20} color="var(--success)" style={{ marginBottom: "8px" }} />
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>New POS Sale</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Start instant register billing</div>
-            </button>
-
-            <button
-              onClick={() => navigate("/transfers")}
-              className="card-panel-elevated card-hoverable"
-              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
-            >
-              <Truck size={20} color="var(--warning)" style={{ marginBottom: "8px" }} />
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Stock Transfer</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Move stock across stores</div>
-            </button>
-          </div>
-        </div>
-
-        {/* SECTION C: WHAT CHANGED? (LIVE AUDIT VELOCITY STREAM) */}
-        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <div className="command-card-header">
-            <div>
-              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What changed?</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Real-time physical product & inventory audit feed</div>
-            </div>
-            <Activity size={16} color="var(--primary)" />
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {events.slice(0, 4).map((evt) => (
-              <div
-                key={evt.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "10px 12px",
-                  borderRadius: "var(--radius-xs)",
-                  backgroundColor: "var(--bg-elevated)",
-                  border: "1px solid var(--border-color)"
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: evt.type === "SALE" ? "var(--success)" : "var(--primary)" }} />
-                  <div>
-                    <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>{evt.productTitle}</div>
-                    <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{evt.actor} • {evt.note}</div>
-                  </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+            {/* DRAFT PO 1 */}
+            <div style={{ padding: "14px", borderRadius: "var(--radius-sm)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "10px" }}>
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>PO Draft: AeroTech Audio (50 units)</span>
+                  <span className="status-badge badge-ai">Supply Saathi</span>
                 </div>
-
-                <span style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
-                  {new Date(evt.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                  Triggered by low stock (Quantum Sound Pro, 4 units left). Estimated cost: $10,500.
+                </div>
               </div>
-            ))}
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+                {approvedPOs.includes("po-1") ? (
+                  <span className="status-badge badge-success" style={{ gap: "4px" }}><CheckCircle2 size={12} /> Approved & Sent</span>
+                ) : (
+                  <button onClick={() => handleApprovePO("po-1", "PO #PO-981")} className="btn btn-primary btn-sm" style={{ gap: "4px" }}>
+                    <ShieldCheck size={14} /> Approve Purchase Order
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* ANOMALY DRAFT 2 */}
+            <div style={{ padding: "14px", borderRadius: "var(--radius-sm)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "10px" }}>
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Price Anomaly Detected: SKU-104</span>
+                  <span className="status-badge badge-warning">Insight Saathi</span>
+                </div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                  Selling price set to $399.99 vs supplier cost $210.00 (Margin 47.5%).
+                </div>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+                {reviewedAnomalies.includes("sku-104") ? (
+                  <span className="status-badge badge-success" style={{ gap: "4px" }}><CheckCircle2 size={12} /> Confirmed</span>
+                ) : (
+                  <button onClick={() => handleReviewAnomaly("sku-104")} className="btn btn-secondary btn-sm" style={{ gap: "4px" }}>
+                    Review & Lock Price
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* SECTION D: WHAT IS LIKELY TO HAPPEN? (AI PREDICTIVE FORECASTING) */}
-        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <div className="command-card-header">
-            <div>
-              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What is likely to happen?</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Predictive AI demand velocity & stockout forecasting</div>
+        {/* SECTION 2: WHAT HAPPENED (BUSINESS MEMORY LAYER) */}
+        <div className="grid-12">
+          <div className="col-6 card-panel">
+            <div className="command-card-header">
+              <div>
+                <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>2. What Happened (Memory Layer)</div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Recent business velocity & audit log</div>
+              </div>
+              <Activity size={16} color="var(--primary)" />
             </div>
-            <Sparkles size={16} color="var(--ai-accent)" />
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <div style={{ padding: "10px 12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
+                <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Sales Velocity Spiked +15% Yesterday</div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>High volume driven by Diwali prep shopper traffic in Metro Store.</div>
+              </div>
+
+              {events.slice(0, 2).map((evt) => (
+                <div key={evt.id} style={{ padding: "10px 12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div style={{ fontSize: "12px", fontWeight: "700", color: "var(--text-main)" }}>{evt.productTitle} ({evt.type})</div>
+                    <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>{evt.actor} • {evt.note}</div>
+                  </div>
+                  <span style={{ fontSize: "10px", fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
+                    {new Date(evt.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <div style={{ padding: "12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Quantum Sound Pro Headphones</span>
-                <span className="status-badge badge-warning">Stockout in 4.5 days</span>
+          {/* SECTION 3: WHAT WILL HAPPEN (PREDICTIVE ENGINE) */}
+          <div className="col-6 card-panel">
+            <div className="command-card-header">
+              <div>
+                <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>3. What Will Happen (Predictive)</div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>AI velocity forecasting & stockout risk</div>
               </div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-                Demand velocity up +34%. Recommended reorder: 50 units from AeroTech Audio.
-              </div>
+              <Sparkles size={16} color="var(--ai-accent)" />
             </div>
 
-            <div style={{ padding: "12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>ErgoDesk Smart Electric Frame</span>
-                <span className="status-badge badge-error">Stockout in 2.1 days</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <div style={{ padding: "12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Quantum Sound Pro Headphones</span>
+                  <span className="status-badge badge-error">Stockout in 2 days</span>
+                </div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                  Only 4 units left. Recommended supplier reorder: 50 units from AeroTech.
+                </div>
               </div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-                Only 6 units remaining in Flagship Lab. Recommended reorder: 20 units.
+
+              <div style={{ padding: "12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>ErgoDesk Smart Electric Frame</span>
+                  <span className="status-badge badge-warning">Stockout in 4.5 days</span>
+                </div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                  Demand velocity +34%. Draft PO auto-created by Supply Saathi.
+                </div>
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-// VYAPAARSAATHI OS — 3-LAYER INTELLIGENCE SYSTEM & SAATHI CORE ORCHESTRATOR
+// VYAPAARSAATHI OS — COMPRESSED 4-DOMAIN INTELLIGENCE ARCHITECTURE & CORE ROUTER
 import { businessMemory } from "./BusinessMemory";
 import { eventEngine } from "./EventEngine";
 
@@ -7,126 +7,147 @@ export class SaathiCore {
     this.context = context;
   }
 
-  // LAYER 1: INTENT CLASSIFIER & ORCHESTRATOR
+  // 1. SAATHI CORE (THE ROUTER)
   processIntent(query) {
     const text = (query || "").trim().toLowerCase();
 
-    // 1. BUSINESS COMMAND OVERVIEW INTENT ("Saathi, aaj kya important hai?")
-    if (text.includes("aaj kya important") || text.includes("important hai") || text.includes("overview") || text.includes("pulse")) {
-      businessMemory.recordIntent("BUSINESS_COMMAND_OVERVIEW", query);
-      return this.routeToStoreManagerSaathi();
+    // CROSS-DOMAIN INTENT: Stock + Supplier Reorder status ("Nike ke kitne joote bache hain, aur naye kab mangwane hain?")
+    if ((text.includes("kitne") || text.includes("stock")) && (text.includes("naye kab") || text.includes("mangwane") || text.includes("po") || text.includes("reorder"))) {
+      businessMemory.recordIntent("CROSS_DOMAIN_STOCK_REORDER", query);
+      return this.handleCrossDomainStockAndReorder(text);
     }
 
-    // 2. PRODUCT & SHELF STOCK QUERY ("A-13 ka stock kitna hai?", "headphones stock")
-    if (text.includes("stock") || text.includes("kitna hai") || text.includes("shelf") || text.includes("quantity")) {
-      businessMemory.recordIntent("PRODUCT_STOCK_QUERY", query);
-      return this.routeToInventorySaathi(text);
+    // CROSS-DOMAIN INTENT: Supplier Return Analysis ("Kaunse supplier ka maal sabse zyada return ho raha hai?")
+    if (text.includes("supplier") && (text.includes("return") || text.includes("defect") || text.includes("refund"))) {
+      businessMemory.recordIntent("CROSS_DOMAIN_SUPPLIER_RETURN", query);
+      return this.routeToInsightSaathiSupplierReturn();
     }
 
-    // 3. SALES & TOP PRODUCTS INTENT ("Kal ke top selling products dikhao", "sales report")
-    if (text.includes("sales") || text.includes("top selling") || text.includes("revenue") || text.includes("kal ke")) {
-      businessMemory.recordIntent("SALES_ANALYSIS", query);
-      return this.routeToSalesSaathi(text);
+    // OPERATIONS SAATHI: Stock & Catalog ("A-13 ka stock kitna hai?", "headphones stock", "show passport")
+    if (text.includes("stock") || text.includes("shelf") || text.includes("passport") || text.includes("sku") || text.includes("a-13")) {
+      businessMemory.recordIntent("OPERATIONS_STOCK_CATALOG", query);
+      return this.routeToOperationsSaathi(text);
     }
 
-    // 4. REORDER & PURCHASE INTENT ("purchase order", "reorder", "supplier")
-    if (text.includes("purchase") || text.includes("po") || text.includes("reorder") || text.includes("buy stock")) {
-      businessMemory.recordIntent("PURCHASE_REORDER", query);
-      return this.routeToPurchaseSaathi(text);
+    // COMMERCE SAATHI: Sales, Cart & Growth ("top selling", "pos sale", "today sales")
+    if (text.includes("sales") || text.includes("top selling") || text.includes("pos") || text.includes("revenue")) {
+      businessMemory.recordIntent("COMMERCE_SALES", query);
+      return this.routeToCommerceSaathi(text);
     }
 
-    // 5. CAMERA CAPTURE / PRODUCT ANALYSIS INTENT ("add product", "camera scan", "capture")
-    if (text.includes("capture") || text.includes("add product") || text.includes("camera") || text.includes("analysis")) {
-      businessMemory.recordIntent("PRODUCT_CAPTURE", query);
-      return this.routeToProductSaathi(text);
+    // SUPPLY SAATHI: Vendors & Purchasing ("draft po", "reorder items running out", "purchase order")
+    if (text.includes("po") || text.includes("purchase") || text.includes("vendor") || text.includes("supplier")) {
+      businessMemory.recordIntent("SUPPLY_PURCHASING", query);
+      return this.routeToSupplySaathi(text);
     }
 
-    // DEFAULT FALLBACK -> STORE MANAGER SAATHI
-    return this.routeToStoreManagerSaathi();
+    // INSIGHT SAATHI: Audit, Finance & Anomaly ("why sales dropped", "audit log", "anomaly")
+    if (text.includes("why") || text.includes("anomaly") || text.includes("audit") || text.includes("profit") || text.includes("insight")) {
+      businessMemory.recordIntent("INSIGHT_ANALYTICS", query);
+      return this.routeToInsightSaathi(text);
+    }
+
+    // DEFAULT -> COMMAND CENTER COMMAND SUMMARY
+    return this.routeToOperationsSaathi(text);
   }
 
-  // LAYER 2: SPECIALIST AGENT ROUTING & STRUCTURED OUTPUT
-
-  // Agent 9: Store Manager Saathi
-  routeToStoreManagerSaathi() {
-    const { products, orders } = this.context;
-    const totalRev = orders.reduce((sum, o) => sum + o.totalAmount, 0);
-    const lowStock = products.filter((p) => p.stockQty <= p.lowStockThreshold);
-
-    return {
-      agentName: "Store Manager Saathi",
-      directAnswer: `Aaj aapki total gross revenue $${totalRev.toLocaleString("en-US", { minimumFractionDigits: 2 })} hai, aur ${lowStock.length} products stockout ke paas hain.`,
-      context: `${products.length} active SKUs in catalog across all store locations.`,
-      actions: [
-        { label: "Review Stockouts", route: "/inventory" },
-        { label: "Product Analysis", modalTrigger: "CAPTURE" },
-        { label: "Open POS Billing", route: "/sales" }
-      ],
-      route: "/dashboard"
-    };
-  }
-
-  // Agent 1: Inventory Saathi
-  routeToInventorySaathi(queryText) {
+  // 2. OPERATIONS SAATHI (Stock & Catalog)
+  routeToOperationsSaathi(text) {
     const { products } = this.context;
-    const matched = products.find((p) => queryText.includes(p.title.toLowerCase()) || queryText.includes(p.sku.toLowerCase()) || queryText.includes("a-13"));
+    const matched = products.find((p) => text.includes(p.title.toLowerCase()) || text.includes(p.sku.toLowerCase()) || text.includes("a-13"));
     const target = matched || products[0];
 
     return {
-      agentName: "Inventory Saathi",
+      agentName: "Operations Saathi",
       directAnswer: `${target.title} ka current live stock ${target.stockQty} units hai (Shelf Location: Zone E-4, SKU: ${target.sku}).`,
-      context: target.stockQty <= target.lowStockThreshold ? "WARNING: Below low stock threshold!" : "Stock health is optimal.",
+      context: target.stockQty <= target.lowStockThreshold ? "⚠️ WARNING: Stock is below low stock threshold!" : "Stock health is optimal.",
       actions: [
         { label: "View Hero Passport", route: `/products/${target.id}` },
-        { label: "Adjust Stock Quantity", route: "/inventory" }
+        { label: "Adjust Stock", route: "/supply" }
       ],
-      route: "/inventory"
+      route: `/products/${target.id}`
     };
   }
 
-  // Agent 2: Sales Saathi
-  routeToSalesSaathi(queryText) {
+  // 3. COMMERCE SAATHI (Sales & Growth)
+  routeToCommerceSaathi(text) {
     const { products, orders } = this.context;
     const topProd = products[0];
+    const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
 
     return {
-      agentName: "Sales Saathi",
-      directAnswer: `Aapka top selling product "${topProd.title}" hai ($${topProd.sellingPrice.toFixed(2)}), with ${orders.length} completed transactions today.`,
-      context: `Total sales velocity up +18.4% over last 7 days.`,
+      agentName: "Commerce Saathi",
+      directAnswer: `Aaj ki gross revenue $${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} hai. Top selling product: "${topProd.title}".`,
+      context: `Completed ${orders.length} POS transactions with +18.4% sales velocity.`,
       actions: [
-        { label: "Open Sales Terminal", route: "/sales" },
-        { label: "Full Analytics Report", route: "/analytics" }
+        { label: "Open POS Billing", route: "/commerce" },
+        { label: "View Sales Velocity", route: "/intelligence" }
       ],
-      route: "/analytics"
+      route: "/commerce"
     };
   }
 
-  // Agent 3: Purchase Saathi
-  routeToPurchaseSaathi(queryText) {
+  // 4. SUPPLY SAATHI (Vendors & Purchasing)
+  routeToSupplySaathi(text) {
     const { products } = this.context;
     const lowStock = products.filter((p) => p.stockQty <= p.lowStockThreshold);
 
     return {
-      agentName: "Purchase Saathi",
-      directAnswer: `${lowStock.length} SKUs require supplier reordering. Reorder draft ready for ${lowStock.map((p) => p.title).join(", ")}.`,
-      context: "Supplier lead time is 3-5 business days.",
+      agentName: "Supply Saathi",
+      directAnswer: `${lowStock.length} SKUs require supplier reordering. AI has drafted Purchase Orders awaiting Human Approval.`,
+      context: `Draft POs prepared for: ${lowStock.map((p) => p.title).join(", ")}. Supplier lead time is 3 business days.`,
       actions: [
-        { label: "Draft Purchase Order", route: "/purchases" }
+        { label: "Approve Purchase Orders", route: "/dashboard" },
+        { label: "Open Supply Workspace", route: "/supply" }
       ],
-      route: "/purchases"
+      route: "/supply"
     };
   }
 
-  // Agent 4: Product Saathi
-  routeToProductSaathi(queryText) {
+  // 5. INSIGHT SAATHI (Audit, Finance & Anomaly)
+  routeToInsightSaathi(text) {
+    const { products, orders } = this.context;
+
     return {
-      agentName: "Product Saathi",
-      directAnswer: "AI Camera Identity Analysis Engine ready to scan physical box label.",
-      context: "Extracts Brand, Model, SKU, Code 128 Barcode, & Price automatically.",
+      agentName: "Insight Saathi",
+      directAnswer: "Diwali prep demand spike +15% recorded yesterday. Gross margin sits healthy at 42.8%.",
+      context: "Read-only cross-domain intelligence layer active. Zero data anomalies detected.",
       actions: [
-        { label: "Start Camera Capture", modalTrigger: "CAPTURE" }
+        { label: "View P&L Breakdown", route: "/intelligence" },
+        { label: "Review Event Audit Ledger", route: "/intelligence" }
       ],
-      route: "/products"
+      route: "/intelligence"
+    };
+  }
+
+  // SPECIAL CROSS-DOMAIN QUERY: "Kaunse supplier ka maal sabse zyada return ho raha hai?"
+  routeToInsightSaathiSupplierReturn() {
+    return {
+      agentName: "Insight Saathi (Cross-Domain Analysis)",
+      directAnswer: 'Supplier "AeroTech Audio Labs" has the highest return rate (4.2% return velocity on WH-1000XM5 due to box seal defects).',
+      context: "Analyzed 120 Purchase Orders, 450 Sales, and 18 Return events across the last 30 days.",
+      actions: [
+        { label: "Review Supplier Reliability", route: "/supply" },
+        { label: "Inspect Return Audit Logs", route: "/intelligence" }
+      ],
+      route: "/intelligence"
+    };
+  }
+
+  // SPECIAL MULTI-AGENT HANDOFF: "Bhai, Nike ke kitne joote bache hain, aur naye kab mangwane hain?"
+  handleCrossDomainStockAndReorder(text) {
+    const { products } = this.context;
+    const target = products.find((p) => p.title.toLowerCase().includes("nike")) || products[0];
+
+    return {
+      agentName: "Saathi Core (Multi-Agent Handoff)",
+      directAnswer: `Sirf ${target.stockQty} units bache hain (${target.title}). Par kal naya stock (15 units) aa raha hai supplier "AeroTech" se. PO draft approved hai.`,
+      context: `Operations Saathi (Stock: ${target.stockQty} units) + Supply Saathi (PO #891 arriving in 2 days). Hero Passport opened on screen.`,
+      actions: [
+        { label: "Open Product Passport", route: `/products/${target.id}` },
+        { label: "View Shipment Tracker", route: "/supply" }
+      ],
+      route: `/products/${target.id}`
     };
   }
 }
