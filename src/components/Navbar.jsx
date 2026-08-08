@@ -20,12 +20,12 @@ import {
   MessageSquare,
   BarChart3,
   Upload,
-  ChevronRight
-  ,
-  Menu
+  ChevronRight,
+  Menu,
+  RefreshCw
 } from "lucide-react";
 
-export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
+export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen, onRefresh }) => {
   const {
     stores,
     currentStore,
@@ -212,7 +212,19 @@ export const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
 
           {/* RIGHT: NOTIFICATIONS & COMPACT EXECUTIVE PROFILE MENU */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            
+            {/* REFRESH LIVE DATA */}
+            {onRefresh && (
+              <button
+                onClick={onRefresh}
+                className="btn btn-secondary hide-on-mobile"
+                style={{ padding: "10px", minWidth: "42px", minHeight: "42px" }}
+                aria-label="Refresh Data"
+                title="Refresh Live Data"
+              >
+                <RefreshCw size={17} />
+              </button>
+            )}
+
             {/* NOTIFICATIONS BELL */}
             <div style={{ position: "relative" }}>
               <button

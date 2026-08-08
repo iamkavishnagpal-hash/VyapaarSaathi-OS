@@ -4,22 +4,66 @@ import { translations } from "../data/translations";
 
 const RetailContext = createContext();
 
+const loadSaved = (key, fallback) => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : fallback;
+  } catch (err) {
+    console.warn("loadSaved error", err);
+    return fallback;
+  }
+};
+
+const defaultHostConfig = {
+  localhost: {
+    url: "http://localhost:8000",
+    port: 8000,
+    accessGranted: true,
+    status: "Active (200 OK)",
+    pingMs: 12,
+    apiKey: "loc_key_8849102",
+    services: ["Local Barcode Proxy", "POS Thermal Printer", "Offline SQLite Bridge", "Cash Drawer Trigger"]
+  },
+  sourcehost: {
+    url: "https://sourcehost.retailos.internal",
+    ip: "192.168.1.150",
+    accessGranted: true,
+    status: "Authorized (200 OK)",
+    pingMs: 28,
+    authToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    services: ["Legacy ERP Database", "Cloud Inventory Sync", "Warehouse WMS Endpoint", "Customer Credit Ledger"]
+  },
+  corsOrigins: [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:8000",
+    "https://sourcehost.retailos.internal"
+  ],
+  autoSyncInterval: 15
+};
+
 export const RetailProvider = ({ children }) => {
   // Navigation & Preferences
   const [activeView, setActiveView] = useState("dashboard");
-  const [lang, setLang] = useState("en");
-  const [role, setRole] = useState("Owner");
+  const [lang, setLang] = useState(() => loadSaved("ros_lang", "en"));
+  const [role, setRole] = useState(() => loadSaved("ros_role", "Owner"));
   
   // Stores & Products & Industry Vertical Template
-  const [industryTemplate, setIndustryTemplate] = useState("Retail");
-  const [currency, setCurrency] = useState("INR"); // INR (₹), USD ($), EUR (€), GBP (£), AED (د.إ)
-  const [stores, setStores] = useState(initialStores);
-  const [currentStoreId, setCurrentStoreId] = useState("store-1");
-  const [products, setProducts] = useState(initialProducts);
-  const [customers, setCustomers] = useState(initialCustomers);
-  const [orders, setOrders] = useState(initialOrders);
-  const [events, setEvents] = useState(initialEvents);
-  const [storefront, setStorefront] = useState(initialStorefront);
+  const [industryTemplate, setIndustryTemplate] = useState(() => loadSaved("ros_industry_template", "Retail"));
+  const [currency, setCurrency] = useState(() => loadSaved("ros_currency", "INR"));
+  const [stores, setStores] = useState(() => loadSaved("ros_stores", initialStores));
+  const [currentStoreId, setCurrentStoreId] = useState(() => loadSaved("ros_current_store_id", "store-1"));
+  const [products, setProducts] = useState(() => loadSaved("ros_products", initialProducts));
+  const [customers, setCustomers] = useState(() => loadSaved("ros_customers", initialCustomers));
+  const [orders, setOrders] = useState(() => loadSaved("ros_orders", initialOrders));
+  const [events, setEvents] = useState(() => loadSaved("ros_events", initialEvents));
+  const [storefront, setStorefront] = useState(() => loadSaved("ros_storefront", initialStorefront));
+
+  // Host Access & Connection Configurations (Localhost & Sourcehost)
+  const [hostConfig, setHostConfig] = useState(() => loadSaved("ros_host_config", defaultHostConfig));
+
+  // Last Saved Version Timestamp State
+  const [lastSavedTime, setLastSavedTime] = useState(() => loadSaved("ros_last_saved_time", "Auto-Saved"));
 
   // POS Cart State
   const [cart, setCart] = useState([]);
@@ -28,6 +72,25 @@ export const RetailProvider = ({ children }) => {
 
   // Notifications / Toasts
   const [toasts, setToasts] = useState([]);
+
+  // Auto-Save Effect: Persist state changes to Local Storage
+  React.useEffect(() => {
+    try {
+      localStorage.setItem("ros_products", JSON.stringify(products));
+      localStorage.setItem("ros_orders", JSON.stringify(orders));
+      localStorage.setItem("ros_customers", JSON.stringify(customers));
+      localStorage.setItem("ros_events", JSON.stringify(events));
+      localStorage.setItem("ros_stores", JSON.stringify(stores));
+      localStorage.setItem("ros_storefront", JSON.stringify(storefront));
+      localStorage.setItem("ros_host_config", JSON.stringify(hostConfig));
+      localStorage.setItem("ros_industry_template", JSON.stringify(industryTemplate));
+      localStorage.setItem("ros_currency", JSON.stringify(currency));
+      localStorage.setItem("ros_role", JSON.stringify(role));
+      localStorage.setItem("ros_lang", JSON.stringify(lang));
+    } catch (e) {
+      console.warn("Auto-save failed to write to localStorage", e);
+    }
+  }, [products, orders, customers, events, stores, storefront, hostConfig, industryTemplate, currency, role, lang]);
 
   // Voice Assistant State
   const [isListening, setIsListening] = useState(false);
@@ -231,6 +294,178 @@ export const RetailProvider = ({ children }) => {
     addToast(`Successfully imported ${importedProds.length} products from Shopify!`, "success");
   };
 
+  // Host Access Handlers (Localhost & Sourcehost)
+  const toggleHostAccess = (hostKey) => {
+    setHostConfig((prev) => {
+      const current = prev[hostKey];
+      const newStatus = !current.accessGranted;
+      addToast(
+        `${newStatus ? "Granted" : "Revoked"} access permissions for ${hostKey.toUpperCase()} (${current.url})`,
+        newStatus ? "success" : "warning"
+      );
+      logEvent(
+        "HOST_ACCESS_CHANGE",
+        `${hostKey.toUpperCase()} Access`,
+        0,
+        0,
+        `Set accessGranted to ${newStatus} for ${current.url}`
+      );
+      return {
+        ...prev,
+        [hostKey]: {
+          ...current,
+          accessGranted: newStatus,
+          status: newStatus ? "Active (200 OK)" : "Access Denied (403)"
+        }
+      };
+    });
+  };
+
+  const testHostPing = (hostKey) => {
+    const target = hostConfig[hostKey];
+    if (!target.accessGranted) {
+      addToast(`Cannot ping ${hostKey.toUpperCase()} — Access is currently revoked!`, "warning");
+      return;
+    }
+    const simulatedPing = Math.floor(8 + Math.random() * 20);
+    setHostConfig((prev) => ({
+      ...prev,
+      [hostKey]: {
+        ...prev[hostKey],
+        pingMs: simulatedPing,
+        status: "Active (200 OK)"
+      }
+    }));
+    addToast(`Host Ping Response from ${target.url}: 200 OK (${simulatedPing}ms)`, "success");
+  };
+
+  const updateHostUrl = (hostKey, newUrl) => {
+    setHostConfig((prev) => ({
+      ...prev,
+      [hostKey]: {
+        ...prev[hostKey],
+        url: newUrl
+      }
+    }));
+    addToast(`Updated ${hostKey.toUpperCase()} URL to ${newUrl}`, "info");
+  };
+
+  const importHostData = (hostKey, customProds = null) => {
+    const host = hostConfig[hostKey];
+    if (!host.accessGranted) {
+      addToast(`Host import failed: ${hostKey.toUpperCase()} access is disabled`, "danger");
+      return;
+    }
+
+    const payload = customProds || [
+      { title: `${hostKey.toUpperCase()} Premium Cotton Shirt`, category: "Apparel", sku: `${hostKey.slice(0,3).toUpperCase()}-SHI-01`, price: 1499, qty: 35 },
+      { title: `${hostKey.toUpperCase()} Smart Wireless Headphones`, category: "Electronics", sku: `${hostKey.slice(0,3).toUpperCase()}-HEA-02`, price: 2999, qty: 15 },
+      { title: `${hostKey.toUpperCase()} Organic Green Tea 250g`, category: "Grocery", sku: `${hostKey.slice(0,3).toUpperCase()}-TEA-03`, price: 349, qty: 100 }
+    ];
+
+    const importedProds = payload.map((p, idx) => ({
+      id: `prod-${hostKey}-${Date.now()}-${idx}`,
+      title: p.title,
+      category: p.category || "Host Sync",
+      brand: `${hostKey.toUpperCase()} Direct`,
+      sku: p.sku || `SKU-${hostKey.slice(0,3).toUpperCase()}-${idx}`,
+      barcode: `89090${Date.now().toString().slice(-6)}${idx}`,
+      gstRate: 18,
+      costPrice: Math.round((Number(p.price) || 500) * 0.6),
+      sellingPrice: Number(p.price) || 500,
+      stockQty: Number(p.qty) || 20,
+      lowStockThreshold: 5,
+      storeId: currentStoreId,
+      variants: [{ size: "Standard", color: "Default", stock: Number(p.qty) || 20 }],
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80"
+    }));
+
+    setProducts((prev) => [...importedProds, ...prev]);
+    logEvent(
+      "HOST_SYNC",
+      `${importedProds.length} Products from ${hostKey.toUpperCase()}`,
+      importedProds.reduce((acc, p) => acc + p.stockQty, 0),
+      0,
+      `Direct ingestion from ${host.url}`
+    );
+    addToast(`Directly ingested ${importedProds.length} items from ${host.url}!`, "success");
+  };
+
+  // Last Saver Version & Snapshot Management Handlers
+  const saveWorkspaceSnapshot = () => {
+    const timestamp = new Date().toLocaleString();
+    const snapshot = {
+      products,
+      orders,
+      customers,
+      events,
+      stores,
+      storefront,
+      hostConfig,
+      industryTemplate,
+      currency,
+      role,
+      lang,
+      timestamp
+    };
+    try {
+      localStorage.setItem("ros_last_saver_version", JSON.stringify(snapshot));
+      localStorage.setItem("ros_last_saved_time", timestamp);
+      setLastSavedTime(timestamp);
+      logEvent("SAVER_SNAPSHOT", "Workspace Backup Saved", 0, 0, `Saved snapshot at ${timestamp}`);
+      addToast(`Saved current workspace state! (Last Saver Version: ${timestamp})`, "success");
+    } catch (err) {
+      console.error("Save snapshot error:", err);
+      addToast("Failed to save snapshot to local storage", "danger");
+    }
+  };
+
+  const restoreLastSavedVersion = () => {
+    try {
+      const savedRaw = localStorage.getItem("ros_last_saver_version");
+      if (!savedRaw) {
+        addToast("No saved version snapshot found in local storage!", "warning");
+        return;
+      }
+      const snapshot = JSON.parse(savedRaw);
+      if (snapshot.products) setProducts(snapshot.products);
+      if (snapshot.orders) setOrders(snapshot.orders);
+      if (snapshot.customers) setCustomers(snapshot.customers);
+      if (snapshot.events) setEvents(snapshot.events);
+      if (snapshot.stores) setStores(snapshot.stores);
+      if (snapshot.storefront) setStorefront(snapshot.storefront);
+      if (snapshot.hostConfig) setHostConfig(snapshot.hostConfig);
+      if (snapshot.industryTemplate) setIndustryTemplate(snapshot.industryTemplate);
+      if (snapshot.currency) setCurrency(snapshot.currency);
+      if (snapshot.role) setRole(snapshot.role);
+      if (snapshot.lang) setLang(snapshot.lang);
+      if (snapshot.timestamp) setLastSavedTime(snapshot.timestamp);
+
+      logEvent("RESTORE_SAVER_VERSION", "Workspace Restored", 0, 0, `Restored to ${snapshot.timestamp || "last saved version"}`);
+      addToast(`Restored Retail OS to Last Saver Version (${snapshot.timestamp || "Previous"})!`, "success");
+    } catch (err) {
+      console.error("Restore snapshot error:", err);
+      addToast("Error restoring last saved version snapshot", "danger");
+    }
+  };
+
+  const resetToDemoData = () => {
+    localStorage.clear();
+    setProducts(initialProducts);
+    setOrders(initialOrders);
+    setCustomers(initialCustomers);
+    setEvents(initialEvents);
+    setStores(initialStores);
+    setStorefront(initialStorefront);
+    setHostConfig(defaultHostConfig);
+    setIndustryTemplate("Retail");
+    setCurrency("INR");
+    setRole("Owner");
+    setLang("en");
+    setLastSavedTime("Default Demo Data");
+    addToast("Reset workspace back to initial factory demo data", "info");
+  };
+
   // Voice Command Dispatcher
   const processVoiceCommand = (commandText) => {
     const cmd = commandText.toLowerCase();
@@ -309,11 +544,13 @@ export const RetailProvider = ({ children }) => {
         currency,
         setCurrency,
         stores,
+        setStores,
         currentStore,
         currentStoreId,
         setCurrentStoreId,
         products,
         customers,
+        setCustomers,
         orders,
         events,
         storefront,
@@ -336,6 +573,16 @@ export const RetailProvider = ({ children }) => {
         processCheckout,
         processReturn,
         importShopifyData,
+        hostConfig,
+        setHostConfig,
+        toggleHostAccess,
+        testHostPing,
+        updateHostUrl,
+        importHostData,
+        lastSavedTime,
+        saveWorkspaceSnapshot,
+        restoreLastSavedVersion,
+        resetToDemoData,
         isListening,
         voiceTranscript,
         toggleVoiceListening,

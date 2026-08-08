@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRetail } from "../context/RetailContext";
 import { 
   ShieldCheck, 
@@ -6,11 +6,39 @@ import {
   X as CrossIcon,
   Globe,
   Layers,
-  Lock
+  Lock,
+  Server,
+  ArrowRight,
+  Save,
+  RotateCcw,
+  RefreshCw,
+  HardDrive
 } from "lucide-react";
 
 export const SettingsView = () => {
-  const { stores, currentStore, role, t, industryTemplate, setIndustryTemplate, currency, setCurrency, addToast } = useRetail();
+  const { 
+    stores, 
+    currentStore, 
+    role, 
+    t, 
+    industryTemplate, 
+    setIndustryTemplate, 
+    currency, 
+    setCurrency, 
+    addToast,
+    hostConfig,
+    toggleHostAccess,
+    testHostPing,
+    updateHostUrl,
+    lastSavedTime,
+    saveWorkspaceSnapshot,
+    restoreLastSavedVersion,
+    resetToDemoData,
+    setActiveView
+  } = useRetail();
+
+  const [localUrlEdit, setLocalUrlEdit] = useState(hostConfig.localhost.url);
+  const [sourceUrlEdit, setSourceUrlEdit] = useState(hostConfig.sourcehost.url);
 
   const industryVerticals = [
     { id: "Retail", name: "General Retail Store", desc: "Fast POS counter billing & barcode scanning" },
@@ -38,6 +66,7 @@ export const SettingsView = () => {
     { module: "POS Billing & Checkout", Owner: true, Admin: true, Manager: true, Salesman: true, Warehouse: false },
     { module: "Store Builder & Themes", Owner: true, Admin: true, Manager: false, Salesman: false, Warehouse: false },
     { module: "AI Business Advisor", Owner: true, Admin: true, Manager: true, Salesman: true, Warehouse: true },
+    { module: "Localhost & Sourcehost Access", Owner: true, Admin: true, Manager: false, Salesman: false, Warehouse: false },
     { module: "Shopify / CSV Importer", Owner: true, Admin: true, Manager: false, Salesman: false, Warehouse: false },
     { module: "Financial Reports & Tax", Owner: true, Admin: true, Manager: false, Salesman: false, Warehouse: false }
   ];
@@ -48,15 +77,167 @@ export const SettingsView = () => {
       <div style={{ marginBottom: "24px" }}>
         <h2>{t("settings")}</h2>
         <p className="caption" style={{ margin: "4px 0 0 0" }}>
-          Industry vertical workflows, multi-currency preferences, RBAC permissions & bank-grade security
+          Host access control (Localhost & Sourcehost), workspace state persistence, industry workflows & RBAC permissions
         </p>
       </div>
 
-      <div className="grid-2" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
+      <div className="grid-2" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
         
-        {/* LEFT COLUMN: INDUSTRY VERTICAL TEMPLATES & CURRENCY */}
+        {/* LEFT COLUMN: SAVER VERSION SNAPSHOTS, HOST ACCESS & INDUSTRY TEMPLATES */}
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           
+          {/* LAST SAVER VERSION & WORKSPACE BACKUP MANAGER */}
+          <div className="glass-panel" style={{ padding: "20px", border: "1px solid rgba(16, 185, 129, 0.35)", background: "rgba(15, 23, 42, 0.85)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <h3 style={{ fontSize: "16px", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                <HardDrive size={18} color="#10b981" /> Last Saver Version & State Backup
+              </h3>
+              <span className="badge badge-success">
+                Auto-Save Active
+              </span>
+            </div>
+
+            <p className="caption" style={{ marginBottom: "14px" }}>
+              All inventory edits, POS sales & host settings are auto-saved to local browser storage. You can create manual snapshots or restore the workspace anytime.
+            </p>
+
+            <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.04)", borderRadius: "8px", border: "1px solid var(--border-color)", marginBottom: "14px", fontSize: "0.8rem", color: "#a5b4fc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span>🕒 Last Saved Version: <strong>{lastSavedTime}</strong></span>
+              <span className="badge badge-info" style={{ fontSize: "0.7rem" }}>Snapshot Ready</span>
+            </div>
+
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              <button 
+                onClick={saveWorkspaceSnapshot} 
+                className="btn btn-success" 
+                style={{ flex: 1, minWidth: "140px", fontSize: "0.82rem" }}
+              >
+                <Save size={15} /> Save Current Version
+              </button>
+
+              <button 
+                onClick={restoreLastSavedVersion} 
+                className="btn btn-primary" 
+                style={{ flex: 1, minWidth: "140px", fontSize: "0.82rem" }}
+              >
+                <RotateCcw size={15} /> Restore Last Version
+              </button>
+
+              <button 
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to reset workspace to factory demo data?")) {
+                    resetToDemoData();
+                  }
+                }} 
+                className="btn btn-ghost" 
+                style={{ fontSize: "0.8rem", color: "#ef4444" }}
+                title="Reset to initial demo data"
+              >
+                <RefreshCw size={14} /> Reset Demo Data
+              </button>
+            </div>
+          </div>
+
+          {/* LOCALHOST & SOURCEHOST ACCESS CONTROL PANEL */}
+          <div className="glass-panel" style={{ padding: "20px", border: "1px solid rgba(99, 102, 241, 0.3)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+              <h3 style={{ fontSize: "16px", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                <Server size={18} color="var(--primary)" /> Localhost & Sourcehost Access Manager
+              </h3>
+              <button onClick={() => setActiveView("migration")} className="btn btn-ghost" style={{ fontSize: "0.75rem", padding: "4px 8px" }}>
+                Go to Migration Wizard <ArrowRight size={14} />
+              </button>
+            </div>
+            <p className="caption" style={{ marginBottom: "16px" }}>
+              Grant or revoke network access permissions for local servers & remote enterprise ERP hosts.
+            </p>
+
+            {/* LOCALHOST SETTINGS BOX */}
+            <div className="glass-card" style={{ padding: "14px", marginBottom: "14px", borderLeft: hostConfig.localhost.accessGranted ? "4px solid var(--success)" : "4px solid var(--danger)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Server size={16} color="#6366f1" />
+                  <span style={{ fontWeight: "700", color: "#fff", fontSize: "14px" }}>Localhost Endpoint</span>
+                </div>
+                <span className={`badge ${hostConfig.localhost.accessGranted ? "badge-success" : "badge-danger"}`}>
+                  {hostConfig.localhost.accessGranted ? `Access Granted (${hostConfig.localhost.pingMs}ms)` : "Access Revoked"}
+                </span>
+              </div>
+              <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                <input
+                  type="text"
+                  className="input-field"
+                  style={{ fontSize: "12px", padding: "6px 10px" }}
+                  value={localUrlEdit}
+                  onChange={(e) => setLocalUrlEdit(e.target.value)}
+                />
+                <button 
+                  onClick={() => updateHostUrl("localhost", localUrlEdit)}
+                  className="btn btn-secondary"
+                  style={{ fontSize: "11px", padding: "4px 10px", whiteSpace: "nowrap" }}
+                >
+                  Save URL
+                </button>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div className="caption" style={{ fontSize: "11px" }}>
+                  Key: <code>{hostConfig.localhost.apiKey}</code>
+                </div>
+                <div style={{ display: "flex", gap: "6px" }}>
+                  <button onClick={() => testHostPing("localhost")} className="btn btn-ghost" style={{ fontSize: "11px", padding: "2px 8px", height: "26px", minHeight: "26px" }}>
+                    Ping
+                  </button>
+                  <button onClick={() => toggleHostAccess("localhost")} className={`btn ${hostConfig.localhost.accessGranted ? "btn-danger" : "btn-success"}`} style={{ fontSize: "11px", padding: "2px 8px", height: "26px", minHeight: "26px" }}>
+                    {hostConfig.localhost.accessGranted ? "Revoke Access" : "Grant Access"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* SOURCEHOST SETTINGS BOX */}
+            <div className="glass-card" style={{ padding: "14px", borderLeft: hostConfig.sourcehost.accessGranted ? "4px solid var(--success)" : "4px solid var(--danger)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Globe size={16} color="#10b981" />
+                  <span style={{ fontWeight: "700", color: "#fff", fontSize: "14px" }}>Sourcehost Enterprise ERP</span>
+                </div>
+                <span className={`badge ${hostConfig.sourcehost.accessGranted ? "badge-success" : "badge-danger"}`}>
+                  {hostConfig.sourcehost.accessGranted ? `Authorized (${hostConfig.sourcehost.pingMs}ms)` : "Unauthorized"}
+                </span>
+              </div>
+              <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                <input
+                  type="text"
+                  className="input-field"
+                  style={{ fontSize: "12px", padding: "6px 10px" }}
+                  value={sourceUrlEdit}
+                  onChange={(e) => setSourceUrlEdit(e.target.value)}
+                />
+                <button 
+                  onClick={() => updateHostUrl("sourcehost", sourceUrlEdit)}
+                  className="btn btn-secondary"
+                  style={{ fontSize: "11px", padding: "4px 10px", whiteSpace: "nowrap" }}
+                >
+                  Save URL
+                </button>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div className="caption" style={{ fontSize: "11px" }}>
+                  IP: <code>{hostConfig.sourcehost.ip}</code>
+                </div>
+                <div style={{ display: "flex", gap: "6px" }}>
+                  <button onClick={() => testHostPing("sourcehost")} className="btn btn-ghost" style={{ fontSize: "11px", padding: "2px 8px", height: "26px", minHeight: "26px" }}>
+                    Ping
+                  </button>
+                  <button onClick={() => toggleHostAccess("sourcehost")} className={`btn ${hostConfig.sourcehost.accessGranted ? "btn-danger" : "btn-success"}`} style={{ fontSize: "11px", padding: "2px 8px", height: "26px", minHeight: "26px" }}>
+                    {hostConfig.sourcehost.accessGranted ? "Revoke Access" : "Grant Access"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
           {/* INDUSTRY WORKFLOW TEMPLATE SELECTOR */}
           <div className="glass-panel" style={{ padding: "20px" }}>
             <h3 style={{ fontSize: "16px", margin: "0 0 4px 0", display: "flex", alignItems: "center", gap: "8px" }}>
@@ -165,31 +346,6 @@ export const SettingsView = () => {
                   ))}
                 </tbody>
               </table>
-            </div>
-
-            <div className="hide-on-desktop" style={{ display: "none", flexDirection: "column", gap: "12px" }}>
-              {permissionsMatrix.map((p, idx) => (
-                <div key={idx} className="glass-card" style={{ padding: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "flex-start", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "700", color: "#fff", fontSize: "15px", lineHeight: 1.35 }}>{p.module}</div>
-                    <span className="badge badge-info">RBAC</span>
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "8px" }}>
-                    {[
-                      ["Owner", p.Owner],
-                      ["Admin", p.Admin],
-                      ["Manager", p.Manager],
-                      ["Sales", p.Salesman],
-                      ["Warehouse", p.Warehouse]
-                    ].map(([label, value]) => (
-                      <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
-                        <span className="caption" style={{ color: "var(--text-main)", fontSize: "12px" }}>{label}</span>
-                        {value ? <Check size={16} color="#10b981" /> : <CrossIcon size={16} color="#ef4444" />}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 

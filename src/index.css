@@ -713,16 +713,9 @@ body, p, .body-text {
     min-width: 680px;
   }
 
-  /* Mobile Floating Glass Dock (Apple / Arc / Linear Grade) */
+  /* Remove duplicate floating dock on mobile to avoid viewport crowding */
   .mobile-floating-dock-wrapper {
-    display: flex !important;
-    position: fixed;
-    bottom: calc(14px + var(--sab));
-    left: 16px;
-    right: 16px;
-    z-index: 950;
-    justify-content: center;
-    pointer-events: auto;
+    display: none !important;
   }
 
   .mobile-glass-dock {

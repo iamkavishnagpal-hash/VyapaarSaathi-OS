@@ -87,6 +87,7 @@ const MainContent = () => {
           setIsMobileMenuOpen={setIsMobileMenuOpen} 
           isSidebarCollapsed={isSidebarCollapsed}
           setIsSidebarCollapsed={setIsSidebarCollapsed}
+          onRefresh={triggerPullRefresh}
         />
 
         {isRefreshing && (
