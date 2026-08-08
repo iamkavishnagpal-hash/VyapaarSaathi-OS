@@ -29,15 +29,27 @@ export const RetailProvider = ({ children }) => {
   const [role, setRole] = useState(() => loadSaved("ros_role", "Store Owner"));
 
   // Theme & Accessibility System
-  const [themePreference, setThemePreference] = useState(() => loadSaved("ros_theme_pref", "dark")); // 'dark' | 'light' | 'system'
+  const [themePreference, setThemePreference] = useState(() => loadSaved("ros_theme_pref", "dark"));
   const [themeMode, setThemeMode] = useState("dark");
-  const [accessibilityMode, setAccessibilityMode] = useState(() => loadSaved("ros_access_mode", "standard")); // 'standard' | 'comfort' | 'high-contrast'
+  const [accessibilityMode, setAccessibilityMode] = useState(() => loadSaved("ros_access_mode", "standard"));
   const [reducedMotion, setReducedMotion] = useState(() => loadSaved("ros_reduced_motion", false));
 
   // Stores & Catalog
   const [stores, setStores] = useState(() => loadSaved("ros_stores", initialStores));
   const [currentStoreId, setCurrentStoreId] = useState(() => loadSaved("ros_current_store_id", "store-1"));
-  const [products, setProducts] = useState(() => loadSaved("ros_products", initialProducts));
+  
+  // Products with Stock Reservation Engine
+  const [products, setProducts] = useState(() => {
+    const loaded = loadSaved("ros_products", initialProducts);
+    return loaded.map((p) => ({
+      ...p,
+      reservedQty: p.reservedQty || 0,
+      availableQty: Math.max(0, p.stockQty - (p.reservedQty || 0)),
+      inTransitQty: p.inTransitQty || 0,
+      damagedQty: p.damagedQty || 0
+    }));
+  });
+
   const [customers, setCustomers] = useState(() => loadSaved("ros_customers", initialCustomers));
   const [purchases, setPurchases] = useState(() => loadSaved("ros_purchases", initialPurchases));
   const [transfers, setTransfers] = useState(() => loadSaved("ros_transfers", initialTransfers));
@@ -50,13 +62,14 @@ export const RetailProvider = ({ children }) => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [cartDiscount, setCartDiscount] = useState(0);
 
-  // Global UI Overlays & Modals (Single source of truth for modals)
+  // Global UI Overlays & Modals
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isCaptureModalOpen, setIsCaptureModalOpen] = useState(false);
   const [isScannerModalOpen, setIsScannerModalOpen] = useState(false);
-  const [scannerMode, setScannerMode] = useState("Sale"); // 'Sale' | 'Receive' | 'Stock Count' | 'Transfer' | 'Return' | 'Audit'
+  const [scannerMode, setScannerMode] = useState("Sale");
   const [isIdentityModalOpen, setIsIdentityModalOpen] = useState(false);
   const [identityProduct, setIdentityProduct] = useState(null);
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
 
   // Search State
   const [globalSearchQuery, setGlobalSearchQuery] = useState("");
@@ -123,8 +136,38 @@ export const RetailProvider = ({ children }) => {
     setEvents((prev) => [newEvt, ...prev]);
   };
 
+  // Stock Reservation Engine
+  const reserveStock = (productId, qtyToReserve) => {
+    setProducts((prev) =>
+      prev.map((p) => {
+        if (p.id === productId) {
+          const newReserved = (p.reservedQty || 0) + qtyToReserve;
+          const newAvailable = Math.max(0, p.stockQty - newReserved);
+          logEvent("STOCK_RESERVE", p.title, qtyToReserve, newAvailable, "Omni-channel reservation");
+          return { ...p, reservedQty: newReserved, availableQty: newAvailable };
+        }
+        return p;
+      })
+    );
+    addToast(`Reserved ${qtyToReserve} units for order`, "info");
+  };
+
+  const releaseStock = (productId, qtyToRelease) => {
+    setProducts((prev) =>
+      prev.map((p) => {
+        if (p.id === productId) {
+          const newReserved = Math.max(0, (p.reservedQty || 0) - qtyToRelease);
+          const newAvailable = Math.max(0, p.stockQty - newReserved);
+          return { ...p, reservedQty: newReserved, availableQty: newAvailable };
+        }
+        return p;
+      })
+    );
+  };
+
   // Product CRUD
   const addProduct = (prodData) => {
+    const stockQtyVal = Number(prodData.stockQty) || 0;
     const newProd = {
       id: `prod-${Date.now()}`,
       storeId: currentStoreId,
@@ -137,7 +180,11 @@ export const RetailProvider = ({ children }) => {
       qrCode: `QR-ROS-${Date.now()}`,
       costPrice: Number(prodData.costPrice) || 0,
       sellingPrice: Number(prodData.sellingPrice) || 0,
-      stockQty: Number(prodData.stockQty) || 0,
+      stockQty: stockQtyVal,
+      reservedQty: 0,
+      availableQty: stockQtyVal,
+      inTransitQty: 0,
+      damagedQty: 0,
       lowStockThreshold: Number(prodData.lowStockThreshold) || 10,
       reorderQty: Number(prodData.reorderQty) || 25,
       gstRate: Number(prodData.gstRate) || 18,
@@ -149,11 +196,11 @@ export const RetailProvider = ({ children }) => {
       isVerified: true,
       productHealthScore: 96,
       dataCompleteness: 100,
-      variants: prodData.variants || [{ size: "Standard", color: "Default", stock: Number(prodData.stockQty) || 0 }],
+      variants: prodData.variants || [{ size: "Standard", color: "Default", stock: stockQtyVal }],
       timeline: [
         { date: new Date().toLocaleString(), type: "Received", note: "Initial stock created" },
         { date: new Date().toLocaleString(), type: "Created", note: "Product identity verified via AI recognition" },
-        { date: new Date().toLocaleString(), type: "Stocked", note: `Stock initialized to ${prodData.stockQty || 0} units` }
+        { date: new Date().toLocaleString(), type: "Stocked", note: `Stock initialized to ${stockQtyVal} units` }
       ]
     };
 
@@ -168,6 +215,7 @@ export const RetailProvider = ({ children }) => {
       prev.map((p) => {
         if (p.id === productId) {
           const updatedStock = Math.max(0, p.stockQty + deltaQty);
+          const updatedAvailable = Math.max(0, updatedStock - (p.reservedQty || 0));
           logEvent(
             deltaQty > 0 ? "STOCK_IN" : "STOCK_OUT",
             p.title,
@@ -178,6 +226,7 @@ export const RetailProvider = ({ children }) => {
           return {
             ...p,
             stockQty: updatedStock,
+            availableQty: updatedAvailable,
             timeline: [
               { date: new Date().toLocaleString(), type: deltaQty > 0 ? "Received" : "Adjusted", note: `${reason} (${deltaQty > 0 ? "+" : ""}${deltaQty})` },
               ...p.timeline
@@ -256,13 +305,11 @@ export const RetailProvider = ({ children }) => {
     return newOrder;
   };
 
-  // Open Identity Modal
   const openProductIdentity = (product) => {
     setIdentityProduct(product);
     setIsIdentityModalOpen(true);
   };
 
-  // Open Scanner with Mode
   const openScanner = (mode = "Sale") => {
     setScannerMode(mode);
     setIsScannerModalOpen(true);
@@ -289,6 +336,8 @@ export const RetailProvider = ({ children }) => {
         products,
         addProduct,
         adjustStock,
+        reserveStock,
+        releaseStock,
         customers,
         purchases,
         transfers,
@@ -317,6 +366,8 @@ export const RetailProvider = ({ children }) => {
         setIsIdentityModalOpen,
         identityProduct,
         openProductIdentity,
+        isVoiceModalOpen,
+        setIsVoiceModalOpen,
         globalSearchQuery,
         setGlobalSearchQuery,
         toasts,

@@ -18,6 +18,10 @@ import { SuperpowersView } from "./views/SuperpowersView";
 import { FinanceView } from "./views/FinanceView";
 import { HelpCenterView } from "./views/HelpCenterView";
 import { OnboardingView } from "./views/OnboardingView";
+import { GoOnlineView } from "./views/GoOnlineView";
+import { WhatsAppCommerceView } from "./views/WhatsAppCommerceView";
+import { FulfillmentView } from "./views/FulfillmentView";
+import { AutomationsView } from "./views/AutomationsView";
 import { ManagementViews } from "./views/ManagementViews";
 import { SettingsViews } from "./views/SettingsViews";
 import { ProductPassportHeroRoute } from "./components/ProductPassportView";
@@ -26,6 +30,7 @@ import { CommandPaletteModal } from "./components/CommandPaletteModal";
 import { ProductCaptureModal } from "./components/ProductCaptureModal";
 import { ProductIdentityModal } from "./components/ProductIdentityModal";
 import { UnifiedScannerModal } from "./components/UnifiedScannerModal";
+import { VoiceOSModal } from "./components/VoiceOSModal";
 
 const AnimatedPageWrapper = ({ children }) => {
   return (
@@ -60,6 +65,10 @@ const MainLayout = () => {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<AnimatedPageWrapper><DashboardView /></AnimatedPageWrapper>} />
               <Route path="/superpowers" element={<AnimatedPageWrapper><SuperpowersView /></AnimatedPageWrapper>} />
+              <Route path="/go-online" element={<AnimatedPageWrapper><GoOnlineView /></AnimatedPageWrapper>} />
+              <Route path="/whatsapp-commerce" element={<AnimatedPageWrapper><WhatsAppCommerceView /></AnimatedPageWrapper>} />
+              <Route path="/fulfillment" element={<AnimatedPageWrapper><FulfillmentView /></AnimatedPageWrapper>} />
+              <Route path="/automations" element={<AnimatedPageWrapper><AutomationsView /></AnimatedPageWrapper>} />
               <Route path="/products" element={<AnimatedPageWrapper><ProductsView /></AnimatedPageWrapper>} />
               <Route path="/products/:productId" element={<AnimatedPageWrapper><ProductPassportHeroRoute /></AnimatedPageWrapper>} />
               <Route path="/inventory" element={<AnimatedPageWrapper><InventoryView /></AnimatedPageWrapper>} />
@@ -90,6 +99,7 @@ const MainLayout = () => {
       <ProductCaptureModal />
       <ProductIdentityModal />
       <UnifiedScannerModal />
+      <VoiceOSModal />
     </div>
   );
 };
