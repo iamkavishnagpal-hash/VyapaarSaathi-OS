@@ -6,9 +6,15 @@ import { Sidebar } from "./components/Sidebar";
 import { Navbar } from "./components/Navbar";
 
 import { DashboardView } from "./views/DashboardView";
-import { CommerceWorkspace } from "./views/CommerceWorkspace";
-import { SupplyWorkspace } from "./views/SupplyWorkspace";
-import { IntelligenceWorkspace } from "./views/IntelligenceWorkspace";
+import { ProductsView } from "./views/ProductsView";
+import { InventoryView } from "./views/InventoryView";
+import { SalesView } from "./views/SalesView";
+import { PurchasesView } from "./views/PurchasesView";
+import { TransfersView } from "./views/TransfersView";
+import { ReturnsView } from "./views/ReturnsView";
+import { AnalyticsView } from "./views/AnalyticsView";
+import { AICenterView } from "./views/AICenterView";
+import { ManagementViews } from "./views/ManagementViews";
 import { SettingsViews } from "./views/SettingsViews";
 import { ProductPassportHeroRoute } from "./components/ProductPassportView";
 
@@ -16,7 +22,6 @@ import { CommandPaletteModal } from "./components/CommandPaletteModal";
 import { ProductCaptureModal } from "./components/ProductCaptureModal";
 import { ProductIdentityModal } from "./components/ProductIdentityModal";
 import { UnifiedScannerModal } from "./components/UnifiedScannerModal";
-import { SaathiFloatingBar } from "./components/SaathiFloatingBar";
 
 const AnimatedPageWrapper = ({ children }) => {
   return (
@@ -40,7 +45,7 @@ const MainLayout = () => {
       {/* PERSISTENT SIDEBAR */}
       <Sidebar isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
 
-      <div className="main-wrapper" style={{ paddingBottom: "90px" }}>
+      <div className="main-wrapper">
         {/* TOP BAR */}
         <Navbar />
 
@@ -50,42 +55,27 @@ const MainLayout = () => {
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<AnimatedPageWrapper><DashboardView /></AnimatedPageWrapper>} />
-              <Route path="/commerce" element={<AnimatedPageWrapper><CommerceWorkspace /></AnimatedPageWrapper>} />
-              <Route path="/supply" element={<AnimatedPageWrapper><SupplyWorkspace /></AnimatedPageWrapper>} />
-              <Route path="/intelligence" element={<AnimatedPageWrapper><IntelligenceWorkspace /></AnimatedPageWrapper>} />
-              <Route path="/settings" element={<AnimatedPageWrapper><SettingsViews view="preferences" /></AnimatedPageWrapper>} />
-              
-              {/* HERO PRODUCT PASSPORT ROUTE */}
+              <Route path="/products" element={<AnimatedPageWrapper><ProductsView /></AnimatedPageWrapper>} />
               <Route path="/products/:productId" element={<AnimatedPageWrapper><ProductPassportHeroRoute /></AnimatedPageWrapper>} />
-
-              {/* FORWARD LEGACY ROUTES TO CORRESPONDING CORE WORKSPACE */}
-              <Route path="/products" element={<Navigate to="/supply" replace />} />
-              <Route path="/inventory" element={<Navigate to="/supply" replace />} />
-              <Route path="/purchases" element={<Navigate to="/supply" replace />} />
-              <Route path="/transfers" element={<Navigate to="/supply" replace />} />
-              <Route path="/suppliers" element={<Navigate to="/supply" replace />} />
-
-              <Route path="/sales" element={<Navigate to="/commerce" replace />} />
-              <Route path="/returns" element={<Navigate to="/commerce" replace />} />
-              <Route path="/customers" element={<Navigate to="/commerce" replace />} />
-
-              <Route path="/analytics" element={<Navigate to="/intelligence" replace />} />
-              <Route path="/ai" element={<Navigate to="/intelligence" replace />} />
-
-              <Route path="/roles" element={<Navigate to="/settings" replace />} />
-              <Route path="/stores" element={<Navigate to="/settings" replace />} />
-              <Route path="/integrations" element={<Navigate to="/settings" replace />} />
-              <Route path="/billing" element={<Navigate to="/settings" replace />} />
-              <Route path="/preferences" element={<Navigate to="/settings" replace />} />
-
+              <Route path="/inventory" element={<AnimatedPageWrapper><InventoryView /></AnimatedPageWrapper>} />
+              <Route path="/sales" element={<AnimatedPageWrapper><SalesView /></AnimatedPageWrapper>} />
+              <Route path="/purchases" element={<AnimatedPageWrapper><PurchasesView /></AnimatedPageWrapper>} />
+              <Route path="/transfers" element={<AnimatedPageWrapper><TransfersView /></AnimatedPageWrapper>} />
+              <Route path="/returns" element={<AnimatedPageWrapper><ReturnsView /></AnimatedPageWrapper>} />
+              <Route path="/analytics" element={<AnimatedPageWrapper><AnalyticsView /></AnimatedPageWrapper>} />
+              <Route path="/ai" element={<AnimatedPageWrapper><AICenterView /></AnimatedPageWrapper>} />
+              <Route path="/customers" element={<AnimatedPageWrapper><ManagementViews view="customers" /></AnimatedPageWrapper>} />
+              <Route path="/suppliers" element={<AnimatedPageWrapper><ManagementViews view="suppliers" /></AnimatedPageWrapper>} />
+              <Route path="/roles" element={<AnimatedPageWrapper><ManagementViews view="roles" /></AnimatedPageWrapper>} />
+              <Route path="/stores" element={<AnimatedPageWrapper><ManagementViews view="stores" /></AnimatedPageWrapper>} />
+              <Route path="/integrations" element={<AnimatedPageWrapper><SettingsViews view="integrations" /></AnimatedPageWrapper>} />
+              <Route path="/billing" element={<AnimatedPageWrapper><SettingsViews view="billing" /></AnimatedPageWrapper>} />
+              <Route path="/preferences" element={<AnimatedPageWrapper><SettingsViews view="preferences" /></AnimatedPageWrapper>} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </AnimatePresence>
         </main>
       </div>
-
-      {/* GLOBAL SAATHI INTENT BAR ("Saathi, aaj kya important hai?") */}
-      <SaathiFloatingBar />
 
       {/* GLOBAL OVERLAY MODALS */}
       <CommandPaletteModal />

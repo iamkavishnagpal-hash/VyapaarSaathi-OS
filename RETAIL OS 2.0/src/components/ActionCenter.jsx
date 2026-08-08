@@ -1,87 +1,42 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useRetail } from "../context/RetailContext";
-import { AlertTriangle, ShieldAlert, Truck, Sparkles, ArrowRight } from "lucide-react";
+import { evaluateRules } from "../ai/RuleEngine";
+import { AlertTriangle, ShieldAlert, Truck, Sparkles, ArrowRight, DollarSign } from "lucide-react";
 
 export const ActionCenter = () => {
-  const { products, setActiveView, setIsCaptureModalOpen, openScanner } = useRetail();
+  const { products, stores, orders } = useRetail();
+  const navigate = useNavigate();
 
-  const lowStockProducts = products.filter((p) => p.stockQty <= p.lowStockThreshold);
-  const unverifiedProducts = products.filter((p) => !p.isVerified);
-
-  const actionItems = [];
-
-  if (lowStockProducts.length > 0) {
-    actionItems.push({
-      id: "act-low-stock",
-      type: "warning",
-      title: `${lowStockProducts.length} product${lowStockProducts.length > 1 ? "s" : ""} may run out in 5 days`,
-      description: `${lowStockProducts.map((p) => p.title).join(", ")} below threshold.`,
-      icon: AlertTriangle,
-      actionText: "Review Stock",
-      onAction: () => setActiveView("inventory")
-    });
-  }
-
-  if (unverifiedProducts.length > 0) {
-    actionItems.push({
-      id: "act-unverified",
-      type: "error",
-      title: `${unverifiedProducts.length} product${unverifiedProducts.length > 1 ? "s" : ""} need barcode verification`,
-      description: "Data completeness incomplete for scanned item.",
-      icon: ShieldAlert,
-      actionText: "Fix Verification",
-      onAction: () => setActiveView("products")
-    });
-  }
-
-  actionItems.push({
-    id: "act-ai-reorder",
-    type: "ai",
-    title: "AI recommends restocking Quantum Sound Pro Headphones",
-    description: "Predicted demand spike +34% for coming weekend.",
-    icon: Sparkles,
-    actionText: "Create PO",
-    onAction: () => setActiveView("purchases")
-  });
-
-  actionItems.push({
-    id: "act-transfer",
-    type: "info",
-    title: "Shipment #TR-502 received at Metro Store",
-    description: "5 units awaiting inventory confirmation.",
-    icon: Truck,
-    actionText: "Verify Receiving",
-    onAction: () => openScanner("Receive")
-  });
+  const ruleActions = evaluateRules(products, stores, orders);
 
   return (
     <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
           <div style={{ fontSize: "14px", fontWeight: "700", color: "var(--text-main)" }}>Operational Action Center</div>
-          <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Prioritized system alerts requiring manager intervention</div>
+          <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Evaluated in real-time by AI Rule Engine</div>
         </div>
-        <span className="status-badge badge-primary">{actionItems.length} Pending Actions</span>
+        <span className="status-badge badge-warning">{ruleActions.length} Pending Actions</span>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        {actionItems.map((item) => {
-          const Icon = item.icon;
+        {ruleActions.map((item) => {
+          let Icon = AlertTriangle;
           let badgeClass = "badge-muted";
-          let iconColor = "var(--text-muted)";
 
-          if (item.type === "warning") {
+          if (item.ruleType === "LOW_STOCK") {
+            Icon = AlertTriangle;
             badgeClass = "badge-warning";
-            iconColor = "var(--warning)";
-          } else if (item.type === "error") {
+          } else if (item.ruleType === "UNVERIFIED_DATA") {
+            Icon = ShieldAlert;
             badgeClass = "badge-error";
-            iconColor = "var(--error)";
-          } else if (item.type === "ai") {
-            badgeClass = "badge-ai";
-            iconColor = "var(--ai-accent)";
-          } else if (item.type === "info") {
+          } else if (item.ruleType === "LOW_MARGIN") {
+            Icon = DollarSign;
             badgeClass = "badge-primary";
-            iconColor = "var(--primary)";
+          } else if (item.ruleType === "STORE_REBALANCE") {
+            Icon = Truck;
+            badgeClass = "badge-ai";
           }
 
           return (
@@ -110,20 +65,20 @@ export const ActionCenter = () => {
                     justifyContent: "center"
                   }}
                 >
-                  <Icon size={16} color={iconColor} />
+                  <Icon size={16} color={item.severity === "error" ? "var(--error)" : item.severity === "warning" ? "var(--warning)" : "var(--primary)"} />
                 </div>
                 <div>
-                  <div style={{ fontSize: "13px", fontWeight: "600", color: "var(--text-main)" }}>{item.title}</div>
+                  <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>{item.title}</div>
                   <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{item.description}</div>
                 </div>
               </div>
 
               <button
-                onClick={item.onAction}
+                onClick={() => navigate(item.actionPath)}
                 className="btn btn-secondary btn-sm"
-                style={{ gap: "4px" }}
+                style={{ gap: "4px", whiteSpace: "nowrap" }}
               >
-                <span>{item.actionText}</span>
+                <span>{item.actionLabel}</span>
                 <ArrowRight size={12} />
               </button>
             </div>
