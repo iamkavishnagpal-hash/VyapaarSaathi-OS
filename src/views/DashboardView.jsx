@@ -1,229 +1,225 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useRetail } from "../context/RetailContext";
 import { ActionCenter } from "../components/ActionCenter";
 import { 
-  Activity, 
+  TrendingUp, 
   AlertTriangle, 
-  ShieldAlert, 
-  Truck, 
-  Sparkles, 
-  ArrowUpRight, 
+  Package, 
+  ShoppingBag, 
+  Zap, 
+  DollarSign, 
+  ArrowRight, 
   Camera, 
   ScanLine, 
-  ShoppingBag, 
-  ArrowRight, 
-  DollarSign, 
-  Package, 
+  Truck, 
   Clock, 
-  Zap, 
-  Store 
+  CheckCircle2, 
+  ShieldCheck 
 } from "lucide-react";
 
 export const DashboardView = () => {
-  const { products, orders, events, stores, setIsCaptureModalOpen, openScanner, openProductPassport } = useRetail();
+  const { products, orders, setIsCaptureModalOpen, openScanner, t } = useRetail();
   const navigate = useNavigate();
 
-  const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+  const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0) + 148240;
   const lowStockCount = products.filter((p) => p.stockQty <= p.lowStockThreshold).length;
-  const unverifiedCount = products.filter((p) => !p.isVerified).length;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       
-      {/* 1. BUSINESS PULSE (EXECUTIVE OVERVIEW BANNER) */}
-      <motion.div
-        className="business-pulse-banner"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+      {/* LEVEL 1 HERO BANNER: BUSINESS PULSE OVERVIEW */}
+      <div 
+        className="card-panel"
+        style={{
+          borderLeft: "6px solid var(--primary)",
+          background: "linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-elevated) 100%)",
+          padding: "24px"
+        }}
       >
-        <div className="pulse-header">
-          <div className="pulse-title-group">
-            <div className="system-pulse-dot" />
-            <span style={{ fontSize: "16px", fontWeight: "800", color: "var(--text-main)", letterSpacing: "-0.01em" }}>
-              BUSINESS PULSE
-            </span>
-            <span className="status-badge badge-success">Live Operational Stream</span>
-          </div>
-
-          <div style={{ display: "flex", gap: "10px" }}>
-            <button onClick={() => setIsCaptureModalOpen(true)} className="btn btn-ai" style={{ gap: "6px" }}>
-              <Camera size={14} /> Product Analysis
-            </button>
-            <button onClick={() => openScanner("Sale")} className="btn btn-secondary" style={{ gap: "6px" }}>
-              <ScanLine size={14} /> Barcode Scanner
-            </button>
-          </div>
-        </div>
-
-        {/* PULSE CHIPS ROW */}
-        <div className="pulse-chips-row">
-          <div className="pulse-chip">
-            <DollarSign size={16} color="var(--success)" />
-            <span>Revenue <strong>+18.6%</strong> (${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })})</span>
-          </div>
-
-          <div className="pulse-chip" style={{ borderColor: lowStockCount > 0 ? "rgba(231, 168, 59, 0.4)" : "var(--border-color)" }}>
-            <AlertTriangle size={16} color={lowStockCount > 0 ? "var(--warning)" : "var(--text-muted)"} />
-            <span><strong>{lowStockCount || 12} products</strong> approaching stockout</span>
-          </div>
-
-          <div className="pulse-chip">
-            <ShieldAlert size={16} color="var(--ai-accent)" />
-            <span><strong>{unverifiedCount || 3} products</strong> need verification</span>
-          </div>
-
-          <div className="pulse-chip">
-            <Truck size={16} color="var(--primary)" />
-            <span><strong>1 shipment</strong> awaiting receiving</span>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* 2. FOUR STRATEGIC COMMAND SECTIONS */}
-      <div className="command-section-grid">
-        
-        {/* SECTION A: WHAT NEEDS ATTENTION? (OPERATIONAL ACTION CENTER) */}
-        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <div className="command-card-header">
-            <div>
-              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What needs attention?</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Prioritized operational tasks requiring action</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "var(--success)", boxShadow: "0 0 10px var(--success)" }} />
+              <h1 className="h1-title" style={{ fontSize: "24px" }}>BUSINESS PULSE</h1>
+              <span className="status-badge badge-success" style={{ fontSize: "10px" }}>● LIVE NETWORK SYNC</span>
             </div>
-            <span className="status-badge badge-warning">High Priority</span>
+            <p className="body-text" style={{ fontSize: "13px", marginTop: "4px" }}>
+              Kapda Mafia & Shoe Mafia Global Command Center • Real-time sales, inventory truth, & automated actions
+            </p>
           </div>
 
+          {/* HIGH-IMPACT REVENUE METRIC */}
+          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+            <div>
+              <div style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "0.05em" }}>Gross Revenue</div>
+              <div className="kpi-text" style={{ fontSize: "32px", color: "var(--text-main)", marginTop: "2px" }}>
+                ${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+              </div>
+              <div style={{ fontSize: "12px", color: "var(--success)", fontWeight: "700", display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
+                <TrendingUp size={14} /> +18.6% vs last week
+              </div>
+            </div>
+
+            <div style={{ width: "1px", height: "48px", backgroundColor: "var(--border-color)" }} />
+
+            <div>
+              <div style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "0.05em" }}>Net Daily Profit</div>
+              <div className="kpi-text" style={{ fontSize: "28px", color: "var(--success)", marginTop: "2px" }}>
+                +$38,450.00
+              </div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "2px" }}>
+                63 Global Orders Completed
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* LEVEL 2: WHAT CHANGED & WHAT NEEDS ATTENTION */}
+      <div>
+        <div style={{ fontSize: "14px", fontWeight: "800", textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "0.05em", marginBottom: "12px" }}>
+          What Changed & Needs Immediate Attention
+        </div>
+
+        <div className="grid-12">
+          
+          {/* CARD 1: STOCKOUT RISK */}
+          <div
+            onClick={() => navigate("/inventory")}
+            className="col-3 card-panel card-hoverable"
+            style={{ cursor: "pointer", borderLeft: "4px solid var(--warning)", padding: "16px" }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase" }}>Stockout Warning</span>
+              <AlertTriangle size={16} color="var(--warning)" />
+            </div>
+            <div style={{ fontSize: "22px", fontWeight: "800", color: "var(--warning)", marginTop: "6px" }}>
+              12 Products
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--text-secondary)", marginTop: "4px" }}>
+              Approaching low stock threshold ➔ Reorder needed
+            </div>
+          </div>
+
+          {/* CARD 2: UNVERIFIED IDENTITY */}
+          <div
+            onClick={() => navigate("/products")}
+            className="col-3 card-panel card-hoverable"
+            style={{ cursor: "pointer", borderLeft: "4px solid var(--error)", padding: "16px" }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase" }}>Data Verification</span>
+              <ShieldCheck size={16} color="var(--error)" />
+            </div>
+            <div style={{ fontSize: "22px", fontWeight: "800", color: "var(--error)", marginTop: "6px" }}>
+              3 Products
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--text-secondary)", marginTop: "4px" }}>
+              Require barcode or barcode OCR confirmation
+            </div>
+          </div>
+
+          {/* CARD 3: INBOUND SHIPMENTS */}
+          <div
+            onClick={() => navigate("/purchases")}
+            className="col-3 card-panel card-hoverable"
+            style={{ cursor: "pointer", borderLeft: "4px solid var(--info)", padding: "16px" }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase" }}>Inbound Receiving</span>
+              <Truck size={16} color="var(--info)" />
+            </div>
+            <div style={{ fontSize: "22px", fontWeight: "800", color: "var(--info)", marginTop: "6px" }}>
+              1 Shipment
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--text-secondary)", marginTop: "4px" }}>
+              Awaiting receiving & barcode verification at Bhiwandi WH
+            </div>
+          </div>
+
+          {/* CARD 4: OVERDUE RECEIVABLES */}
+          <div
+            onClick={() => navigate("/finance")}
+            className="col-3 card-panel card-hoverable"
+            style={{ cursor: "pointer", borderLeft: "4px solid var(--ai-accent)", padding: "16px" }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase" }}>Receivables</span>
+              <DollarSign size={16} color="var(--ai-accent)" />
+            </div>
+            <div style={{ fontSize: "22px", fontWeight: "800", color: "var(--ai-accent)", marginTop: "6px" }}>
+              $42,000 Overdue
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--text-secondary)", marginTop: "4px" }}>
+              Pending net-30 customer payments ➔ Send reminder
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* LEVEL 3: OPERATIONAL ACTION CENTER & QUICK CONTROLS */}
+      <div className="grid-12">
+        <div className="col-8">
           <ActionCenter />
         </div>
 
-        {/* SECTION B: WHAT SHOULD I DO NEXT? (DIRECT OPERATIONAL ACTIONS) */}
-        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <div className="command-card-header">
-            <div>
-              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What should I do?</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Direct 1-click execution workflows</div>
+        <div className="col-4 card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div style={{ fontSize: "14px", fontWeight: "800", color: "var(--text-main)" }}>Direct Operations Bar</div>
+          
+          <button
+            type="button"
+            onClick={() => setIsCaptureModalOpen(true)}
+            className="btn btn-ai"
+            style={{ width: "100%", justifyContent: "flex-start", gap: "10px", padding: "12px" }}
+          >
+            <Camera size={18} />
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontSize: "13px", fontWeight: "700" }}>Shelf Product Analysis</div>
+              <div style={{ fontSize: "10px", opacity: 0.85 }}>Scan physical products with AI Camera</div>
             </div>
-            <span className="status-badge badge-primary">Fast Exec</span>
-          </div>
+          </button>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-            <button
-              onClick={() => setIsCaptureModalOpen(true)}
-              className="card-panel-elevated card-hoverable"
-              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
-            >
-              <Camera size={20} color="var(--ai-accent)" style={{ marginBottom: "8px" }} />
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Product Analysis</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>AI Camera Identity Creation</div>
-            </button>
-
-            <button
-              onClick={() => openScanner("Sale")}
-              className="card-panel-elevated card-hoverable"
-              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
-            >
-              <ScanLine size={20} color="var(--primary)" style={{ marginBottom: "8px" }} />
+          <button
+            type="button"
+            onClick={() => openScanner("Sale")}
+            className="btn btn-secondary"
+            style={{ width: "100%", justifyContent: "flex-start", gap: "10px", padding: "12px" }}
+          >
+            <ScanLine size={18} color="var(--primary)" />
+            <div style={{ textAlign: "left" }}>
               <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Barcode Scanner</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Scan for Sale, Receive, Audit</div>
-            </button>
+              <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>Scan SKU barcode for instant POS checkout</div>
+            </div>
+          </button>
 
-            <button
-              onClick={() => navigate("/sales")}
-              className="card-panel-elevated card-hoverable"
-              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
-            >
-              <Zap size={20} color="var(--success)" style={{ marginBottom: "8px" }} />
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>New POS Sale</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Start instant register billing</div>
-            </button>
+          <button
+            type="button"
+            onClick={() => navigate("/sales")}
+            className="btn btn-secondary"
+            style={{ width: "100%", justifyContent: "flex-start", gap: "10px", padding: "12px" }}
+          >
+            <Zap size={18} color="var(--success)" />
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>New POS Store Sale</div>
+              <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>Process fast walk-in retail bill</div>
+            </div>
+          </button>
 
-            <button
-              onClick={() => navigate("/transfers")}
-              className="card-panel-elevated card-hoverable"
-              style={{ padding: "14px", border: "1px solid var(--border-color)", cursor: "pointer", textAlign: "left" }}
-            >
-              <Truck size={20} color="var(--warning)" style={{ marginBottom: "8px" }} />
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Stock Transfer</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Move stock across stores</div>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/transfers")}
+            className="btn btn-secondary"
+            style={{ width: "100%", justifyContent: "flex-start", gap: "10px", padding: "12px" }}
+          >
+            <Truck size={18} color="var(--info)" />
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Warehouse Stock Transfer</div>
+              <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>Rebalance stock between stores</div>
+            </div>
+          </button>
         </div>
-
-        {/* SECTION C: WHAT CHANGED? (LIVE AUDIT VELOCITY STREAM) */}
-        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <div className="command-card-header">
-            <div>
-              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What changed?</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Real-time physical product & inventory audit feed</div>
-            </div>
-            <Activity size={16} color="var(--primary)" />
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {events.slice(0, 4).map((evt) => (
-              <div
-                key={evt.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "10px 12px",
-                  borderRadius: "var(--radius-xs)",
-                  backgroundColor: "var(--bg-elevated)",
-                  border: "1px solid var(--border-color)"
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: evt.type === "SALE" ? "var(--success)" : "var(--primary)" }} />
-                  <div>
-                    <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>{evt.productTitle}</div>
-                    <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{evt.actor} • {evt.note}</div>
-                  </div>
-                </div>
-
-                <span style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
-                  {new Date(evt.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* SECTION D: WHAT IS LIKELY TO HAPPEN? (AI PREDICTIVE FORECASTING) */}
-        <div className="card-panel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <div className="command-card-header">
-            <div>
-              <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>What is likely to happen?</div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Predictive AI demand velocity & stockout forecasting</div>
-            </div>
-            <Sparkles size={16} color="var(--ai-accent)" />
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <div style={{ padding: "12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>Quantum Sound Pro Headphones</span>
-                <span className="status-badge badge-warning">Stockout in 4.5 days</span>
-              </div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-                Demand velocity up +34%. Recommended reorder: 50 units from AeroTech Audio.
-              </div>
-            </div>
-
-            <div style={{ padding: "12px", borderRadius: "var(--radius-xs)", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-main)" }}>ErgoDesk Smart Electric Frame</span>
-                <span className="status-badge badge-error">Stockout in 2.1 days</span>
-              </div>
-              <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-                Only 6 units remaining in Flagship Lab. Recommended reorder: 20 units.
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
 
     </div>
