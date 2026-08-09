@@ -10,80 +10,143 @@ export const GlobalNodeNetworkCanvas = () => {
     let animationFrameId;
 
     const resizeCanvas = () => {
-      canvas.width = canvas.parentElement?.clientWidth || 800;
-      canvas.height = 180;
+      const containerWidth = canvas.parentElement?.clientWidth || 900;
+      const displayHeight = 240;
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.width = containerWidth * dpr;
+      canvas.height = displayHeight * dpr;
+      canvas.style.width = `${containerWidth}px`;
+      canvas.style.height = `${displayHeight}px`;
+
+      ctx.scale(dpr, dpr);
     };
+
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    // Global Channel Nodes
-    const nodes = [
-      { id: "center", label: "Master Stock Brain", x: canvas.width / 2, y: canvas.height / 2, color: "#3B82F6", radius: 24, isCenter: true },
-      { id: "store", label: "POS Store", x: canvas.width * 0.15, y: 40, color: "#10B981", radius: 14 },
-      { id: "amazon", label: "Amazon", x: canvas.width * 0.3, y: 140, color: "#F59E0B", radius: 14 },
-      { id: "shopify", label: "Shopify", x: canvas.width * 0.5, y: 30, color: "#14B8A6", radius: 14 },
-      { id: "flipkart", label: "Flipkart", x: canvas.width * 0.7, y: 140, color: "#8B5CF6", radius: 14 },
-      { id: "whatsapp", label: "WhatsApp", x: canvas.width * 0.85, y: 50, color: "#22C55E", radius: 14 }
-    ];
+    const getWidth = () => canvas.parentElement?.clientWidth || 900;
+    const getHeight = () => 240;
 
-    // Order particles flowing into center
-    const particles = Array.from({ length: 14 }).map((_, i) => {
-      const sourceNode = nodes[(i % (nodes.length - 1)) + 1];
+    // Define 10 Channel Nodes with brand logos/badge markers
+    const createNodes = () => {
+      const w = getWidth();
+      const h = getHeight();
+      const centerX = w / 2;
+      const centerY = h / 2;
+
+      return [
+        { id: "center", label: "Master Stock Brain", logo: "BRAIN", x: centerX, y: centerY, color: "#3B82F6", bg: "#1D4ED8", radius: 26, isCenter: true },
+        { id: "store", label: "Kapda & Shoe POS", logo: "POS", x: w * 0.12, y: 50, color: "#10B981", bg: "#065F46", radius: 18 },
+        { id: "shopify", label: "Shopify Store", logo: "S", x: w * 0.3, y: 40, color: "#95BF47", bg: "#365314", radius: 18 },
+        { id: "amazon", label: "Amazon", logo: "a", x: w * 0.5, y: 35, color: "#FF9900", bg: "#78350F", radius: 18 },
+        { id: "flipkart", label: "Flipkart", logo: "fk", x: w * 0.7, y: 40, color: "#2874F0", bg: "#1E3A8A", radius: 18 },
+        { id: "whatsapp", label: "WhatsApp AI", logo: "WA", x: w * 0.88, y: 50, color: "#25D366", bg: "#14532D", radius: 18 },
+        { id: "meesho", label: "Meesho", logo: "m", x: w * 0.15, y: 190, color: "#F43F5E", bg: "#881337", radius: 18 },
+        { id: "etsy", label: "Etsy Global", logo: "E", x: w * 0.38, y: 195, color: "#F1641E", bg: "#7C2D12", radius: 18 },
+        { id: "walmart", label: "Walmart", logo: "★", x: w * 0.62, y: 195, color: "#0071DC", bg: "#1E3A8A", radius: 18 },
+        { id: "instagram", label: "Instagram Shop", logo: "IG", x: w * 0.85, y: 190, color: "#E6683C", bg: "#831843", radius: 18 }
+      ];
+    };
+
+    let nodes = createNodes();
+
+    // Create 20 dynamic particles flowing between nodes and center
+    const particles = Array.from({ length: 22 }).map((_, i) => {
+      const sourceIndex = (i % (nodes.length - 1)) + 1;
       return {
-        source: sourceNode,
-        target: nodes[0],
+        sourceIndex,
         progress: Math.random(),
-        speed: 0.005 + Math.random() * 0.008,
-        color: sourceNode.color
+        speed: 0.004 + Math.random() * 0.006
       };
     });
 
     const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const w = getWidth();
+      const h = getHeight();
+      nodes = createNodes();
 
-      // Draw connecting glowing line network
+      ctx.clearRect(0, 0, w, h);
+
+      const centerNode = nodes[0];
+
+      // 1. Draw glowing connecting lines between channels and central brain
       nodes.forEach((node) => {
         if (!node.isCenter) {
           ctx.beginPath();
           ctx.moveTo(node.x, node.y);
-          ctx.lineTo(nodes[0].x, nodes[0].y);
-          ctx.strokeStyle = "rgba(59, 130, 246, 0.15)";
+          ctx.lineTo(centerNode.x, centerNode.y);
+          ctx.strokeStyle = "rgba(59, 130, 246, 0.22)";
           ctx.lineWidth = 1.5;
           ctx.stroke();
         }
       });
 
-      // Draw animated particles (order & inventory sync stream)
+      // 2. Draw moving order & inventory sync particles
       particles.forEach((p) => {
         p.progress += p.speed;
         if (p.progress >= 1) p.progress = 0;
 
-        const currX = p.source.x + (p.target.x - p.source.x) * p.progress;
-        const currY = p.source.y + (p.target.y - p.source.y) * p.progress;
+        const source = nodes[p.sourceIndex];
+        if (!source) return;
+
+        const currX = source.x + (centerNode.x - source.x) * p.progress;
+        const currY = source.y + (centerNode.y - source.y) * p.progress;
 
         ctx.beginPath();
-        ctx.arc(currX, currY, 3, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 8;
+        ctx.arc(currX, currY, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = source.color;
+        ctx.shadowColor = source.color;
+        ctx.shadowBlur = 10;
         ctx.fill();
         ctx.shadowBlur = 0;
       });
 
-      // Draw Channel Nodes
+      // 3. Draw Channel Nodes with Brand Logos & Crisp Text
       nodes.forEach((node) => {
+        // Outer glowing ring for central brain
+        if (node.isCenter) {
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius + 6, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(59, 130, 246, 0.4)";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        // Node Circle Background
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = node.isCenter ? "var(--primary)" : "var(--bg-elevated)";
+        ctx.fillStyle = node.bg;
         ctx.strokeStyle = node.color;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.fill();
         ctx.stroke();
 
-        ctx.font = node.isCenter ? "bold 11px Inter, sans-serif" : "10px Inter, sans-serif";
+        // Brand Logo Text inside circle
+        ctx.font = "bold 11px Inter, sans-serif";
         ctx.fillStyle = "#FFFFFF";
         ctx.textAlign = "center";
-        ctx.fillText(node.label, node.x, node.y + (node.isCenter ? 4 : 26));
+        ctx.textBaseline = "middle";
+        ctx.fillText(node.logo, node.x, node.y);
+
+        // High-Contrast Label Badge below node
+        const badgeWidth = ctx.measureText(node.label).width + 16;
+        const badgeHeight = 18;
+        const badgeY = node.isCenter ? node.y + node.radius + 10 : node.y + node.radius + 6;
+
+        ctx.fillStyle = "rgba(16, 22, 34, 0.88)";
+        ctx.strokeStyle = "rgba(36, 48, 72, 0.9)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(node.x - badgeWidth / 2, badgeY, badgeWidth, badgeHeight, 4);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = "bold 10px Inter, sans-serif";
+        ctx.fillStyle = node.isCenter ? "var(--primary)" : "#F8FAFC";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(node.label, node.x, badgeY + badgeHeight / 2);
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -98,11 +161,20 @@ export const GlobalNodeNetworkCanvas = () => {
   }, []);
 
   return (
-    <div className="card-panel" style={{ padding: "12px", overflow: "hidden", position: "relative" }}>
-      <div style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "4px" }}>
-        Live Global Omni-Channel Sync Network
+    <div className="card-panel" style={{ padding: "16px", overflow: "hidden", position: "relative", backgroundColor: "var(--bg-surface)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+        <div>
+          <div style={{ fontSize: "14px", fontWeight: "800", color: "var(--text-main)" }}>
+            Live Global Omni-Channel Sync Network
+          </div>
+          <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "2px" }}>
+            Real-time visual node stream connecting Shopify, Amazon, Flipkart, WhatsApp, & POS to Central Master Brain
+          </div>
+        </div>
+        <span className="status-badge badge-success" style={{ fontSize: "10px" }}>● 10 Nodes Connected</span>
       </div>
-      <canvas ref={canvasRef} style={{ width: "100%", height: "180px", display: "block" }} />
+
+      <canvas ref={canvasRef} style={{ width: "100%", height: "240px", display: "block" }} />
     </div>
   );
 };
