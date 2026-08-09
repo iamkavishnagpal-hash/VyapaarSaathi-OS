@@ -1,35 +1,33 @@
-// RETAIL OS 2.0 INITIAL MOCK DATA MODEL
+// Initial Mock Data for VyapaarSaathi OS
+// Featuring Real Business Brands: Kapda Mafia (Gen-Z Menswear) & Shoe Mafia (Shoes)
 
 export const initialStores = [
   {
     id: "store-1",
-    name: "Flagship Retail Lab",
-    location: "Downtown Tech Hub, Floor 1",
-    city: "San Francisco, CA",
-    code: "SF-01",
-    status: "Active",
-    registerCount: 4,
-    manager: "Alex Vance"
+    name: "Kapda Mafia",
+    type: "Gen-Z Menswear Flagship",
+    location: "Connaught Place, Delhi",
+    code: "KM-DEL",
+    contact: "+91 98100 12345",
+    isWarehouse: false
   },
   {
     id: "store-2",
-    name: "Metro Commerce Express",
-    location: "Market Street Galleria",
-    city: "San Francisco, CA",
-    code: "SF-02",
-    status: "Active",
-    registerCount: 2,
-    manager: "Elena Rostova"
+    name: "Shoe Mafia",
+    type: "Premium Footwear Outlet",
+    location: "Indiranagar, Bengaluru",
+    code: "SM-BLR",
+    contact: "+91 98200 67890",
+    isWarehouse: false
   },
   {
-    id: "store-3",
-    name: "North Bay Distribution Center",
-    location: "Industrial Park Rd, Bldg 4",
-    city: "Oakland, CA",
-    code: "OAK-WMS",
-    status: "Active",
-    registerCount: 1,
-    manager: "Marcus Brody"
+    id: "wh-1",
+    name: "Central Logistics Hub",
+    type: "Master Warehouse",
+    location: "Bhiwandi, Mumbai",
+    code: "WH-BHI",
+    contact: "+91 98300 11223",
+    isWarehouse: true
   }
 ];
 
@@ -37,370 +35,266 @@ export const initialProducts = [
   {
     id: "prod-101",
     storeId: "store-1",
-    title: "Quantum Sound Pro Headphones",
-    brand: "AeroTech Audio",
-    category: "Electronics",
-    subCategory: "Wireless Audio",
-    sku: "SKU-AT-QSP-BLK",
-    barcode: "890123456701",
-    qrCode: "QR-ROS-PROD-101",
-    costPrice: 120.00,
-    sellingPrice: 249.99,
+    title: "Kapda Mafia Oversized Graphic Hoodie",
+    brand: "Kapda Mafia",
+    category: "Gen-Z Menswear",
+    subCategory: "Hoodies & Sweatshirts",
+    sku: "KM-HD-001",
+    barcode: "890100100101",
+    qrCode: "QR-KM-HD-001",
+    costPrice: 28.00,
+    sellingPrice: 59.99,
     stockQty: 42,
-    lowStockThreshold: 15,
-    reorderQty: 50,
-    gstRate: 18,
-    manufacturer: "AeroTech Labs Inc.",
-    model: "QSP-2026",
-    color: "Midnight Black",
-    size: "Standard",
-    aiConfidence: {
-      brand: 99,
-      title: 98,
-      category: 96,
-      color: 95,
-      price: 92,
-      overall: 96
-    },
+    reservedQty: 3,
+    availableQty: 39,
+    inTransitQty: 10,
+    damagedQty: 0,
+    lowStockThreshold: 10,
+    reorderQty: 30,
+    gstRate: 12,
+    manufacturer: "Kapda Mafia Apparel Works",
+    model: "2026 Streetwear Line",
+    color: "Washed Charcoal",
+    size: "XL",
+    aiConfidence: { brand: 99, title: 98, category: 97, color: 96, price: 95, overall: 97 },
     isVerified: true,
     productHealthScore: 98,
     dataCompleteness: 100,
     variants: [
-      { size: "Standard", color: "Midnight Black", stock: 26, sku: "SKU-AT-QSP-BLK" },
-      { size: "Standard", color: "Lunar Silver", stock: 16, sku: "SKU-AT-QSP-SLV" }
+      { size: "M", color: "Washed Charcoal", stock: 12 },
+      { size: "L", color: "Washed Charcoal", stock: 15 },
+      { size: "XL", color: "Washed Charcoal", stock: 15 }
     ],
     timeline: [
-      { date: "2026-08-01 09:30", type: "Received", note: "Shipment #PO-981 received (50 units)" },
-      { date: "2026-08-01 10:15", type: "Created", note: "Product identity & barcode verified via AI Capture" },
-      { date: "2026-08-01 11:00", type: "Stocked", note: "Assigned to Shelf E-4" },
-      { date: "2026-08-07 14:22", type: "Sold", note: "8 units sold via POS Register #1" }
+      { date: "2026-08-08 10:00 AM", type: "Received", note: "Batch KM-H2026 received from Bhiwandi WH" },
+      { date: "2026-08-08 02:30 PM", type: "Sold", note: "2 units sold via Walk-in POS" }
     ]
   },
   {
     id: "prod-102",
     storeId: "store-1",
-    title: "ErgoDesk Smart Electric Frame",
-    brand: "Kinetic Furniture",
-    category: "Office & Home",
-    subCategory: "Furniture",
-    sku: "SKU-KF-EDS-WHT",
-    barcode: "890123456702",
-    qrCode: "QR-ROS-PROD-102",
-    costPrice: 280.00,
-    sellingPrice: 549.00,
-    stockQty: 6,
-    lowStockThreshold: 10,
-    reorderQty: 20,
-    gstRate: 18,
-    manufacturer: "Kinetic Dynamics",
-    model: "ED-PRO-3",
-    color: "Alpine White",
-    size: "Dual Motor",
-    aiConfidence: {
-      brand: 95,
-      title: 94,
-      category: 98,
-      color: 99,
-      price: 88,
-      overall: 94
-    },
+    title: "Kapda Mafia Acid-Wash Cargo Pants",
+    brand: "Kapda Mafia",
+    category: "Gen-Z Menswear",
+    subCategory: "Bottomwear",
+    sku: "KM-CG-002",
+    barcode: "890100100102",
+    qrCode: "QR-KM-CG-002",
+    costPrice: 24.50,
+    sellingPrice: 49.99,
+    stockQty: 28,
+    reservedQty: 2,
+    availableQty: 26,
+    inTransitQty: 5,
+    damagedQty: 0,
+    lowStockThreshold: 8,
+    reorderQty: 25,
+    gstRate: 12,
+    manufacturer: "Kapda Mafia Apparel Works",
+    model: "Utility Cargo v2",
+    color: "Vintage Khaki",
+    size: "32",
+    aiConfidence: { brand: 99, title: 97, category: 96, color: 95, price: 94, overall: 96 },
     isVerified: true,
-    productHealthScore: 72,
-    dataCompleteness: 85,
+    productHealthScore: 95,
+    dataCompleteness: 98,
     variants: [
-      { size: "Dual Motor", color: "Alpine White", stock: 4, sku: "SKU-KF-EDS-WHT" },
-      { size: "Dual Motor", color: "Matte Black", stock: 2, sku: "SKU-KF-EDS-BLK" }
+      { size: "30", color: "Vintage Khaki", stock: 8 },
+      { size: "32", color: "Vintage Khaki", stock: 12 },
+      { size: "34", color: "Vintage Khaki", stock: 8 }
     ],
     timeline: [
-      { date: "2026-07-20 14:00", type: "Received", note: "Shipment #PO-844 received (15 units)" },
-      { date: "2026-07-20 15:30", type: "Stocked", note: "Assigned to Floor Zone B" },
-      { date: "2026-08-08 11:10", type: "Sold", note: "9 units sold across 3 weeks" }
+      { date: "2026-08-07 11:15 AM", type: "Received", note: "Stock verified & catalogued" }
     ]
   },
   {
     id: "prod-103",
     storeId: "store-1",
-    title: "Titanium Tech Flask 1.0L",
-    brand: "HydroVibe",
-    category: "Accessories",
-    subCategory: "Drinkware",
-    sku: "SKU-HV-TTF-1L",
-    barcode: "890123456703",
-    qrCode: "QR-ROS-PROD-103",
-    costPrice: 18.50,
-    sellingPrice: 45.00,
-    stockQty: 88,
-    lowStockThreshold: 20,
-    reorderQty: 100,
+    title: "Kapda Mafia Drop-Shoulder Streetwear Tee",
+    brand: "Kapda Mafia",
+    category: "Gen-Z Menswear",
+    subCategory: "T-Shirts",
+    sku: "KM-TS-003",
+    barcode: "890100100103",
+    qrCode: "QR-KM-TS-003",
+    costPrice: 12.00,
+    sellingPrice: 29.99,
+    stockQty: 65,
+    reservedQty: 5,
+    availableQty: 60,
+    inTransitQty: 15,
+    damagedQty: 0,
+    lowStockThreshold: 15,
+    reorderQty: 50,
     gstRate: 12,
-    manufacturer: "HydroVibe Outdoor Gear",
-    model: "HV-1000",
-    color: "Slate Gray",
-    size: "1000ml",
-    aiConfidence: {
-      brand: 99,
-      title: 97,
-      category: 99,
-      color: 96,
-      price: 95,
-      overall: 97
-    },
+    manufacturer: "Kapda Mafia Apparel Works",
+    model: "Heavy Cotton Drop Tee",
+    color: "Off-White",
+    size: "L",
+    aiConfidence: { brand: 99, title: 98, category: 98, color: 97, price: 96, overall: 98 },
     isVerified: true,
-    productHealthScore: 100,
+    productHealthScore: 99,
     dataCompleteness: 100,
     variants: [
-      { size: "1000ml", color: "Slate Gray", stock: 50, sku: "SKU-HV-TTF-1L-GRY" },
-      { size: "1000ml", color: "Ocean Blue", stock: 38, sku: "SKU-HV-TTF-1L-BLU" }
+      { size: "S", color: "Off-White", stock: 15 },
+      { size: "M", color: "Off-White", stock: 20 },
+      { size: "L", color: "Off-White", stock: 30 }
     ],
     timeline: [
-      { date: "2026-08-02 08:00", type: "Received", note: "Shipment #PO-990 received (100 units)" },
-      { date: "2026-08-02 09:00", type: "Stocked", note: "Assigned to Rack A-2" }
+      { date: "2026-08-08 09:00 AM", type: "Received", note: "Initial catalog entry" }
     ]
   },
   {
     id: "prod-104",
-    storeId: "store-1",
-    title: "VividColor 4K Studio Monitor 27\"",
-    brand: "OptiDisplay",
-    category: "Electronics",
-    subCategory: "Displays",
-    sku: "SKU-OD-VC4K-27",
-    barcode: "890123456704",
-    qrCode: "QR-ROS-PROD-104",
-    costPrice: 310.00,
-    sellingPrice: 599.99,
-    stockQty: 3,
+    storeId: "store-2",
+    title: "Shoe Mafia Retro Chunky Sneakers",
+    brand: "Shoe Mafia",
+    category: "Shoes & Footwear",
+    subCategory: "Sneakers",
+    sku: "SM-SN-101",
+    barcode: "890200200101",
+    qrCode: "QR-SM-SN-101",
+    costPrice: 42.00,
+    sellingPrice: 89.99,
+    stockQty: 18,
+    reservedQty: 3,
+    availableQty: 15,
+    inTransitQty: 8,
+    damagedQty: 0,
     lowStockThreshold: 5,
-    reorderQty: 15,
+    reorderQty: 20,
     gstRate: 18,
-    manufacturer: "OptiDisplay Corp",
-    model: "VC27-4K",
-    color: "Graphite",
-    size: "27 Inch",
-    aiConfidence: {
-      brand: 92,
-      title: 90,
-      category: 95,
-      color: 90,
-      price: 85,
-      overall: 90
-    },
-    isVerified: false,
-    productHealthScore: 64,
-    dataCompleteness: 78,
+    manufacturer: "Shoe Mafia Footwear Corp",
+    model: "Chunky Retros v4",
+    color: "Cyber White / Cobalt",
+    size: "UK 9",
+    aiConfidence: { brand: 99, title: 98, category: 99, color: 96, price: 95, overall: 97 },
+    isVerified: true,
+    productHealthScore: 97,
+    dataCompleteness: 100,
     variants: [
-      { size: "27 Inch", color: "Graphite", stock: 3, sku: "SKU-OD-VC4K-27" }
+      { size: "UK 8", color: "Cyber White", stock: 6 },
+      { size: "UK 9", color: "Cyber White", stock: 8 },
+      { size: "UK 10", color: "Cyber White", stock: 4 }
     ],
     timeline: [
-      { date: "2026-07-28 16:20", type: "Received", note: "Shipment #PO-870 received (10 units)" },
-      { date: "2026-08-06 18:00", type: "Sold", note: "7 units sold" }
+      { date: "2026-08-08 01:00 PM", type: "Received", note: "Imported 18 pairs to Shoe Mafia Bengaluru" }
     ]
   },
   {
     id: "prod-105",
-    storeId: "store-1",
-    title: "Zenith Mechanical Keyboard RGB",
-    brand: "KeyWorks",
-    category: "Electronics",
-    subCategory: "Peripherals",
-    sku: "SKU-KW-ZMK-RGB",
-    barcode: "890123456705",
-    qrCode: "QR-ROS-PROD-105",
-    costPrice: 45.00,
-    sellingPrice: 119.00,
-    stockQty: 64,
-    lowStockThreshold: 12,
-    reorderQty: 40,
+    storeId: "store-2",
+    title: "Shoe Mafia Obsidian High-Top Kicks",
+    brand: "Shoe Mafia",
+    category: "Shoes & Footwear",
+    subCategory: "High-Tops",
+    sku: "SM-HT-102",
+    barcode: "890200200102",
+    qrCode: "QR-SM-HT-102",
+    costPrice: 48.00,
+    sellingPrice: 99.99,
+    stockQty: 12,
+    reservedQty: 2,
+    availableQty: 10,
+    inTransitQty: 4,
+    damagedQty: 0,
+    lowStockThreshold: 4,
+    reorderQty: 15,
     gstRate: 18,
-    manufacturer: "KeyWorks Ltd.",
-    model: "ZMK-87",
-    color: "Charcoal RGB",
-    size: "Tenkeyless",
-    aiConfidence: {
-      brand: 98,
-      title: 98,
-      category: 97,
-      color: 94,
-      price: 96,
-      overall: 97
-    },
+    manufacturer: "Shoe Mafia Footwear Corp",
+    model: "Obsidian High Series",
+    color: "Matte Black",
+    size: "UK 10",
+    aiConfidence: { brand: 99, title: 97, category: 98, color: 96, price: 94, overall: 96 },
     isVerified: true,
-    productHealthScore: 95,
-    dataCompleteness: 100,
+    productHealthScore: 96,
+    dataCompleteness: 98,
     variants: [
-      { size: "Tenkeyless", color: "Charcoal RGB", stock: 40, sku: "SKU-KW-ZMK-RGB-TKL" },
-      { size: "Full Layout", color: "Charcoal RGB", stock: 24, sku: "SKU-KW-ZMK-RGB-FULL" }
+      { size: "UK 9", color: "Matte Black", stock: 5 },
+      { size: "UK 10", color: "Matte Black", stock: 7 }
     ],
     timeline: [
-      { date: "2026-08-04 11:30", type: "Received", note: "Shipment #PO-1002 received (70 units)" }
+      { date: "2026-08-07 04:20 PM", type: "Received", note: "Dispatched from central hub" }
+    ]
+  },
+  {
+    id: "prod-106",
+    storeId: "store-2",
+    title: "Shoe Mafia Breathable Knit Runners",
+    brand: "Shoe Mafia",
+    category: "Shoes & Footwear",
+    subCategory: "Running & Performance",
+    sku: "SM-RN-103",
+    barcode: "890200200103",
+    qrCode: "QR-SM-RN-103",
+    costPrice: 35.00,
+    sellingPrice: 74.99,
+    stockQty: 25,
+    reservedQty: 1,
+    availableQty: 24,
+    inTransitQty: 6,
+    damagedQty: 0,
+    lowStockThreshold: 6,
+    reorderQty: 25,
+    gstRate: 18,
+    manufacturer: "Shoe Mafia Footwear Corp",
+    model: "Knit Matrix 2026",
+    color: "Neon Lime / Steel",
+    size: "UK 8",
+    aiConfidence: { brand: 99, title: 98, category: 99, color: 97, price: 95, overall: 98 },
+    isVerified: true,
+    productHealthScore: 98,
+    dataCompleteness: 100,
+    variants: [
+      { size: "UK 7", color: "Neon Lime", stock: 8 },
+      { size: "UK 8", color: "Neon Lime", stock: 10 },
+      { size: "UK 9", color: "Neon Lime", stock: 7 }
+    ],
+    timeline: [
+      { date: "2026-08-08 08:30 AM", type: "Received", note: "Stock initialized" }
     ]
   }
 ];
 
 export const initialCustomers = [
-  {
-    id: "cust-1",
-    name: "Sarah Jenkins",
-    email: "sarah.j@apexdesign.io",
-    phone: "+1 (415) 555-0192",
-    totalPurchases: 4,
-    totalSpent: 1348.97,
-    tier: "VIP Executive",
-    lastOrderDate: "2026-08-07"
-  },
-  {
-    id: "cust-2",
-    name: "Devon Miller",
-    email: "devon@nexustech.com",
-    phone: "+1 (415) 555-0344",
-    totalPurchases: 2,
-    totalSpent: 598.99,
-    tier: "Standard Member",
-    lastOrderDate: "2026-08-05"
-  },
-  {
-    id: "cust-3",
-    name: "Maya Patel",
-    email: "maya.patel@horizon.org",
-    phone: "+1 (415) 555-0811",
-    totalPurchases: 7,
-    totalSpent: 2890.50,
-    tier: "Platinum Corporate",
-    lastOrderDate: "2026-08-08"
-  }
-];
-
-export const initialPurchases = [
-  {
-    id: "po-1001",
-    supplier: "AeroTech Audio Global",
-    storeId: "store-1",
-    orderDate: "2026-08-01",
-    expectedDelivery: "2026-08-10",
-    status: "Received",
-    totalAmount: 6000.00,
-    itemCount: 50,
-    items: [
-      { productId: "prod-101", title: "Quantum Sound Pro Headphones", qty: 50, unitCost: 120.00 }
-    ]
-  },
-  {
-    id: "po-1002",
-    supplier: "Kinetic Dynamics Corp",
-    storeId: "store-1",
-    orderDate: "2026-08-05",
-    expectedDelivery: "2026-08-12",
-    status: "In Transit",
-    totalAmount: 5600.00,
-    itemCount: 20,
-    items: [
-      { productId: "prod-102", title: "ErgoDesk Smart Electric Frame", qty: 20, unitCost: 280.00 }
-    ]
-  }
-];
-
-export const initialTransfers = [
-  {
-    id: "tr-501",
-    sourceStore: "North Bay Distribution Center",
-    destStore: "Flagship Retail Lab",
-    transferDate: "2026-08-06",
-    status: "Completed",
-    itemCount: 15,
-    items: [
-      { productId: "prod-103", title: "Titanium Tech Flask 1.0L", qty: 15 }
-    ]
-  },
-  {
-    id: "tr-502",
-    sourceStore: "Flagship Retail Lab",
-    destStore: "Metro Commerce Express",
-    transferDate: "2026-08-08",
-    status: "In Transit",
-    itemCount: 5,
-    items: [
-      { productId: "prod-101", title: "Quantum Sound Pro Headphones", qty: 5 }
-    ]
-  }
-];
-
-export const initialReturns = [
-  {
-    id: "ret-301",
-    orderId: "ord-8812",
-    customerName: "Devon Miller",
-    date: "2026-08-07",
-    productTitle: "VividColor 4K Studio Monitor 27\"",
-    qty: 1,
-    refundAmount: 599.99,
-    reason: "Unopened - Customer ordered wrong size",
-    status: "Processed & Restocked"
-  }
+  { id: "cust-1", name: "Aarav Sharma", phone: "+91 98111 22334", email: "aarav@kapdamafia.com", tier: "VIP", totalSpend: 340.50, totalOrders: 6 },
+  { id: "cust-2", name: "Rohan Kapoor", phone: "+91 98222 33445", email: "rohan@shoemafia.com", tier: "Regular", totalSpend: 189.99, totalOrders: 3 },
+  { id: "cust-3", name: "Priya Malhotra", phone: "+91 98333 44556", email: "priya@gmail.com", tier: "VIP", totalSpend: 520.00, totalOrders: 8 }
 ];
 
 export const initialOrders = [
   {
-    id: "ord-9001",
-    orderNumber: "ROS-9001",
-    customerName: "Sarah Jenkins",
+    id: "ord-1001",
+    orderNumber: "ROS-9812",
+    customerName: "Aarav Sharma",
     storeId: "store-1",
-    date: "2026-08-07 14:22",
-    totalAmount: 499.98,
-    paymentMethod: "Credit Card (Visa)",
+    date: "2026-08-08 03:15 PM",
+    totalAmount: 109.98,
+    paymentMethod: "UPI / Paytm",
     status: "Completed",
     itemCount: 2,
     items: [
-      { productId: "prod-101", title: "Quantum Sound Pro Headphones", qty: 2, unitPrice: 249.99 }
+      { productId: "prod-101", title: "Kapda Mafia Oversized Graphic Hoodie", qty: 1, unitPrice: 59.99 },
+      { productId: "prod-102", title: "Kapda Mafia Acid-Wash Cargo Pants", qty: 1, unitPrice: 49.99 }
     ]
   },
   {
-    id: "ord-9002",
-    orderNumber: "ROS-9002",
-    customerName: "Maya Patel",
-    storeId: "store-1",
-    date: "2026-08-08 11:05",
-    totalAmount: 119.00,
-    paymentMethod: "Apple Pay",
+    id: "ord-1002",
+    orderNumber: "ROS-9813",
+    customerName: "Rohan Kapoor",
+    storeId: "store-2",
+    date: "2026-08-08 04:30 PM",
+    totalAmount: 89.99,
+    paymentMethod: "Credit Card",
     status: "Completed",
     itemCount: 1,
     items: [
-      { productId: "prod-105", title: "Zenith Mechanical Keyboard RGB", qty: 1, unitPrice: 119.00 }
+      { productId: "prod-104", title: "Shoe Mafia Retro Chunky Sneakers", qty: 1, unitPrice: 89.99 }
     ]
   }
 ];
 
-export const initialEvents = [
-  {
-    id: "evt-1",
-    timestamp: "2026-08-08T11:10:00Z",
-    type: "SALE",
-    productTitle: "Zenith Mechanical Keyboard RGB",
-    qtyChange: -1,
-    newQty: 64,
-    actor: "Register #1 (Alex Vance)",
-    channel: "Flagship Retail Lab",
-    note: "POS Transaction ROS-9002"
-  },
-  {
-    id: "evt-2",
-    timestamp: "2026-08-08T09:30:00Z",
-    type: "AI_IDENTIFY",
-    productTitle: "Quantum Sound Pro Headphones",
-    qtyChange: 0,
-    newQty: 42,
-    actor: "AI Vision Pipeline v2.4",
-    channel: "Product Capture",
-    note: "Verified identity (96% confidence score)"
-  },
-  {
-    id: "evt-3",
-    timestamp: "2026-08-07T16:45:00Z",
-    type: "STOCK_TRANSFER",
-    productTitle: "Titanium Tech Flask 1.0L",
-    qtyChange: 15,
-    newQty: 88,
-    actor: "Inventory System",
-    channel: "Distribution -> Flagship",
-    note: "Transfer TR-501 completed"
-  }
-];
+export const initialEvents = [];
+export const initialPurchases = [];
+export const initialTransfers = [];
+export const initialReturns = [];
