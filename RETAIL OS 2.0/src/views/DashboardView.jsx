@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useRetail } from "../context/RetailContext";
 import { ActionCenter } from "../components/ActionCenter";
+import { TrustComplianceBanner } from "../components/TrustComplianceBanner";
+import { InventoryCubeCanvas3D } from "../components/3DInventoryCubeCanvas";
 import { 
   TrendingUp, 
   AlertTriangle, 
@@ -28,6 +30,9 @@ export const DashboardView = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       
+      {/* ENTERPRISE TRUST & COMPLIANCE LEDGER BANNER */}
+      <TrustComplianceBanner />
+
       {/* LEVEL 1 HERO BANNER: BUSINESS PULSE OVERVIEW */}
       <div 
         className="card-panel"
@@ -76,6 +81,9 @@ export const DashboardView = () => {
         </div>
       </div>
 
+      {/* 3D INTERACTIVE INVENTORY STACK VISUALIZER */}
+      <InventoryCubeCanvas3D />
+
       {/* LEVEL 2: WHAT CHANGED & WHAT NEEDS ATTENTION */}
       <div>
         <div style={{ fontSize: "14px", fontWeight: "800", textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "0.05em", marginBottom: "12px" }}>
@@ -86,7 +94,7 @@ export const DashboardView = () => {
           
           {/* CARD 1: STOCKOUT RISK */}
           <div
-            onClick={() => navigate("/inventory")}
+            onClick={(e) => { e.stopPropagation(); navigate("/inventory"); }}
             className="col-3 card-panel card-hoverable"
             style={{ cursor: "pointer", borderLeft: "4px solid var(--warning)", padding: "16px" }}
           >
@@ -104,7 +112,7 @@ export const DashboardView = () => {
 
           {/* CARD 2: UNVERIFIED IDENTITY */}
           <div
-            onClick={() => navigate("/products")}
+            onClick={(e) => { e.stopPropagation(); navigate("/products"); }}
             className="col-3 card-panel card-hoverable"
             style={{ cursor: "pointer", borderLeft: "4px solid var(--error)", padding: "16px" }}
           >
@@ -122,7 +130,7 @@ export const DashboardView = () => {
 
           {/* CARD 3: INBOUND SHIPMENTS */}
           <div
-            onClick={() => navigate("/purchases")}
+            onClick={(e) => { e.stopPropagation(); navigate("/purchases"); }}
             className="col-3 card-panel card-hoverable"
             style={{ cursor: "pointer", borderLeft: "4px solid var(--info)", padding: "16px" }}
           >
@@ -140,7 +148,7 @@ export const DashboardView = () => {
 
           {/* CARD 4: OVERDUE RECEIVABLES */}
           <div
-            onClick={() => navigate("/finance")}
+            onClick={(e) => { e.stopPropagation(); navigate("/finance"); }}
             className="col-3 card-panel card-hoverable"
             style={{ cursor: "pointer", borderLeft: "4px solid var(--ai-accent)", padding: "16px" }}
           >
@@ -170,7 +178,7 @@ export const DashboardView = () => {
           
           <button
             type="button"
-            onClick={() => setIsCaptureModalOpen(true)}
+            onClick={(e) => { e.stopPropagation(); setIsCaptureModalOpen(true); }}
             className="btn btn-ai"
             style={{ width: "100%", justifyContent: "flex-start", gap: "10px", padding: "12px" }}
           >
@@ -183,7 +191,7 @@ export const DashboardView = () => {
 
           <button
             type="button"
-            onClick={() => openScanner("Sale")}
+            onClick={(e) => { e.stopPropagation(); openScanner("Sale"); }}
             className="btn btn-secondary"
             style={{ width: "100%", justifyContent: "flex-start", gap: "10px", padding: "12px" }}
           >
@@ -196,7 +204,7 @@ export const DashboardView = () => {
 
           <button
             type="button"
-            onClick={() => navigate("/sales")}
+            onClick={(e) => { e.stopPropagation(); navigate("/sales"); }}
             className="btn btn-secondary"
             style={{ width: "100%", justifyContent: "flex-start", gap: "10px", padding: "12px" }}
           >
@@ -209,7 +217,7 @@ export const DashboardView = () => {
 
           <button
             type="button"
-            onClick={() => navigate("/transfers")}
+            onClick={(e) => { e.stopPropagation(); navigate("/transfers"); }}
             className="btn btn-secondary"
             style={{ width: "100%", justifyContent: "flex-start", gap: "10px", padding: "12px" }}
           >
