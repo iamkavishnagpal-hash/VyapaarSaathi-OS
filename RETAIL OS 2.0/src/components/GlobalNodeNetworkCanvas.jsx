@@ -11,7 +11,7 @@ export const GlobalNodeNetworkCanvas = () => {
 
     const resizeCanvas = () => {
       const containerWidth = canvas.parentElement?.clientWidth || 900;
-      const displayHeight = 240;
+      const displayHeight = 220;
       const dpr = window.devicePixelRatio || 1;
 
       canvas.width = containerWidth * dpr;
@@ -26,9 +26,9 @@ export const GlobalNodeNetworkCanvas = () => {
     window.addEventListener("resize", resizeCanvas);
 
     const getWidth = () => canvas.parentElement?.clientWidth || 900;
-    const getHeight = () => 240;
+    const getHeight = () => 220;
 
-    // Define 10 Channel Nodes with brand logos/badge markers
+    // Define 10 Monochromatic Enterprise Channel Nodes
     const createNodes = () => {
       const w = getWidth();
       const h = getHeight();
@@ -36,28 +36,28 @@ export const GlobalNodeNetworkCanvas = () => {
       const centerY = h / 2;
 
       return [
-        { id: "center", label: "Master Stock Brain", logo: "BRAIN", x: centerX, y: centerY, color: "#3B82F6", bg: "#1D4ED8", radius: 26, isCenter: true },
-        { id: "store", label: "Kapda & Shoe POS", logo: "POS", x: w * 0.12, y: 50, color: "#10B981", bg: "#065F46", radius: 18 },
-        { id: "shopify", label: "Shopify Store", logo: "S", x: w * 0.3, y: 40, color: "#95BF47", bg: "#365314", radius: 18 },
-        { id: "amazon", label: "Amazon", logo: "a", x: w * 0.5, y: 35, color: "#FF9900", bg: "#78350F", radius: 18 },
-        { id: "flipkart", label: "Flipkart", logo: "fk", x: w * 0.7, y: 40, color: "#2874F0", bg: "#1E3A8A", radius: 18 },
-        { id: "whatsapp", label: "WhatsApp AI", logo: "WA", x: w * 0.88, y: 50, color: "#25D366", bg: "#14532D", radius: 18 },
-        { id: "meesho", label: "Meesho", logo: "m", x: w * 0.15, y: 190, color: "#F43F5E", bg: "#881337", radius: 18 },
-        { id: "etsy", label: "Etsy Global", logo: "E", x: w * 0.38, y: 195, color: "#F1641E", bg: "#7C2D12", radius: 18 },
-        { id: "walmart", label: "Walmart", logo: "★", x: w * 0.62, y: 195, color: "#0071DC", bg: "#1E3A8A", radius: 18 },
-        { id: "instagram", label: "Instagram Shop", logo: "IG", x: w * 0.85, y: 190, color: "#E6683C", bg: "#831843", radius: 18 }
+        { id: "center", label: "Centralized Inventory", logo: "SYNC", x: centerX, y: centerY, isCenter: true },
+        { id: "store", label: "POS Store", logo: "POS", x: w * 0.12, y: 45 },
+        { id: "shopify", label: "Shopify", logo: "S", x: w * 0.3, y: 35 },
+        { id: "amazon", label: "Amazon", logo: "AMZ", x: w * 0.5, y: 30 },
+        { id: "flipkart", label: "Flipkart", logo: "FK", x: w * 0.7, y: 35 },
+        { id: "whatsapp", label: "WhatsApp AI", logo: "WA", x: w * 0.88, y: 45 },
+        { id: "meesho", label: "Meesho", logo: "MSH", x: w * 0.15, y: 175 },
+        { id: "etsy", label: "Etsy", logo: "ETSY", x: w * 0.38, y: 180 },
+        { id: "walmart", label: "Walmart", logo: "WMT", x: w * 0.62, y: 180 },
+        { id: "instagram", label: "Instagram", logo: "IG", x: w * 0.85, y: 175 }
       ];
     };
 
     let nodes = createNodes();
 
-    // Create 20 dynamic particles flowing between nodes and center
-    const particles = Array.from({ length: 22 }).map((_, i) => {
+    // Electric Blue dynamic order streams
+    const particles = Array.from({ length: 18 }).map((_, i) => {
       const sourceIndex = (i % (nodes.length - 1)) + 1;
       return {
         sourceIndex,
         progress: Math.random(),
-        speed: 0.004 + Math.random() * 0.006
+        speed: 0.005 + Math.random() * 0.005
       };
     });
 
@@ -70,19 +70,19 @@ export const GlobalNodeNetworkCanvas = () => {
 
       const centerNode = nodes[0];
 
-      // 1. Draw glowing connecting lines between channels and central brain
+      // 1. Sleek monochromatic connecting lines
       nodes.forEach((node) => {
         if (!node.isCenter) {
           ctx.beginPath();
           ctx.moveTo(node.x, node.y);
           ctx.lineTo(centerNode.x, centerNode.y);
-          ctx.strokeStyle = "rgba(59, 130, 246, 0.22)";
-          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = "rgba(59, 130, 246, 0.18)";
+          ctx.lineWidth = 1.2;
           ctx.stroke();
         }
       });
 
-      // 2. Draw moving order & inventory sync particles
+      // 2. Electric Blue particle sync stream
       particles.forEach((p) => {
         p.progress += p.speed;
         if (p.progress >= 1) p.progress = 0;
@@ -94,59 +94,47 @@ export const GlobalNodeNetworkCanvas = () => {
         const currY = source.y + (centerNode.y - source.y) * p.progress;
 
         ctx.beginPath();
-        ctx.arc(currX, currY, 3.5, 0, Math.PI * 2);
-        ctx.fillStyle = source.color;
-        ctx.shadowColor = source.color;
-        ctx.shadowBlur = 10;
+        ctx.arc(currX, currY, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "#3B82F6";
+        ctx.shadowColor = "#3B82F6";
+        ctx.shadowBlur = 8;
         ctx.fill();
         ctx.shadowBlur = 0;
       });
 
-      // 3. Draw Channel Nodes with Brand Logos & Crisp Text
+      // 3. Monochromatic Enterprise Nodes
       nodes.forEach((node) => {
-        // Outer glowing ring for central brain
-        if (node.isCenter) {
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, node.radius + 6, 0, Math.PI * 2);
-          ctx.strokeStyle = "rgba(59, 130, 246, 0.4)";
-          ctx.lineWidth = 2;
-          ctx.stroke();
-        }
+        const radius = node.isCenter ? 24 : 16;
 
-        // Node Circle Background
         ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = node.bg;
-        ctx.strokeStyle = node.color;
-        ctx.lineWidth = 2.5;
-        ctx.fill();
-        ctx.stroke();
-
-        // Brand Logo Text inside circle
-        ctx.font = "bold 11px Inter, sans-serif";
-        ctx.fillStyle = "#FFFFFF";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(node.logo, node.x, node.y);
-
-        // High-Contrast Label Badge below node
-        const badgeWidth = ctx.measureText(node.label).width + 16;
-        const badgeHeight = 18;
-        const badgeY = node.isCenter ? node.y + node.radius + 10 : node.y + node.radius + 6;
-
-        ctx.fillStyle = "rgba(16, 22, 34, 0.88)";
-        ctx.strokeStyle = "rgba(36, 48, 72, 0.9)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.roundRect(node.x - badgeWidth / 2, badgeY, badgeWidth, badgeHeight, 4);
+        ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = node.isCenter ? "#1E293B" : "#0F172A";
+        ctx.strokeStyle = node.isCenter ? "#3B82F6" : "#334155";
+        ctx.lineWidth = 2;
         ctx.fill();
         ctx.stroke();
 
         ctx.font = "bold 10px Inter, sans-serif";
-        ctx.fillStyle = node.isCenter ? "var(--primary)" : "#F8FAFC";
+        ctx.fillStyle = node.isCenter ? "#3B82F6" : "#94A3B8";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(node.label, node.x, badgeY + badgeHeight / 2);
+        ctx.fillText(node.logo, node.x, node.y);
+
+        // Crisp minimal label
+        const badgeWidth = ctx.measureText(node.label).width + 12;
+        const badgeY = node.y + radius + 6;
+
+        ctx.fillStyle = "#0F172A";
+        ctx.strokeStyle = "#1E293B";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(node.x - badgeWidth / 2, badgeY, badgeWidth, 16, 3);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = "600 9px Inter, sans-serif";
+        ctx.fillStyle = "#F8FAFC";
+        ctx.fillText(node.label, node.x, badgeY + 8);
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -161,20 +149,20 @@ export const GlobalNodeNetworkCanvas = () => {
   }, []);
 
   return (
-    <div className="card-panel" style={{ padding: "16px", overflow: "hidden", position: "relative", backgroundColor: "var(--bg-surface)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+    <div className="card-panel" style={{ padding: "16px", overflow: "hidden", position: "relative" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
         <div>
           <div style={{ fontSize: "14px", fontWeight: "800", color: "var(--text-main)" }}>
-            Live Global Omni-Channel Sync Network
+            Omni-Channel Sync Network
           </div>
           <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "2px" }}>
-            Real-time visual node stream connecting Shopify, Amazon, Flipkart, WhatsApp, & POS to Central Master Brain
+            Monochromatic data stream connecting 10 active commerce nodes to Centralized Inventory
           </div>
         </div>
-        <span className="status-badge badge-success" style={{ fontSize: "10px" }}>● 10 Nodes Connected</span>
+        <span className="status-badge badge-primary" style={{ fontSize: "10px" }}>● 10 Nodes Connected</span>
       </div>
 
-      <canvas ref={canvasRef} style={{ width: "100%", height: "240px", display: "block" }} />
+      <canvas ref={canvasRef} style={{ width: "100%", height: "220px", display: "block" }} />
     </div>
   );
 };

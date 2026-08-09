@@ -2,77 +2,56 @@ import React from "react";
 import { Store, MessageSquare, Globe, ShoppingBag, Layers, ShieldCheck } from "lucide-react";
 
 export const ChannelLogo = ({ channelId, size = 20 }) => {
+  // Desaturated Monochrome Enterprise Badges
+  const badgeStyle = {
+    width: `${size + 10}px`,
+    height: `${size + 10}px`,
+    borderRadius: "var(--radius-xs)",
+    backgroundColor: "var(--bg-elevated)",
+    border: "1px solid var(--border-color)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "var(--text-main)",
+    fontWeight: "800",
+    fontSize: "11px"
+  };
+
   switch (channelId) {
     case "shopify":
-      return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#95BF47", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF", fontWeight: "800", fontSize: "11px" }}>
-          S
-        </div>
-      );
+      return <div style={badgeStyle}>S</div>;
     case "amazon":
-      return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#FF9900", display: "flex", alignItems: "center", justifyContent: "center", color: "#000", fontWeight: "900", fontSize: "11px" }}>
-          a
-        </div>
-      );
+      return <div style={badgeStyle}>AMZ</div>;
     case "flipkart":
-      return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#2874F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF", fontWeight: "900", fontSize: "11px" }}>
-          fk
-        </div>
-      );
+      return <div style={badgeStyle}>FK</div>;
     case "meesho":
-      return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#F43F5E", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF", fontWeight: "800", fontSize: "11px" }}>
-          m
-        </div>
-      );
+      return <div style={badgeStyle}>MSH</div>;
     case "etsy":
-      return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#F1641E", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF", fontWeight: "800", fontSize: "11px" }}>
-          E
-        </div>
-      );
+      return <div style={badgeStyle}>ETSY</div>;
     case "ebay":
-      return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#E53238", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF", fontWeight: "900", fontSize: "10px" }}>
-          eb
-        </div>
-      );
+      return <div style={badgeStyle}>EBAY</div>;
     case "walmart":
-      return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#0071DC", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFC220", fontWeight: "900", fontSize: "12px" }}>
-          ★
-        </div>
-      );
+      return <div style={badgeStyle}>WMT</div>;
     case "woocommerce":
-      return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#7F54B3", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF", fontWeight: "800", fontSize: "11px" }}>
-          Woo
-        </div>
-      );
+      return <div style={badgeStyle}>WOO</div>;
     case "whatsapp":
       return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#25D366", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF" }}>
-          <MessageSquare size={size - 4} />
+        <div style={badgeStyle}>
+          <MessageSquare size={size - 4} color="var(--primary)" />
         </div>
       );
     case "instagram":
-      return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", background: "linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF", fontWeight: "800", fontSize: "11px" }}>
-          IG
-        </div>
-      );
+      return <div style={badgeStyle}>IG</div>;
     case "website":
       return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#3B82F6", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF" }}>
-          <Globe size={size - 4} />
+        <div style={badgeStyle}>
+          <Globe size={size - 4} color="var(--primary)" />
         </div>
       );
     default:
       return (
-        <div style={{ width: `${size + 8}px`, height: `${size + 8}px`, borderRadius: "var(--radius-xs)", backgroundColor: "#10B981", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF" }}>
-          <Store size={size - 4} />
+        <div style={badgeStyle}>
+          <Store size={size - 4} color="var(--primary)" />
         </div>
       );
   }

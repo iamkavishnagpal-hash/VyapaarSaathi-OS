@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useRetail } from "../context/RetailContext";
 import { GlobalNodeNetworkCanvas } from "../components/GlobalNodeNetworkCanvas";
+import { OmniChannelWaterfall } from "../components/OmniChannelWaterfall";
 import { ChannelLogo } from "../components/ChannelLogos";
 import { SkeletonLoader } from "../components/SkeletonLoader";
 import { 
@@ -23,7 +24,7 @@ export const ChannelCenterView = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [channels, setChannels] = useState([
-    { id: "store", name: "Kapda & Shoe Mafia POS", type: "Offline Retail Store", status: "Connected", syncHealth: 100, lastSync: "Live (0s ago)", errors: 0 },
+    { id: "store", name: "Kapda & Shoe POS", type: "Offline Retail Store", status: "Connected", syncHealth: 100, lastSync: "Live (0s ago)", errors: 0 },
     { id: "whatsapp", name: "WhatsApp AI Commerce", type: "AI Chat Order Bot", status: "Connected", syncHealth: 98, lastSync: "1 min ago", errors: 0 },
     { id: "website", name: "Kapda Mafia Web Store", type: "Brand Storefront", status: "Connected", syncHealth: 100, lastSync: "Live (0s ago)", errors: 0 },
     { id: "shopify", name: "Shopify Store", type: "Ecommerce Platform", status: "Connected", syncHealth: 94, lastSync: "2 mins ago", errors: 2 },
@@ -53,8 +54,8 @@ export const ChannelCenterView = () => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      addToast("Triggered global multi-channel inventory sync across all 12 channels!", "success");
-    }, 800);
+      addToast("Triggered omni-channel inventory synchronization across all 12 nodes!", "success");
+    }, 600);
   };
 
   const handleFixError = (errId) => {
@@ -64,7 +65,7 @@ export const ChannelCenterView = () => {
 
   const handleResolveConflict = () => {
     setConflict(null);
-    addToast("Stock conflict resolved! Master stock (12 units) synced across all 12 global channels.", "success");
+    addToast("Stock conflict resolved! Master stock (12 units) synchronized across all channels.", "success");
   };
 
   return (
@@ -73,92 +74,30 @@ export const ChannelCenterView = () => {
       {/* HEADER */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <h1 className="h1-title">Global Multi-Channel Network & Inventory Brain</h1>
+          <h1 className="h1-title">Omni-Channel Sync & Centralized Inventory</h1>
           <p className="body-text" style={{ fontSize: "13px" }}>
-            Connect 12 global sales channels — Kapda & Shoe Mafia Stores, Shopify, Amazon, Flipkart, & WhatsApp — into ONE master stock truth
+            Synchronize 12 sales channels — POS, Shopify, Amazon, Flipkart, & WhatsApp — into one unified inventory truth
           </p>
         </div>
 
         <button type="button" onClick={handleSyncAll} disabled={isLoading} className="btn btn-secondary" style={{ gap: "6px" }}>
-          <RefreshCw size={16} /> {isLoading ? "Syncing..." : "Sync All 12 Channels Now"}
+          <RefreshCw size={16} /> {isLoading ? "Synchronizing..." : "Sync All 12 Channels Now"}
         </button>
       </div>
 
-      {/* INTERACTIVE CANVAS NETWORK VISUALIZER */}
-      <GlobalNodeNetworkCanvas />
-
-      {/* LIVE INVENTORY TRUTH EXAMPLE DISPLAY */}
-      <div className="card-panel" style={{ borderLeft: "5px solid var(--primary)", backgroundColor: "var(--bg-elevated)" }}>
-        <div style={{ fontSize: "13px", fontWeight: "800", color: "var(--text-main)" }}>
-          Real-Time Omni-Channel Stock Math (Master Product: KM-HD-001)
-        </div>
-        <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "4px" }}>
-          Initial Stock: <b>42 units</b> ➔ POS Offline Sale (-4) ➔ Amazon Order (-2) ➔ Flipkart Order (-1) ➔ <b>Remaining Master Stock Available: 35 units</b> (Broadcasting live to Shopify, Etsy, & WhatsApp).
-        </div>
-      </div>
-
-      {/* 12 CHANNELS GRID WITH OFFICIAL LOGOS & VISUAL HIERARCHY */}
-      {isLoading ? (
-        <SkeletonLoader type="card" count={6} />
-      ) : (
-        <div className="grid-12">
-          {channels.map((ch) => (
-            <div key={ch.id} className="col-3 card-panel" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <ChannelLogo channelId={ch.id} size={20} />
-                  <div>
-                    <div style={{ fontSize: "13px", fontWeight: "800", color: "var(--text-main)", lineHeight: "1.2" }}>{ch.name}</div>
-                    <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>{ch.type}</div>
-                  </div>
-                </div>
-                <span className={`status-badge ${ch.status === "Connected" ? "badge-success" : "badge-muted"}`} style={{ fontSize: "9px" }}>
-                  {ch.status === "Connected" ? "● Connected" : "○ Offline"}
-                </span>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-                <span>Sync Health</span>
-                <span style={{ fontWeight: "800", fontSize: "13px", color: ch.syncHealth >= 90 ? "var(--success)" : "var(--warning)" }}>
-                  {ch.syncHealth}%
-                </span>
-              </div>
-
-              {ch.errors > 0 && (
-                <div style={{ fontSize: "10px", color: "var(--warning)", fontWeight: "700" }}>
-                  ⚠️ {ch.errors} Sync Errors Pending
-                </div>
-              )}
-
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "4px", borderTop: "1px solid var(--border-color)", paddingTop: "6px" }}>
-                <span style={{ fontSize: "9px", color: "var(--text-muted)" }}>Sync: {ch.lastSync}</span>
-                <button
-                  type="button"
-                  onClick={() => addToast(`Opened settings for ${ch.name}`, "info")}
-                  className="btn btn-ghost btn-sm"
-                  style={{ fontSize: "10px", padding: "2px 6px" }}
-                >
-                  Settings
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* STOCK CONFLICT RESOLUTION BOX */}
+      {/* PRIORITY LEVEL 1: SYNC CONFLICTS & ERRORS FIRST */}
       {conflict && (
         <div className="card-panel" style={{ borderLeft: "5px solid var(--warning)", backgroundColor: "var(--bg-elevated)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <AlertTriangle size={18} color="var(--warning)" />
                 <span style={{ fontSize: "14px", fontWeight: "800", color: "var(--text-main)" }}>
-                  Inventory Sync Conflict Detected: {conflict.productTitle}
+                  Sync Conflict: {conflict.productTitle}
                 </span>
               </div>
               <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "4px" }}>
-                Master Store Stock: <b>{conflict.storeStock} units</b> vs Shopify Stock: <b>{conflict.shopifyStock} units</b>.
+                Store Stock: <b>{conflict.storeStock} units</b> vs Shopify Stock: <b>{conflict.shopifyStock} units</b>.
               </div>
             </div>
 
@@ -170,22 +109,22 @@ export const ChannelCenterView = () => {
         </div>
       )}
 
-      {/* SYNC ERROR CENTER */}
+      {/* SYNC ERROR RESOLUTION CENTER */}
       <div className="card-panel">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
           <div>
-            <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>Sync Error Resolution Center</div>
-            <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Items requiring manual verification or formatting fix before channel publishing</div>
+            <div style={{ fontSize: "15px", fontWeight: "800", color: "var(--text-main)" }}>Sync Action & Resolution Center</div>
+            <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Operational items requiring verification prior to channel publishing</div>
           </div>
           <span className="status-badge badge-warning">{syncErrors.length} Errors</span>
         </div>
 
         {syncErrors.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "24px", color: "var(--success)", fontWeight: "700" }}>
-            ✓ All 12 global channels synced cleanly with zero errors!
+          <div style={{ textAlign: "center", padding: "16px", color: "var(--success)", fontWeight: "700" }}>
+            ✓ All channels synchronized cleanly with zero errors.
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {syncErrors.map((err) => (
               <div
                 key={err.id}
@@ -220,6 +159,55 @@ export const ChannelCenterView = () => {
           </div>
         )}
       </div>
+
+      {/* PRIORITY LEVEL 2: STEP-BY-STEP WATERFALL INVENTORY TRUTH */}
+      <OmniChannelWaterfall />
+
+      {/* PRIORITY LEVEL 3: SLEEK MONOCHROMATIC NETWORK CANVAS */}
+      <GlobalNodeNetworkCanvas />
+
+      {/* PRIORITY LEVEL 4: 12-CHANNEL STATUS GRID */}
+      {isLoading ? (
+        <SkeletonLoader type="card" count={6} />
+      ) : (
+        <div className="grid-12">
+          {channels.map((ch) => (
+            <div key={ch.id} className="col-3 card-panel" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <ChannelLogo channelId={ch.id} size={20} />
+                  <div>
+                    <div style={{ fontSize: "13px", fontWeight: "800", color: "var(--text-main)", lineHeight: "1.2" }}>{ch.name}</div>
+                    <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>{ch.type}</div>
+                  </div>
+                </div>
+                <span className="status-badge badge-success" style={{ fontSize: "9px" }}>
+                  ● Connected
+                </span>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                <span>Sync Health</span>
+                <span style={{ fontWeight: "800", fontSize: "13px", color: "var(--primary)" }}>
+                  {ch.syncHealth}%
+                </span>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "4px", borderTop: "1px solid var(--border-color)", paddingTop: "6px" }}>
+                <span style={{ fontSize: "9px", color: "var(--text-muted)" }}>Sync: {ch.lastSync}</span>
+                <button
+                  type="button"
+                  onClick={() => addToast(`Opened settings for ${ch.name}`, "info")}
+                  className="btn btn-ghost btn-sm"
+                  style={{ fontSize: "10px", padding: "2px 6px" }}
+                >
+                  Configure
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
     </div>
   );

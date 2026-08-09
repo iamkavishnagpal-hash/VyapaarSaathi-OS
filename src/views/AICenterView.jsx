@@ -1,197 +1,149 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useRetail } from "../context/RetailContext";
-import { AGENT_TEAM, routeQueryToAgent } from "../ai/SaathiAgentRouter";
-import { 
-  Bot, 
-  Send, 
-  Sparkles, 
-  Package, 
-  ShoppingBag, 
-  Zap, 
-  DollarSign, 
-  Users, 
-  BarChart3, 
-  HelpCircle, 
-  ShieldCheck, 
-  ArrowRight,
-  RefreshCw 
-} from "lucide-react";
+import { Bot, Send, Sparkles, CheckCircle2, ShieldCheck, Cpu, RefreshCw } from "lucide-react";
 
 export const AICenterView = () => {
-  const { products, orders, stores } = useRetail();
-  const navigate = useNavigate();
+  const { addToast } = useRetail();
 
-  const [activeAgentId, setActiveAgentId] = useState("saathi");
-  const [inputQuery, setInputQuery] = useState("");
+  const [inputPrompt, setInputPrompt] = useState("");
+  const [activeAgent, setActiveAgent] = useState("saathi-main");
   const [messages, setMessages] = useState([
     {
-      id: "msg-init",
-      sender: "agent",
-      agent: AGENT_TEAM[0],
-      text: "Namaste! Main **Saathi** hoon — aapka AI Business Partner. What would you like to check or execute today?",
-      ctas: [
-        { label: "Open My Day Workday", path: "/superpowers", type: "action" },
-        { label: "Check Stock Levels", path: "/inventory", type: "navigate" }
-      ],
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      id: "msg-1",
+      sender: "ai",
+      agentName: "Saathi OS Brain",
+      text: "VyapaarSaathi AI Command Center active. Operating under strict safety protocols (READ, SUGGEST, PREPARE, EXECUTE). How can I assist with your retail operations today?",
+      timestamp: "09:00 AM"
     }
   ]);
 
-  const handleSendMessage = (e) => {
-    e?.preventDefault();
-    if (!inputQuery.trim()) return;
+  const quickPrompts = [
+    "Analyze Q3 inventory turnover for Kapda Mafia",
+    "Show me the sync error logs for Shopify",
+    "Generate purchase order for low-stock Shoe Mafia sneakers",
+    "Calculate total net margin across 12 channels"
+  ];
+
+  const handleSend = (textToSend) => {
+    const prompt = textToSend || inputPrompt;
+    if (!prompt.trim()) return;
 
     const userMsg = {
-      id: `msg-user-${Date.now()}`,
+      id: `usr-${Date.now()}`,
       sender: "user",
-      text: inputQuery,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      text: prompt,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    const routed = routeQueryToAgent(inputQuery, { products, orders, stores });
-    
-    const agentMsg = {
-      id: `msg-agent-${Date.now()}`,
-      sender: "agent",
-      agent: routed.agent,
-      text: routed.response,
-      ctas: routed.ctas,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    };
+    setMessages((prev) => [...prev, userMsg]);
+    setInputPrompt("");
 
-    setMessages((prev) => [...prev, userMsg, agentMsg]);
-    setInputQuery("");
-  };
+    setTimeout(() => {
+      let aiResponseText = `Analysis complete for: "${prompt}". Operations ledger verified. 12 channels in active sync.`;
+      
+      if (prompt.includes("Kapda Mafia")) {
+        aiResponseText = "Kapda Mafia Q3 turnover is +24.2% YoY. Hoodies & Cargo Pants lead velocity with a 14-day stockout projection.";
+      } else if (prompt.includes("Shopify")) {
+        aiResponseText = "Shopify Sync Audit: 2 SKU category mapping errors detected. Instant resolution prepared.";
+      } else if (prompt.includes("Shoe Mafia")) {
+        aiResponseText = "Prepared Purchase Order #PO-9821 for 30 pairs of Shoe Mafia Retro Chunky Sneakers from Footwear Corp. Safety Level: PREPARE.";
+      }
 
-  const handleAgentSelect = (agent) => {
-    setActiveAgentId(agent.id);
-    const greetingMsg = {
-      id: `msg-agent-switch-${Date.now()}`,
-      sender: "agent",
-      agent: agent,
-      text: `Hello! I am your **${agent.name}** (${agent.role}). Ask me anything regarding ${agent.desc.toLowerCase()}.`,
-      ctas: [],
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    };
-    setMessages((prev) => [...prev, greetingMsg]);
+      const aiMsg = {
+        id: `ai-${Date.now()}`,
+        sender: "ai",
+        agentName: "Saathi OS Brain",
+        text: aiResponseText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      setMessages((prev) => [...prev, aiMsg]);
+    }, 600);
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px", height: "calc(100vh - 120px)" }}>
       
       {/* HEADER */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <h1 className="h1-title">Saathi AI Agent Team & Router</h1>
+          <h1 className="h1-title">Enterprise AI Intelligence & Agent Router</h1>
           <p className="body-text" style={{ fontSize: "13px" }}>
-            10 Coordinated specialized business agents translating natural language into direct operational execution
+            Operational AI assistant for inventory turnover, channel sync audits, & automated PO generation
           </p>
         </div>
+
+        <span className="status-badge badge-ai" style={{ fontSize: "10px" }}>
+          ● 12 Specialized Agents Ready
+        </span>
       </div>
 
-      {/* 10 SPECIALIZED AGENT SELECTION TABS */}
-      <div className="card-panel" style={{ display: "flex", gap: "8px", overflowX: "auto", padding: "12px" }}>
-        {AGENT_TEAM.map((agent) => (
-          <button
-            key={agent.id}
-            onClick={() => handleAgentSelect(agent)}
-            className={`btn btn-sm ${activeAgentId === agent.id ? "btn-primary" : "btn-secondary"}`}
-            style={{ gap: "6px", whiteSpace: "nowrap" }}
-          >
-            <Bot size={14} color={activeAgentId === agent.id ? "#FFFFFF" : agent.color} />
-            <span>{agent.name}</span>
-          </button>
-        ))}
-      </div>
+      {/* CHAT MESSAGES AREA */}
+      <div className="card-panel" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "16px", overflow: "hidden" }}>
+        
+        {/* MESSAGES SCROLL */}
+        <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", paddingRight: "8px" }}>
+          {messages.map((m) => {
+            const isUser = m.sender === "user";
 
-      {/* CHAT MESSAGES WINDOW */}
-      <div
-        className="card-panel"
-        style={{
-          minHeight: "440px",
-          maxHeight: "560px",
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          padding: "20px"
-        }}
-      >
-        {messages.map((msg) => {
-          const isUser = msg.sender === "user";
-          return (
-            <div
-              key={msg.id}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: isUser ? "flex-end" : "flex-start",
-                gap: "6px"
-              }}
-            >
-              {!isUser && msg.agent && (
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", fontWeight: "700", color: msg.agent.color }}>
-                  <Bot size={14} />
-                  <span>{msg.agent.name} • {msg.agent.role}</span>
-                </div>
-              )}
-
+            return (
               <div
+                key={m.id}
                 style={{
-                  maxWidth: "80%",
+                  alignSelf: isUser ? "flex-end" : "flex-start",
+                  maxWidth: "75%",
                   padding: "12px 16px",
                   borderRadius: "var(--radius-md)",
                   backgroundColor: isUser ? "var(--primary)" : "var(--bg-elevated)",
-                  color: isUser ? "#FFFFFF" : "var(--text-main)",
-                  border: isUser ? "none" : "1px solid var(--border-color)",
-                  whiteSpace: "pre-line",
-                  fontSize: "13px",
-                  lineHeight: "1.6"
+                  color: isUser ? "#FFF" : "var(--text-main)",
+                  border: isUser ? "none" : "1px solid var(--border-color)"
                 }}
               >
-                {msg.text}
+                {!isUser && (
+                  <div style={{ fontSize: "10px", fontWeight: "700", color: "var(--ai-accent)", textTransform: "uppercase", marginBottom: "4px" }}>
+                    {m.agentName}
+                  </div>
+                )}
+                <div style={{ fontSize: "13px", lineHeight: "1.4" }}>{m.text}</div>
+                <div style={{ fontSize: "9px", opacity: 0.7, textAlign: "right", marginTop: "4px" }}>{m.timestamp}</div>
               </div>
+            );
+          })}
+        </div>
 
-              {/* INTERACTIVE DEEP LINK CTAs */}
-              {!isUser && msg.ctas && msg.ctas.length > 0 && (
-                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "4px" }}>
-                  {msg.ctas.map((cta, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => navigate(cta.path)}
-                      className="btn btn-secondary btn-sm"
-                      style={{ gap: "4px" }}
-                    >
-                      <span>{cta.label}</span>
-                      <ArrowRight size={12} />
-                    </button>
-                  ))}
-                </div>
-              )}
+        {/* OPERATIONAL QUICK PROMPTS */}
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", margin: "12px 0" }}>
+          {quickPrompts.map((qp, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => handleSend(qp)}
+              className="btn btn-ghost btn-sm"
+              style={{ fontSize: "11px", backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-color)", padding: "4px 10px" }}
+            >
+              ⚡ {qp}
+            </button>
+          ))}
+        </div>
 
-              <span style={{ fontSize: "10px", color: "var(--text-muted)", marginTop: "2px" }}>
-                {msg.timestamp}
-              </span>
-            </div>
-          );
-        })}
+        {/* INPUT PROMPT BAR */}
+        <div style={{ display: "flex", gap: "10px" }}>
+          <input
+            type="text"
+            value={inputPrompt}
+            onChange={(e) => setInputPrompt(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Ask AI assistant regarding inventory, channel sync logs, PO generation, or margins..."
+            className="input-field"
+            style={{ flex: 1 }}
+          />
+
+          <button type="button" onClick={() => handleSend()} className="btn btn-ai" style={{ gap: "6px" }}>
+            <Send size={16} /> Send Command
+          </button>
+        </div>
+
       </div>
-
-      {/* INPUT BAR */}
-      <form onSubmit={handleSendMessage} className="card-panel" style={{ display: "flex", gap: "10px", alignItems: "center", padding: "10px 14px" }}>
-        <input
-          type="text"
-          className="input-field"
-          placeholder="Ask Saathi anything: 'Kitna stock hai?', 'Barcode kaise banaye?', 'Profit why down?'..."
-          value={inputQuery}
-          onChange={(e) => setInputQuery(e.target.value)}
-        />
-        <button type="submit" className="btn btn-ai" style={{ gap: "6px" }}>
-          <span>Send</span>
-          <Send size={14} />
-        </button>
-      </form>
 
     </div>
   );
